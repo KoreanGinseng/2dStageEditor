@@ -1,0 +1,166 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{582B9C61-742D-4D2B-9C72-42C088CE473D}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>SimpleProject</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>../../MofLibrary/Include;../../../MofLibrary/Include;$(IncludePath);</IncludePath>
+    <LibraryPath>../../MofLibrary/Library;../../../MofLibrary/Library;$(LibraryPath);</LibraryPath>
+    <OutDir>$(SolutionDir)\</OutDir>
+    <TargetName>$(ProjectName)_Debug</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>../../MofLibrary/Include;../../../MofLibrary/Include;$(IncludePath);</IncludePath>
+    <LibraryPath>../../MofLibrary/Library;../../../MofLibrary/Library;$(LibraryPath);</LibraryPath>
+    <OutDir>$(SolutionDir)\</OutDir>
+    <TargetName>$(ProjectName)_Release</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>EDITOR;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Library\Include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Library\Library;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>LIBCMTD;</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>MofImGui_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <ResourceCompile>
+      <PreprocessorDefinitions>USERNAME=$(USERNAME);</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>EDITOR;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Library\Include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Library\Library;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>MofImGui.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <ResourceCompile>
+      <PreprocessorDefinitions>USERNAME=$(USERNAME);</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Ease\Easing.cpp" />
+    <ClCompile Include="GameApp.cpp" />
+    <ClCompile Include="Manager\CommandManager.cpp" />
+    <ClCompile Include="Manager\ImGuiWindowManager.cpp" />
+    <ClCompile Include="Menu\MainMenu.cpp" />
+    <ClCompile Include="Menu\ToolMenu.cpp" />
+    <ClCompile Include="Stage\Exporter\JsonExporter.cpp" />
+    <ClCompile Include="Stage\Exporter\OriginalExporter.cpp" />
+    <ClCompile Include="Stage\Exporter\TextExporter.cpp" />
+    <ClCompile Include="Stage\MapChip.cpp" />
+    <ClCompile Include="Stage\Parser\JsonParser.cpp" />
+    <ClCompile Include="Stage\Parser\OriginalParser.cpp" />
+    <ClCompile Include="Stage\Parser\TextParser.cpp" />
+    <ClCompile Include="Stage\Stage.cpp" />
+    <ClCompile Include="Utilities\EditorUtilities.cpp" />
+    <ClCompile Include="Utilities\FileDialog.cpp" />
+    <ClCompile Include="Utilities\ToolIcon.cpp" />
+    <ClCompile Include="Window\EditWindow.cpp" />
+    <ClCompile Include="Window\LayerWindow.cpp" />
+    <ClCompile Include="Window\MapChipWindow.cpp" />
+    <ClCompile Include="WinMain.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Command\Command.h" />
+    <ClInclude Include="Ease\EaseMotion.h" />
+    <ClInclude Include="Ease\EaseMotionController.h" />
+    <ClInclude Include="Ease\Easing.h" />
+    <ClInclude Include="EditorParam\EditorParameter.h" />
+    <ClInclude Include="EditorParam\ParameterKey.h" />
+    <ClInclude Include="GameApp.h" />
+    <ClInclude Include="Manager\CommandManager.h" />
+    <ClInclude Include="Manager\ImGuiWindowManager.h" />
+    <ClInclude Include="Menu\MainMenu.h" />
+    <ClInclude Include="Menu\ToolMenu.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="Stage\Exporter\Exporter.h" />
+    <ClInclude Include="Stage\Exporter\JsonExporter.h" />
+    <ClInclude Include="Stage\Exporter\OriginalExporter.h" />
+    <ClInclude Include="Stage\Exporter\TextExporter.h" />
+    <ClInclude Include="Stage\MapChip.h" />
+    <ClInclude Include="Stage\Parser\JsonParser.h" />
+    <ClInclude Include="Stage\Parser\OriginalParser.h" />
+    <ClInclude Include="Stage\Parser\Parser.h" />
+    <ClInclude Include="Stage\Parser\TextParser.h" />
+    <ClInclude Include="Stage\Stage.h" />
+    <ClInclude Include="Utilities\EditorUtilities.h" />
+    <ClInclude Include="Utilities\FileDialog.h" />
+    <ClInclude Include="Utilities\ToolIcon.h" />
+    <ClInclude Include="Window\EditWindow.h" />
+    <ClInclude Include="Window\LayerWindow.h" />
+    <ClInclude Include="Window\MapChipWindow.h" />
+    <ClInclude Include="Window\WindowDefine.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Version.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon.ico" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
