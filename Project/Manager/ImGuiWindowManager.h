@@ -3,7 +3,7 @@
 #include <MofImGui/MofImGui.h>
 
 struct GuiWindowData {
-    ParamKey::Type name          { "" };
+    ParamKey::Type name          { };
     CRectangle     rect          { Mof::Rectangle() };
     bool*          active_pointer{ nullptr };
 };

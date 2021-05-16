@@ -101,7 +101,6 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Ease\Easing.cpp" />
     <ClCompile Include="GameApp.cpp" />
     <ClCompile Include="Manager\CommandManager.cpp" />
     <ClCompile Include="Manager\ImGuiWindowManager.cpp" />
@@ -125,9 +124,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Command\Command.h" />
-    <ClInclude Include="Ease\EaseMotion.h" />
-    <ClInclude Include="Ease\EaseMotionController.h" />
-    <ClInclude Include="Ease\Easing.h" />
     <ClInclude Include="EditorParam\EditorParameter.h" />
     <ClInclude Include="EditorParam\ParameterKey.h" />
     <ClInclude Include="GameApp.h" />

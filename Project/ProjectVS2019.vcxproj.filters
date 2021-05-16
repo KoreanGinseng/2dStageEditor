@@ -52,12 +52,6 @@
     <Filter Include="ヘッダー ファイル\Menu">
       <UniqueIdentifier>{fc2d3da9-6052-4f9d-873e-136c85f78b62}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Ease">
-      <UniqueIdentifier>{bc1104fe-88af-40da-88cf-1f6f368568f0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Ease">
-      <UniqueIdentifier>{05b2f2e5-46a0-46fd-b6c1-ab9d61ca63b0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ヘッダー ファイル\Stage\Exporter">
       <UniqueIdentifier>{4e0e69c9-9d88-47c7-8001-aefc98d83540}</UniqueIdentifier>
     </Filter>
@@ -92,9 +86,6 @@
     </ClCompile>
     <ClCompile Include="Menu\MainMenu.cpp">
       <Filter>ソース ファイル\Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="Ease\Easing.cpp">
-      <Filter>ソース ファイル\Ease</Filter>
     </ClCompile>
     <ClCompile Include="Window\MapChipWindow.cpp">
       <Filter>ソース ファイル\Window</Filter>
@@ -166,15 +157,6 @@
     </ClInclude>
     <ClInclude Include="Menu\MainMenu.h">
       <Filter>ヘッダー ファイル\Menu</Filter>
-    </ClInclude>
-    <ClInclude Include="Ease\EaseMotion.h">
-      <Filter>ヘッダー ファイル\Ease</Filter>
-    </ClInclude>
-    <ClInclude Include="Ease\EaseMotionController.h">
-      <Filter>ヘッダー ファイル\Ease</Filter>
-    </ClInclude>
-    <ClInclude Include="Ease\Easing.h">
-      <Filter>ヘッダー ファイル\Ease</Filter>
     </ClInclude>
     <ClInclude Include="Window\MapChipWindow.h">
       <Filter>ヘッダー ファイル\Window</Filter>
