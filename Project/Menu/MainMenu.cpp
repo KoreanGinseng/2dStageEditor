@@ -68,7 +68,7 @@ void MainMenu::Show(void) {
     ImGui::EndMainMenuBar();
 }
 
-void MainMenu::NewProject(void) {
+bool MainMenu::NewProject(void) {
     char path[PATH_MAX];
     bool array_flag = false;
     bool open = FileDialog::Open(
@@ -77,14 +77,18 @@ void MainMenu::NewProject(void) {
         "map2dproj\0json\0txt", path, array_flag
     );
     if (open) {
-        Close();
-        auto open_file = theParam.GetDataPointer<std::string>(ParamKey::OpenFile);
-        *open_file = path;
-        SaveProject();
+        if (Close()) {
+            auto open_file = theParam.GetDataPointer<std::string>(ParamKey::OpenFile);
+            *open_file = path;
+            SaveProject();
+            return true;
+        }
+        MessageBox(g_pMainWindow->GetWindowHandle(), "ファイルを作成しませんでした。", "キャンセルしたよ", MB_OK);
     }
+    return false;
 }
 
-void MainMenu::OpenProject(void) {
+bool MainMenu::OpenProject(void) {
     char path[PATH_MAX];
     bool array_flag = false;
     bool open = FileDialog::Open(
@@ -102,21 +106,31 @@ void MainMenu::OpenProject(void) {
             parser = std::make_shared<TextParser>();
         }
         if (parser) {
-            Close();
-            ParseData data;
-            data.background_array      = theParam.GetDataPointer<BackGroundArray>(ParamKey::BackgroundArray);
-            data.collisionrect_array   = theParam.GetDataPointer<CollisionDataArray>(ParamKey::CollisionArray);
-            data.mapchip_array         = theParam.GetDataPointer<MapChipArray>(ParamKey::MapChipArray);
-            data.mapchip_texture_array = theParam.GetDataPointer<TextureArray>(ParamKey::MapChipTextureArray);
-            data.texture_arrays        = theParam.GetDataPointer<std::vector<TextureArray>>(ParamKey::TextureArrays);
-            if (parser->Parse(str, &data)) {
-                *open_file = path;
+            if (Close()) {
+                ParseData data;
+                data.background_array      = theParam.GetDataPointer<BackGroundArray>(ParamKey::BackgroundArray);
+                data.collisionrect_array   = theParam.GetDataPointer<CollisionDataArray>(ParamKey::CollisionArray);
+                data.mapchip_array         = theParam.GetDataPointer<MapChipArray>(ParamKey::MapChipArray);
+                data.mapchip_texture_array = theParam.GetDataPointer<TextureArray>(ParamKey::MapChipTextureArray);
+                data.texture_arrays        = theParam.GetDataPointer<std::vector<TextureArray>>(ParamKey::TextureArrays);
+                if (parser->Parse(str, &data)) {
+                    *open_file = path;
+                    return true;
+                }
+                else {
+                    MessageBox(g_pMainWindow->GetWindowHandle(), "ファイルを開けませんでした。", "キャンセルしたよ", MB_OK);
+                }
             }
+            MessageBox(g_pMainWindow->GetWindowHandle(), "ファイルを開きませんでした。", "キャンセルしたよ", MB_OK);
+        }
+        else {
+            MessageBox(g_pMainWindow->GetWindowHandle(), "ファイルを開けませんでした。", "キャンセルしたよ", MB_OK);
         }
     }
+    return false;
 }
 
-void MainMenu::SaveProject(void) {
+bool MainMenu::SaveProject(void) {
     auto open_file = theParam.GetDataPointer<std::string>(ParamKey::OpenFile);
     if (open_file->length()) {
         std::string ext = EditorUtilities::GetExt(*open_file);
@@ -130,16 +144,18 @@ void MainMenu::SaveProject(void) {
         else if (ext == ".txt") {
             exporter = std::make_shared<TextExporter>();
         }
-        if (exporter) {
-            exporter->Export(*open_file);
+        if (exporter && exporter->Export(*open_file)) {
+            return true;
         }
+        MessageBox(g_pMainWindow->GetWindowHandle(), "書き出し失敗しちゃった\nてへぺろ", "失敗", MB_OK);
     }
     else {
-        SaveAsProject();
+        return SaveAsProject();
     }
+    return false;
 }
 
-void MainMenu::SaveAsProject(void) {
+bool MainMenu::SaveAsProject(void) {
     char path[PATH_MAX];
     bool array_flag = false;
     bool open = FileDialog::Open(
@@ -151,21 +167,24 @@ void MainMenu::SaveAsProject(void) {
     if (open) {
         auto open_file = theParam.GetDataPointer<std::string>(ParamKey::OpenFile);
         *open_file = path;
-        SaveProject();
+        return SaveProject();
     }
+    return false;
 }
 
-void MainMenu::Close(void) {
+bool MainMenu::Close(void) {
     auto open_file = theParam.GetDataPointer<std::string>(ParamKey::OpenFile);
     if (open_file->length() && MessageBox(g_pMainWindow->GetWindowHandle(),
         "保存されていないデータは復元できません。\nよろしいですか？",
         "ファイルを閉じる", MB_YESNO | MB_ICONEXCLAMATION | MB_APPLMODAL) == IDYES) {
         theParam.GetDataPointer<Stage>(ParamKey::Stage)->Release();
         *open_file = "";
+        return true;
     }
+    return false;
 }
 
-void MainMenu::Export(void) {
+bool MainMenu::Export(void) {
     char path[PATH_MAX];
     bool array_flag = false;
     bool open = FileDialog::Open(
@@ -177,8 +196,9 @@ void MainMenu::Export(void) {
     if (open) {
         auto open_file = theParam.GetDataPointer<std::string>(ParamKey::OpenFile);
         *open_file = path;
-        SaveProject();
+        return SaveProject();
     }
+    return false;
 }
 
 void MainMenu::Quit(void) {

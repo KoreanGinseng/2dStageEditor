@@ -15,12 +15,12 @@ public:
 
     static void Show(void);
 
-    static void NewProject(void);
-    static void OpenProject(void);
-    static void SaveProject(void);
-    static void SaveAsProject(void);
-    static void Close(void);
-    static void Export(void);
+    static bool NewProject(void);
+    static bool OpenProject(void);
+    static bool SaveProject(void);
+    static bool SaveAsProject(void);
+    static bool Close(void);
+    static bool Export(void);
     static void Quit(void);
 
     static void OpenManual(void);

@@ -67,17 +67,23 @@ void Stage::Release(void) {
     for (auto& chipdata : _mapchip_array) {
         chipdata.Release();
     }
+    _mapchip_array.clear();
     for (auto& texture : _mapchip_texture_array) {
         texture.Release();
     }
+    _mapchip_texture_array.clear();
     for (auto& background : _background_array) {
         background._texture.Release();
     }
+    _background_array.clear();
     for (auto& texture_array : _texture_arrays) {
         for (auto& texture : texture_array) {
             texture.Release();
         }
+        texture_array.clear();
     }
+    _texture_arrays.clear();
+    _collisionrect_array.clear();
 }
 
 Vector2 Stage::GetScroll(void) const {

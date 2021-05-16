@@ -6,7 +6,7 @@
 #include "../Manager/ImGuiWindowManager.h"
 
 void EditWindow::UpdateWriteMode(MapChip* mapchip) {
-    if (!g_pInput->IsMouseKeyHold(MOFMOUSE_LBUTTON)) {
+    if (!g_pInput->IsMouseKeyHold(MOFMOUSE_LBUTTON) && !g_pInput->IsMouseKeyHold(MOFMOUSE_RBUTTON)) {
         return;
     }
     if (EditorUtilities::IsNoEditAreaHold()) {
@@ -17,8 +17,8 @@ void EditWindow::UpdateWriteMode(MapChip* mapchip) {
         return;
     }
     int        tex_no       = mapchip->GetTextureNo();
-    CTexture*  texture      = nullptr;
     Vector2    chip_size    = mapchip->GetChipSize();
+    CTexture*  texture      = nullptr;
     Vector2    tex_size     = chip_size;
     if (tex_no >= 0) {
         if (!mapchip->IsTextureArray()) {
@@ -41,7 +41,11 @@ void EditWindow::UpdateWriteMode(MapChip* mapchip) {
             select_pos.y + y >= array_size.y) {
             continue;
         }
-        mapchip->SetMapChip(select_pos.x + x, select_pos.y + y, selects[i] + 1);
+        int chip_no = 0;
+        if (g_pInput->IsMouseKeyHold(MOFMOUSE_LBUTTON)) {
+            chip_no = selects[i] + 1;
+        }
+        mapchip->SetMapChip(select_pos.x + x, select_pos.y + y, chip_no);
     }
 }
 
