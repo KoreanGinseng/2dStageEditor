@@ -15,6 +15,7 @@ int WINAPI _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
     Info.WindowCreateInfo.Title  = EditorUtilities::GetVersionResourceData()->ProductName.c_str();
     Info.WindowCreateInfo.Width  = 1280;
     Info.WindowCreateInfo.Height =  720;
+    Info.GraphicsCreateInfo.bMSAA = FALSE;
     Info.pApplication = new CGameApp();
     if ( pFrame->Initialize(&Info) )
     {

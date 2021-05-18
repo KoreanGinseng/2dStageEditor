@@ -19,10 +19,12 @@ bool TextExporter::Export(const std::string& file) {
     }
     if (mapchip_array->size() > 0) {
         int tex_no = (*mapchip_array)[0].GetTextureNo();
-        fprintf(file_pointer, "%s,\n", (*mapchip_texture_array)[tex_no].GetName()->GetString());
-    }
-    else {
-        fprintf(file_pointer, " ,\n");
+        if (tex_no >= 0) {
+            fprintf(file_pointer, "%s,\n", (*mapchip_texture_array)[tex_no].GetName()->GetString());
+        }
+        else {
+            fprintf(file_pointer, " ,\n");
+        }
     }
     if (mapchip_array->size() > 0) {
         auto mapchip = &(*mapchip_array)[0];
@@ -35,11 +37,8 @@ bool TextExporter::Export(const std::string& file) {
             fprintf(file_pointer, "\n");
         }
         fprintf(file_pointer, "\n");
-        for (int i = 1, write = 0; i < mapchip_array->size() && write < 2; i++) {
+        for (int i = 1; i < mapchip_array->size(); i++) {
             mapchip = &(*mapchip_array)[i];
-            if (!mapchip->IsTextureArray()) {
-                continue;
-            }
             int  tex_no        = mapchip->GetTextureNo();
             auto texture_array = &(*texture_arrays)[tex_no];
             fprintf(file_pointer, "%d,", texture_array->size());
@@ -54,7 +53,6 @@ bool TextExporter::Export(const std::string& file) {
                 fprintf(file_pointer, "\n");
             }
             fprintf(file_pointer, "\n");
-            write++;
         }
     }
     fclose(file_pointer);

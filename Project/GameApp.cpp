@@ -24,6 +24,7 @@
 #include    "Window/EditWindow.h"
 #include    "Window/LayerWindow.h"
 #include    "Manager/ImGuiWindowManager.h"
+#include    "Manager/CommandManager.h"
 
 bool                     edit_grid_flag = false;
 bool                     chip_grid_flag = false;
@@ -32,6 +33,7 @@ MapChipWindow            map_chip_window;
 EditWindow               edit_window;
 LayerWindow              layer_window;
 MofU32                   edit_background_color = MOF_COLOR_CBLACK;
+MofU32                   edit_font_color       = MOF_COLOR_WHITE;
 
 bool                     write_mode_flag = true;
 
@@ -44,9 +46,37 @@ bool                     show_edit_window        = true;
 bool                     show_edit_window_child  = true;
 
 std::string              resource_path;
-std::string              open_file;
+std::string              open_file = ".txt";
 
 #include "Stage/Parser/TextParser.h"
+std::function<void(void)> def_create;
+CFont                     num_font;
+
+void default_create(void) {
+    MapChip mapchip_layer;
+    MapChip enemy_layer;
+    MapChip item_layer;
+    mapchip_layer.SetName("mapchip");
+    mapchip_layer.SetTextureNo(-1);
+    mapchip_layer.SetChipSize(Vector2(32, 32));
+    mapchip_layer.Create(70, 25);
+    stage.GetChipArrayPointer()->push_back(std::move(mapchip_layer));
+    enemy_layer.SetName("enemy");
+    enemy_layer.SetTextureArray(true);
+    enemy_layer.SetTextureNo(0);
+    enemy_layer.SetChipSize(Vector2(32, 32));
+    enemy_layer.Create(70, 25);
+    stage.GetChipArrayPointer()->push_back(std::move(enemy_layer));
+    item_layer.SetName("item");
+    item_layer.SetTextureNo(1);
+    item_layer.SetTextureArray(true);
+    item_layer.SetChipSize(Vector2(32, 32));
+    item_layer.Create(70, 25);
+    stage.GetChipArrayPointer()->push_back(std::move(item_layer));
+
+    stage.GetTextureArraysPointer()->push_back(TextureArray());
+    stage.GetTextureArraysPointer()->push_back(TextureArray());
+}
 
 /*************************************************************************//*!
         @brief            アプリケーションの初期化
@@ -59,10 +89,10 @@ MofBool CGameApp::Initialize(void) {
     CUtilities::SetCurrentDirectory("Resource");
 
     ToolIcon::Load();
-
+    def_create = default_create;
     resource_path = std::filesystem::current_path().string();
 
-    CMofImGui::Setup();
+    CMofImGui::Setup(false, false);
     
     theParam.Register(ParamKey::MapChipArray       , stage.GetChipArrayPointer()       );
     theParam.Register(ParamKey::ChipGridFlag       , &chip_grid_flag                   );
@@ -82,10 +112,18 @@ MofBool CGameApp::Initialize(void) {
     theParam.Register(ParamKey::OpenFile           , &open_file                        );
     theParam.Register(ParamKey::Stage              , &stage                            );
     theParam.Register(ParamKey::TextureArrays      , stage.GetTextureArraysPointer()   );
+    theParam.Register(ParamKey::DefaultCreate      , &def_create                       );
+    theParam.Register(ParamKey::NumFont            , &num_font                         );
+    theParam.Register(ParamKey::EditFontColor      , &edit_font_color                  );
 
+    num_font.Create();
+    
     //open_file = "asaa";
-    if (open_file.length()) {
+    if (open_file != ".txt" && open_file.length()) {
         stage.Load(open_file);
+    }
+    else {
+        default_create();
     }
 
     layer_window.Initialize();   /*  first
@@ -123,6 +161,39 @@ MofBool CGameApp::Update(void) {
         edit_window.Update();
     }
 
+    bool is_ctrl_hold  = g_pInput->IsKeyHold(MOFKEY_LCONTROL) || g_pInput->IsKeyHold(MOFKEY_RCONTROL);
+    bool is_shift_hold = g_pInput->IsKeyHold(MOFKEY_LSHIFT)   || g_pInput->IsKeyHold(MOFKEY_RSHIFT);
+    if (is_ctrl_hold && g_pInput->IsKeyPush(MOFKEY_N)) {
+        MainMenu::NewProject();
+    }
+    if (is_ctrl_hold && g_pInput->IsKeyPush(MOFKEY_O)) {
+        MainMenu::OpenProject();
+    }
+    if (is_ctrl_hold && g_pInput->IsKeyPush(MOFKEY_S)) {
+        MainMenu::SaveProject();
+    }
+    if (is_ctrl_hold && is_shift_hold && g_pInput->IsKeyPush(MOFKEY_S)) {
+        MainMenu::SaveAsProject();
+    }
+    if (is_ctrl_hold && g_pInput->IsKeyPush(MOFKEY_Z)) {
+        theCommandManager.Undo();
+    }
+    if (is_ctrl_hold && g_pInput->IsKeyPush(MOFKEY_Y)) {
+        theCommandManager.Redo();
+    }
+    if (is_ctrl_hold && g_pInput->IsKeyPush(MOFKEY_M)) {
+        MainMenu::OpenManual();
+    }
+    if (is_ctrl_hold && g_pInput->IsKeyPush(MOFKEY_I)) {
+        MainMenu::Version();
+    }
+    if (g_pInput->IsKeyPush(MOFKEY_W)) {
+        write_mode_flag = true;
+    }
+    if (g_pInput->IsKeyPush(MOFKEY_E)) {
+        write_mode_flag = false;
+    }
+
     //ImGui::ShowDemoWindow();
 
     return TRUE;
@@ -151,7 +222,9 @@ MofBool CGameApp::Render(void) {
 
     //CGraphicsUtilities::RenderRect(EditorUtilities::GetChipArea(), MOF_COLOR_GREEN);
     //CGraphicsUtilities::RenderRect(EditorUtilities::GetEditArea(), MOF_COLOR_GREEN);
-    //CGraphicsUtilities::RenderRect(*theImGuiWindowManager.Find(ParamKey::ChipWindow), MOF_COLOR_GREEN);
+    //CGraphicsUtilities::RenderRect(*theImGuiWindowManager.Find(ParamKey::EditWindowChild), MOF_COLOR_GREEN);
+    //float scale = *theParam.GetDataPointer<float>(ParamKey::ChipScale);
+    //CGraphicsUtilities::RenderString(500, 300, "%.3f, %.3f, %d, %.3f", ImGui::GetMousePos().x, ImGui::GetMousePos().y, (int)(32 * scale), scale);
 
     //描画の終了
     g_pGraphics->RenderEnd();
@@ -173,6 +246,8 @@ MofBool CGameApp::Release(void) {
     ToolIcon::Release();
 
     stage.Release();
+
+    num_font.Release();
 
     return TRUE;
 }

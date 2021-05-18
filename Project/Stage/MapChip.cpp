@@ -100,6 +100,14 @@ void MapChip::SetShow(bool b) {
     _show_flag = b;
 }
 
+bool MapChip::IsShowNo(void) const {
+    return _show_no_flag;
+}
+
+void MapChip::SetShowNo(bool b) {
+    _show_no_flag = b;
+}
+
 bool MapChip::IsTextureArray(void) const {
     return _texture_array_flag;
 }

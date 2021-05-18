@@ -230,13 +230,21 @@ std::vector<std::string> EditorUtilities::GetChipLayerNames(void) {
 }
 
 CRectangle EditorUtilities::GetEditArea(void) {
-    float      w         = g_pGraphics->GetTargetWidth();
-    float      h         = g_pGraphics->GetTargetHeight();
-    float      size_max  = min(w * k_layer_width_ratio, k_layer_width_max);
+    auto      mapchip_array =  theParam.GetDataPointer<std::vector<MapChip>>(ParamKey::MapChipArray);
+    int       select_layer  = *theParam.GetDataPointer<int>(ParamKey::MapChipLayerSelect);
+    float     scale         = *theParam.GetDataPointer<float>(ParamKey::EditScale);
+    if (mapchip_array->size() <= 0) {
+        return CRectangle(-1, -1, -1, -1);
+    }
+    auto mapchip = &(*mapchip_array)[select_layer];
+    Vector2    chip_size = Vector2(mapchip->GetChipSize().x * scale, mapchip->GetChipSize().y * scale);
+    Vector2    max_size  = chip_size * mapchip->GetArraySize();
+    Vector2    scroll    = *theParam.GetDataPointer<Vector2>(ParamKey::EditScroll);
     CRectangle edit_rect = *theImGuiWindowManager.Find(ParamKey::EditWindowChild);
     return CRectangle(
         edit_rect.Left, edit_rect.Top,
-        edit_rect.Right - k_scrollbar_size, edit_rect.Bottom - k_scrollbar_size
+        edit_rect.Left + min(max_size.x - scroll.x, edit_rect.GetWidth()  - k_scrollbar_size),
+        edit_rect.Top  + min(max_size.y - scroll.y, edit_rect.GetHeight() - k_scrollbar_size)
     );
 }
 
@@ -245,6 +253,7 @@ CRectangle EditorUtilities::GetChipArea(void) {
     auto      mapchip_texture_array =  theParam.GetDataPointer<std::vector<CTexture>>(ParamKey::MapChipTextureArray);
     auto      texture_arrays        =  theParam.GetDataPointer<std::vector<TextureArray>>(ParamKey::TextureArrays);
     int       select_layer          = *theParam.GetDataPointer<int>(ParamKey::MapChipLayerSelect);
+    float     scale                 = *theParam.GetDataPointer<float>(ParamKey::ChipScale);
     if (mapchip_array->size() <= 0) {
         return CRectangle(-1, -1, -1, -1);
     }
@@ -256,13 +265,13 @@ CRectangle EditorUtilities::GetChipArea(void) {
     Vector2 tex_size = Vector2(0, 0);
     if (mapchip->IsTextureArray()) {
         for (auto& texture : (*texture_arrays)[tex_no]) {
-            tex_size.x += texture.GetWidth();
-            tex_size.y  = max(texture.GetHeight(),tex_size.y);
+            tex_size.x += (texture.GetWidth() * scale);
+            tex_size.y  = (max(texture.GetHeight(), tex_size.y) * scale);
         }
     }
     else {
         CTexture* texture  = &(*mapchip_texture_array)[tex_no];
-        tex_size = Vector2(texture->GetWidth(), texture->GetHeight());
+        tex_size = Vector2((texture->GetWidth() * scale), (texture->GetHeight() * scale));
     }
     Vector2    scroll     = *theParam.GetDataPointer<Vector2>(ParamKey::ChipScroll);
     CRectangle rect_child = *theImGuiWindowManager.Find(ParamKey::ChipWindowChild);
@@ -283,16 +292,18 @@ CRectangle EditorUtilities::CalcSelectRect(int begin, int end, const Vector2& ch
 }
 
 CRectangle EditorUtilities::CalcSelectTextureRect(int no) {
-    auto select         = theParam.GetDataPointer<std::pair<int, int>>(ParamKey::MapChipSelect);
-    auto texture_arrays = theParam.GetDataPointer<std::vector<TextureArray>>(ParamKey::TextureArrays);
-    auto texture_array  = &(*texture_arrays)[no];
+    auto  select         = theParam.GetDataPointer<std::pair<int, int>>(ParamKey::MapChipSelect);
+    auto  texture_arrays = theParam.GetDataPointer<std::vector<TextureArray>>(ParamKey::TextureArrays);
+    auto  texture_array  = &(*texture_arrays)[no];
+    float scale          = *theParam.GetDataPointer<float>(ParamKey::ChipScale);
     float offset_x = 0;
     for (int i = 0; i < texture_array->size(); i++) {
         auto texture = &(*texture_array)[i];
+        Vector2 tex_size = Vector2((texture->GetWidth() * scale), (texture->GetHeight() * scale));
         if (i == select->first) {
-            return CRectangle(offset_x, 0, offset_x + texture->GetWidth(), (float)texture->GetHeight());
+            return CRectangle(offset_x, 0, offset_x + tex_size.x, tex_size.y);
         }
-        offset_x += texture->GetWidth();
+        offset_x += tex_size.x;
     }
     return CRectangle();
 }

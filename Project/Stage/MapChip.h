@@ -5,6 +5,7 @@ class MapChip {
 private:
 
     bool        _show_flag         { true };
+    bool        _show_no_flag      { false };
     std::string _name              { "mapchip" };
     MofU32      _back_color        { MOF_XRGB(16, 16, 16) };
     int         _texture_no        { -1 };
@@ -40,6 +41,8 @@ public:
 
     bool IsShow(void) const;
     void SetShow(bool b);
+    bool IsShowNo(void) const;
+    void SetShowNo(bool b);
 
     bool IsTextureArray(void) const;
     void SetTextureArray(bool b);

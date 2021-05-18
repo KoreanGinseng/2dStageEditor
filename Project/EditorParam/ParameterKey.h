@@ -26,7 +26,6 @@ namespace ParamKey {
     constexpr char* IconNewFile         = "IconNewFile";
     constexpr char* IconOpenFile        = "IconOpenFile";
     constexpr char* IconSaveFile        = "IconSaveFile";
-    constexpr char* IconExportFile      = "IconExportFile";
     constexpr char* IconUndo            = "IconUndo";
     constexpr char* IconRedo            = "IconRedo";
     constexpr char* IconModeWrite       = "IconModeWrite";
@@ -34,6 +33,11 @@ namespace ParamKey {
     constexpr char* OpenFile            = "OpenFile";
     constexpr char* Stage               = "Stage";
     constexpr char* TextureArrays       = "TextureArrays";
+    constexpr char* ChipScale           = "ChipScale";
+    constexpr char* EditScale           = "EditScale";
+    constexpr char* DefaultCreate       = "DefaultCreate";
+    constexpr char* NumFont             = "NumFont";
+    constexpr char* EditFontColor       = "EditFontColor";
     
     using Type = const char*;
 #else
@@ -62,7 +66,6 @@ namespace ParamKey {
         IconNewFile        ,
         IconOpenFile       ,
         IconSaveFile       ,
-        IconExportFile     ,
         IconUndo           ,
         IconRedo           ,
         IconModeWrite      ,
@@ -70,6 +73,11 @@ namespace ParamKey {
         OpenFile           ,
         Stage              ,
         TextureArrays      ,
+        ChipScale          ,
+        EditScale          ,
+        DefaultCreate      ,
+        NumFont            ,
+        EditFontColor      ,
     };
     using Type = int;
 #endif

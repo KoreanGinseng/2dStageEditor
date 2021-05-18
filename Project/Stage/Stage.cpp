@@ -1,4 +1,7 @@
+#include <fstream>
+
 #include "Stage.h"
+#include "Parser/TextParser.h"
 
 Stage::Stage(void) {
 }
@@ -7,21 +10,24 @@ Stage::~Stage(void) {
 }
 
 bool Stage::Load(const std::string& file) {
-    MapChip tmp;
-    tmp.SetTextureNo(0);
-    //tmp.LoadTexture("mapchip/01Background.png");
-    tmp.SetChipSize(Vector2(16, 16));
-    tmp.Create(100, 100);
-    for (int y = 0; y < 12; y++) {
-        for (int i = 0; i < 14; i++) {
-            tmp.SetMapChip(i, y, y * 14 + i + 1);
-        }
+
+    std::ifstream ifs(file);
+    std::string str((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+    std::string ext = file.substr(file.find_last_of('.'), file.length());
+    ParserPtr parser;
+    if (ext == ".txt") {
+        parser = std::make_shared<TextParser>();
     }
-    _mapchip_array.push_back(std::move(tmp));
-    CTexture texture;
-    texture.Load("mapchip\\Tileset.png");
-    _mapchip_texture_array.push_back(std::move(texture));
-    return true;
+    if (parser) {
+        ParseData data;
+        data.mapchip_array         = &_mapchip_array;
+        data.mapchip_texture_array = &_mapchip_texture_array;
+        data.texture_arrays        = &_texture_arrays;
+        data.background_array      = &_background_array;
+        data.collisionrect_array   = &_collisionrect_array;
+        return parser->Parse(str, &data);
+    }
+    return false;
 }
 
 void Stage::Initialize(void) {

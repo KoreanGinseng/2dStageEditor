@@ -20,7 +20,6 @@ public:
     static bool SaveProject(void);
     static bool SaveAsProject(void);
     static bool Close(void);
-    static bool Export(void);
     static void Quit(void);
 
     static void OpenManual(void);
