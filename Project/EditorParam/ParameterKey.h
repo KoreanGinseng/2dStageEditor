@@ -36,7 +36,6 @@ namespace ParamKey {
     constexpr char* ChipScale           = "ChipScale";
     constexpr char* EditScale           = "EditScale";
     constexpr char* DefaultCreate       = "DefaultCreate";
-    constexpr char* NumFont             = "NumFont";
     constexpr char* EditFontColor       = "EditFontColor";
     
     using Type = const char*;
@@ -76,7 +75,6 @@ namespace ParamKey {
         ChipScale          ,
         EditScale          ,
         DefaultCreate      ,
-        NumFont            ,
         EditFontColor      ,
     };
     using Type = int;

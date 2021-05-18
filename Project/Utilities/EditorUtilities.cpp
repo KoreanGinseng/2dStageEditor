@@ -333,3 +333,31 @@ std::vector<int> EditorUtilities::GetSelectChips(int begin, int end, int xcnt)  
     }
     return v;
 }
+
+int EditorUtilities::GetImGuiDefWindowFlag(void) {
+    const int flags =
+        ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove          |
+        ImGuiWindowFlags_NoResize   | ImGuiWindowFlags_NoSavedSettings ;
+    return flags;
+}
+
+int EditorUtilities::GetImGuiAlwaysScrollWindowFlag(void) {
+    int flags = GetImGuiDefWindowFlag();
+    flags |= ImGuiWindowFlags_AlwaysVerticalScrollbar;
+    flags |= ImGuiWindowFlags_AlwaysHorizontalScrollbar;
+    return flags;
+}
+
+void EditorUtilities::RenderGrid(const Vector2& offset_pos, const Vector2& max_size, const Vector2& chip_size, const Vector2& scroll) {
+    if (chip_size.x <= 0 || chip_size.y <= 0) {
+        return;
+    }
+    float end_y = max_size.y + offset_pos.y - scroll.y;
+    float end_x = max_size.x + offset_pos.x - scroll.x;
+    for (float y = offset_pos.y - scroll.y; y <= end_y; y += chip_size.y) {
+        CGraphicsUtilities::RenderLine(offset_pos.x, y, end_x, y, MOF_COLOR_WHITE);
+    }
+    for (float x = offset_pos.x - scroll.x; x <= end_x; x += chip_size.x) {
+        CGraphicsUtilities::RenderLine(x, offset_pos.y, x, end_y, MOF_COLOR_WHITE);
+    }
+}

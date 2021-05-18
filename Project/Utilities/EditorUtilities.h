@@ -65,5 +65,10 @@ public:
     static bool ColorPicker(MofU32& color);
 
     static std::vector<int> GetSelectChips(int begin, int end, int xcnt);
+
+    static int GetImGuiDefWindowFlag(void);
+    static int GetImGuiAlwaysScrollWindowFlag(void);
+
+    static void RenderGrid(const Vector2& offset_pos, const Vector2& max_size, const Vector2& chip_size, const Vector2& scroll);
 };
 

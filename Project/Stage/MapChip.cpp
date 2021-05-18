@@ -115,3 +115,22 @@ bool MapChip::IsTextureArray(void) const {
 void MapChip::SetTextureArray(bool b) {
     _texture_array_flag = b;
 }
+
+CRectangle MapChip::GetChipViewRect(int chip_no, int chip_x) {
+    if (!_texture_array_flag) {
+        return CRectangle (
+            _chip_size.x * (chip_no % chip_x),
+            _chip_size.y * (chip_no / chip_x),
+            _chip_size.x * (chip_no % chip_x + 1),
+            _chip_size.y * (chip_no / chip_x + 1)
+        );
+    }
+    if (_chip_view_rect == CRectangle()) {
+        _chip_view_rect.SetValue(0, 0, _chip_size.x, _chip_size.y);
+    }
+    return _chip_view_rect;
+}
+
+CRectangle MapChip::SetChipViewRect(const CRectangle& rect) {
+    return _chip_view_rect = rect;
+}

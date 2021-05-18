@@ -50,7 +50,6 @@ std::string              open_file = ".txt";
 
 #include "Stage/Parser/TextParser.h"
 std::function<void(void)> def_create;
-CFont                     num_font;
 
 void default_create(void) {
     MapChip mapchip_layer;
@@ -113,10 +112,7 @@ MofBool CGameApp::Initialize(void) {
     theParam.Register(ParamKey::Stage              , &stage                            );
     theParam.Register(ParamKey::TextureArrays      , stage.GetTextureArraysPointer()   );
     theParam.Register(ParamKey::DefaultCreate      , &def_create                       );
-    theParam.Register(ParamKey::NumFont            , &num_font                         );
     theParam.Register(ParamKey::EditFontColor      , &edit_font_color                  );
-
-    num_font.Create();
     
     //open_file = "asaa";
     if (open_file != ".txt" && open_file.length()) {
@@ -246,8 +242,6 @@ MofBool CGameApp::Release(void) {
     ToolIcon::Release();
 
     stage.Release();
-
-    num_font.Release();
 
     return TRUE;
 }
