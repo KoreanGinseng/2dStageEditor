@@ -16,9 +16,9 @@ private:
     void ShowTextureData(MapChip* mapchip);
     void ShowDummyArea(MapChip* mapchip);
 
-    void RenderTexture(CTexture* texture, const Vector2& render_pos);
-    void RenderGrid(const Vector2& render_pos, const Vector2& tex_size, const Vector2& chip_size);
-    void RenderSelectRect(const Vector2& render_pos, const Vector2& tex_size, const Vector2& chip_size);
+    void RenderTexture(float px, float py, CTexture* texture);
+    void RenderGrid(float px, float py, const Vector2& max_size, const Vector2& chip_size);
+    void RenderSelectRect(float px, float py, const Vector2& tex_size, const Vector2& chip_size);
 
 public:
     

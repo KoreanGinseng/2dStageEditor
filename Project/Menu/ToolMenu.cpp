@@ -38,11 +38,7 @@ void ToolMenu::Show(void) {
         if (ImGui::ImageButton(ToolIcon::GetTexture(ParamKey::IconSaveFile), size)) {
             MainMenu::SaveProject();
         }ImGui::SameLine();
-        ImGui::Dummy(ImVec2(size.x * 0.5f, size.y)); ImGui::SameLine();
-        if (ImGui::ImageButton(ToolIcon::GetTexture(ParamKey::IconExportFile), size)) {
-            MainMenu::Export();
-        }ImGui::SameLine();
-        ImGui::Dummy(ImVec2(size.x * 0.5f, size.y)); ImGui::SameLine();
+        ImGui::Dummy(ImVec2(size.x * 2.5f, size.y)); ImGui::SameLine();
         if (ImGui::ImageButton(ToolIcon::GetTexture(ParamKey::IconUndo), size)) {
             theCommandManager.Undo();
         }ImGui::SameLine();

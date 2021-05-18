@@ -23,13 +23,15 @@ private:
 
     void ShowDummyArea(void);
 
-    void RenderbackGround(float px, float py, const Vector2& max_area);
+    void RenderbackGround(const Vector2& offset_pos, const Vector2& max_area);
 
-    void RenderGrid(float px, float py, const Vector2& max_size, const Vector2& chip_size);
+    void RenderChips(const Vector2& offset_pos);
+    void RenderMapChip(const Vector2& offset_pos, MapChip* mapchip, MofU32 color);
+    void RenderItems(const Vector2& offset_pos, MapChip* mapchip, MofU32 color);
+    void RenderErrorRect(MapChip* mapchip, const Vector2& render_pos);
+    void RenderNumRect(int chip_no, const Vector2& render_pos, const Vector2& chip_size);
 
-    void RenderChips(float px, float py);
-
-    void RenderSelectRect(float px, float py, const std::pair<int, int>& select_chips, const Vector2& select_pos, const Vector2& chip_size, const Vector2& tex_size);
+    void RenderSelectRect(const Vector2& offset_pos, const std::pair<int, int>& select_chips, const Vector2& select_pos, const Vector2& chip_size, const Vector2& tex_size);
 
 public:
 

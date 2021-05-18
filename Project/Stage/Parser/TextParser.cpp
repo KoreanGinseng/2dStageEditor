@@ -73,7 +73,7 @@ bool TextParser::Parse(const std::string& buffer, ParseData* out) {
             enemy_layer.SetMapChip(x, y, get_int(buffer, index));
         }
     }
-    enemy_layer.SetName("enemy_layer");
+    enemy_layer.SetName("enemy");
     out->mapchip_array->push_back(std::move(enemy_layer));
 
     if (buffer.length() <= index) {
@@ -105,7 +105,7 @@ bool TextParser::Parse(const std::string& buffer, ParseData* out) {
             item_layer.SetMapChip(x, y, get_int(buffer, index));
         }
     }
-    item_layer.SetName("item_layer");
+    item_layer.SetName("item");
     out->mapchip_array->push_back(std::move(item_layer));
     return true;
 }

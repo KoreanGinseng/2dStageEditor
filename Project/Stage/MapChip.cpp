@@ -100,10 +100,37 @@ void MapChip::SetShow(bool b) {
     _show_flag = b;
 }
 
+bool MapChip::IsShowNo(void) const {
+    return _show_no_flag;
+}
+
+void MapChip::SetShowNo(bool b) {
+    _show_no_flag = b;
+}
+
 bool MapChip::IsTextureArray(void) const {
     return _texture_array_flag;
 }
 
 void MapChip::SetTextureArray(bool b) {
     _texture_array_flag = b;
+}
+
+CRectangle MapChip::GetChipViewRect(int chip_no, int chip_x) {
+    if (!_texture_array_flag) {
+        return CRectangle (
+            _chip_size.x * (chip_no % chip_x),
+            _chip_size.y * (chip_no / chip_x),
+            _chip_size.x * (chip_no % chip_x + 1),
+            _chip_size.y * (chip_no / chip_x + 1)
+        );
+    }
+    if (_chip_view_rect == CRectangle()) {
+        _chip_view_rect.SetValue(0, 0, _chip_size.x, _chip_size.y);
+    }
+    return _chip_view_rect;
+}
+
+CRectangle MapChip::SetChipViewRect(const CRectangle& rect) {
+    return _chip_view_rect = rect;
 }

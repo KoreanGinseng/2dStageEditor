@@ -13,12 +13,16 @@ private:
     int                         _select_background_layer;
     int                         _select_collision_layer;
 
+    // LayerTab
     void ShowMapChipLayerTab(void);
-    void ShowBackgroundLayerTab(void);
-    void ShowCollisionLayerTab(void);
-    void ShowColorEditTab(void);
+    void ShowLayerInfo(void);
+    void ShowBackGround(void);
+    void LoadBackGroundTexture(void);
+    void RemoveBackGroundTexture(void);
+    void ShowMapData(void);
+    void ShowChipBackColor(void);
 
-    void ShowAddLayerModal(void);
+    void ShowColorEditTab(void);
 
 public:
 
