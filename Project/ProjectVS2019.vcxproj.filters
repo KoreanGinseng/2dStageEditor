@@ -126,6 +126,9 @@
     <ClCompile Include="Stage\Parser\OriginalParser.cpp">
       <Filter>ソース ファイル\Stage\Parser</Filter>
     </ClCompile>
+    <ClCompile Include="Command\WriteChipCommand.cpp">
+      <Filter>ソース ファイル\Command</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameApp.h">
@@ -205,6 +208,9 @@
     </ClInclude>
     <ClInclude Include="Stage\Exporter\TextExporter.h">
       <Filter>ヘッダー ファイル\Stage\Exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="Command\WriteChipCommand.h">
+      <Filter>ヘッダー ファイル\Command</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -18,7 +18,7 @@ private:
 
     void RenderTexture(float px, float py, CTexture* texture);
     void RenderGrid(float px, float py, const Vector2& max_size, const Vector2& chip_size);
-    void RenderSelectRect(float px, float py, const Vector2& tex_size, const Vector2& chip_size);
+    void RenderSelectRect(float px, float py, const Vector2& tex_size_def, const Vector2& chip_size_def);
 
 public:
     

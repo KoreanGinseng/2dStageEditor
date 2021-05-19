@@ -158,8 +158,8 @@ void MapChipWindow::RenderGrid(float px, float py, const Vector2& max_size, cons
     CGraphicsUtilities::RenderLine(max_size.x + px - _scroll.x, py, max_size.x + px - _scroll.x, max_size.y + py - _scroll.y, MOF_COLOR_WHITE);
 }
 
-void MapChipWindow::RenderSelectRect(float px, float py, const Vector2& tex_size, const Vector2& chip_size) {
-    auto select_rect = EditorUtilities::CalcSelectRect(_select_chips.first, _select_chips.second, chip_size, tex_size);
+void MapChipWindow::RenderSelectRect(float px, float py, const Vector2& tex_size_def, const Vector2& chip_size_def) {
+    auto select_rect = EditorUtilities::CalcSelectRect(_select_chips.first, _select_chips.second, chip_size_def, tex_size_def, _scale);
     select_rect.Translation(Vector2(px - _scroll.x, py - _scroll.y));
     CGraphicsUtilities::RenderRect(select_rect, MOF_COLOR_RED);
 }
@@ -312,13 +312,15 @@ void MapChipWindow::Render(void) {
         CTexture* texture = &(*_mapchip_texture_array)[tex_no];
         RenderTexture(chip_child_rect.Left, chip_child_rect.Top, texture);
 
-        Vector2 tex_size  = Vector2((texture->GetWidth() * _scale), (texture->GetHeight() * _scale));
-        Vector2 chip_size = Vector2((mapchip->GetChipSize().x * _scale), (mapchip->GetChipSize().y * _scale));
+        const auto  tex_size_def  = Vector2((float)texture->GetWidth(), (float)texture->GetHeight());
+        const auto  tex_size      = tex_size_def * _scale;
+        const auto& chip_size_def = mapchip->GetChipSize();
+        const auto  chip_size     = chip_size_def * _scale;
         if (*theParam.GetDataPointer<bool>(ParamKey::ChipGridFlag)) {
             RenderGrid(chip_child_rect.Left, chip_child_rect.Top, tex_size, chip_size);
         }
         if (EditorUtilities::IsWriteMode()) {
-            RenderSelectRect(chip_child_rect.Left, chip_child_rect.Top, tex_size, chip_size);
+            RenderSelectRect(chip_child_rect.Left, chip_child_rect.Top, tex_size_def, chip_size_def);
         }
     }
     

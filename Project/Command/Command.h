@@ -28,11 +28,5 @@ public:
     /// 内部データ登録
     /// </summary>
     virtual void Register(void) = 0;
-
-    /// <summary>
-    /// 名前の取得
-    /// </summary>
-    /// <return>コマンド名</return>
-    virtual const char* GetName(void) const = 0;
 };
 

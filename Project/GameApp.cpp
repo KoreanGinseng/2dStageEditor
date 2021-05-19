@@ -183,10 +183,11 @@ MofBool CGameApp::Update(void) {
     if (is_ctrl_hold && g_pInput->IsKeyPush(MOFKEY_I)) {
         MainMenu::Version();
     }
-    if (g_pInput->IsKeyPush(MOFKEY_W)) {
+    bool is_not_mouse_hold = (!g_pInput->IsMouseKeyHold(MOFMOUSE_LBUTTON) && !g_pInput->IsMouseKeyHold(MOFMOUSE_RBUTTON));
+    if (is_not_mouse_hold && g_pInput->IsKeyPush(MOFKEY_W)) {
         write_mode_flag = true;
     }
-    if (g_pInput->IsKeyPush(MOFKEY_E)) {
+    if (is_not_mouse_hold && g_pInput->IsKeyPush(MOFKEY_E)) {
         write_mode_flag = false;
     }
 

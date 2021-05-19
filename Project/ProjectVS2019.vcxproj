@@ -101,6 +101,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Command\WriteChipCommand.cpp" />
     <ClCompile Include="GameApp.cpp" />
     <ClCompile Include="Manager\CommandManager.cpp" />
     <ClCompile Include="Manager\ImGuiWindowManager.cpp" />
@@ -124,6 +125,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Command\Command.h" />
+    <ClInclude Include="Command\WriteChipCommand.h" />
     <ClInclude Include="EditorParam\EditorParameter.h" />
     <ClInclude Include="EditorParam\ParameterKey.h" />
     <ClInclude Include="GameApp.h" />

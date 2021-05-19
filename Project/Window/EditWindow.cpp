@@ -4,21 +4,23 @@
 #include "../EditorParam/EditorParameter.h"
 #include "../Utilities/EditorUtilities.h"
 #include "../Manager/ImGuiWindowManager.h"
+#include "../Manager/CommandManager.h"
+#include "../Command/WriteChipCommand.h"
 
 /// /////////////////////////////////////////////////////////////
 /// <summary>
 /// ÉyÉìÉÇÅ[Éh
 /// </summary>
 void EditWindow::UpdateWriteMode(MapChip* mapchip) {
-    if (!g_pInput->IsMouseKeyHold(MOFMOUSE_LBUTTON) && !g_pInput->IsMouseKeyHold(MOFMOUSE_RBUTTON)) {
-        return;
-    }
     if (EditorUtilities::IsNoEditAreaHold()) {
         return;
     }
     const auto& select_pos = GetEditPos();
     if (select_pos == Vector2(-1, -1)) {
         return;
+    }
+    if (_write_chip_command == nullptr) {
+        _write_chip_command = std::make_shared<WriteChipCommand>(mapchip);
     }
     const int   tex_no       = mapchip->GetTextureNo();
     const auto& chip_size    = mapchip->GetChipSize();
@@ -33,7 +35,7 @@ void EditWindow::UpdateWriteMode(MapChip* mapchip) {
     const int   xcnt         = (int)(tex_size.x / chip_size.x);
     const auto& select_chip  = *theParam.GetDataPointer<std::pair<int, int>>(ParamKey::MapChipSelect);
     const auto& selects      = EditorUtilities::GetSelectChips(select_chip.first, select_chip.second, xcnt);
-    const auto& select_rect  = EditorUtilities::CalcSelectRect(select_chip.first, select_chip.second, chip_size, tex_size);
+    const auto& select_rect  = EditorUtilities::CalcSelectRect(select_chip.first, select_chip.second, chip_size, tex_size, 1.0f);
     const int   cnt          = selects.size();
     const int   select_x_cnt = select_rect.GetWidth()  / chip_size.x;
     const int   select_y_cnt = select_rect.GetHeight() / chip_size.y;
@@ -68,7 +70,7 @@ void EditWindow::UpdateEraseMode(MapChip* mapchip) {
         const auto& select_pos   = GetEditPos();
         const int   xcnt         = (int)(array_size.x);
         const auto& selects      = EditorUtilities::GetSelectChips(select_chips->first, select_chips->second, xcnt);
-        const auto& select_rect  = EditorUtilities::CalcSelectRect(select_chips->first, select_chips->second, chip_size, tex_size);
+        const auto& select_rect  = EditorUtilities::CalcSelectRect(select_chips->first, select_chips->second, chip_size, tex_size, 1.0f);
         const int   cnt          = selects.size();
         const int   select_x_cnt = select_rect.GetWidth()  / chip_size.x;
         const int   select_y_cnt = select_rect.GetHeight() / chip_size.y;
@@ -261,13 +263,13 @@ void EditWindow::RenderNumRect(int chip_no, const Vector2& render_pos, const Vec
     CGraphicsUtilities::RenderRect(no_rect, col);
 }
 
-void EditWindow::RenderSelectRect(const Vector2& offset_pos, const std::pair<int, int>& select_chips, const Vector2& select_pos, const Vector2& chip_size, const Vector2& tex_size) {
-    auto      select_rect = EditorUtilities::CalcSelectRect(select_chips.first, select_chips.second, chip_size, tex_size);
-    const int chip_x      = (int)(tex_size.x / chip_size.x);
+void EditWindow::RenderSelectRect(const Vector2& offset_pos, const std::pair<int, int>& select_chips, const Vector2& select_pos, const Vector2& chip_size_def, const Vector2& tex_size_def) {
+    auto      select_rect = EditorUtilities::CalcSelectRect(select_chips.first, select_chips.second, chip_size_def, tex_size_def, _scale);
+    const int chip_x      = (int)(tex_size_def.x / chip_size_def.x);
     select_rect.Translation(
         Vector2(
-            offset_pos.x - _scroll.x + (select_pos.x * chip_size.x) - (select_chips.first % chip_x) * chip_size.x,
-            offset_pos.y - _scroll.y + (select_pos.y * chip_size.y) - (select_chips.first / chip_x) * chip_size.y
+            offset_pos.x - _scroll.x + (select_pos.x * chip_size_def.x * _scale) - (select_chips.first % chip_x) * chip_size_def.x * _scale,
+            offset_pos.y - _scroll.y + (select_pos.y * chip_size_def.y * _scale) - (select_chips.first / chip_x) * chip_size_def.y * _scale
         )
     );
     CGraphicsUtilities::RenderRect(select_rect, MOF_COLOR_RED);
@@ -313,6 +315,14 @@ void EditWindow::Update(void) {
     }
 
     auto mapchip = &(*_mapchip_array)[*_select_chip_layer];
+
+    if (!g_pInput->IsMouseKeyHold(MOFMOUSE_LBUTTON) && !g_pInput->IsMouseKeyHold(MOFMOUSE_RBUTTON)) {
+        if (_write_chip_command) {
+            theCommandManager.Register(std::move(_write_chip_command));
+            _write_chip_command = nullptr;
+        }
+        return;
+    }
     if (EditorUtilities::IsWriteMode()) {
         UpdateWriteMode(mapchip);
     }
@@ -383,15 +393,21 @@ void EditWindow::Render(void) {
     auto select_pos = GetEditPos();
     if (select_pos != Vector2(-1, -1) && !EditorUtilities::IsNoEditAreaHold() && !_preview_flag) {
         const auto select_chips = *theParam.GetDataPointer<std::pair<int, int>>(ParamKey::MapChipSelect);
-        auto       tex_size     = chip_size;
+        const int  tex_no       = mapchip->GetTextureNo();
+        auto       tex_size_def = mapchip->GetChipSize();
+        if (tex_no >= 0 && !mapchip->IsTextureArray()) {
+            const auto texture = &(*_mapchip_texture_array)[tex_no];
+            tex_size_def = Vector2((float)texture->GetWidth(), (float)texture->GetHeight());
+        }
         if (!EditorUtilities::IsWriteMode()) {
-            tex_size = max_size;
+            tex_size_def = max_size;
             if (g_pInput->IsMouseKeyHold(MOFMOUSE_RBUTTON)) {
                 select_pos.x = select_chips.first % (int)array_size.x;
                 select_pos.y = select_chips.first / (int)array_size.x;
             }
         }
-        RenderSelectRect(offset_pos, select_chips, select_pos, chip_size, tex_size);
+        RenderSelectRect(offset_pos, select_chips, select_pos, mapchip->GetChipSize(), tex_size_def);
+        MOF_PRINTLOG("%d, %d\n", select_chips.first, select_chips.second);
     }
 
     g_pGraphics->SetStencilEnable(FALSE);

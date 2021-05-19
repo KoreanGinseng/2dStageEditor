@@ -282,12 +282,13 @@ CRectangle EditorUtilities::GetChipArea(void) {
     );
 }
 
-CRectangle EditorUtilities::CalcSelectRect(int begin, int end, const Vector2& chip_size, const Vector2& tex_size) {
+CRectangle EditorUtilities::CalcSelectRect(int begin, int end, const Vector2& chip_size_def, const Vector2& tex_size_def, float scale) {
+    const auto chip_size = chip_size_def * scale;
     return CRectangle(
-        (begin % (int)(tex_size.x / chip_size.x)) * chip_size.x,
-        (begin / (int)(tex_size.x / chip_size.x)) * chip_size.y,
-        (end   % (int)(tex_size.x / chip_size.x)) * chip_size.x + chip_size.x,
-        (end   / (int)(tex_size.x / chip_size.x)) * chip_size.y + chip_size.y
+        (begin % (int)(tex_size_def.x / chip_size_def.x)) * chip_size.x,
+        (begin / (int)(tex_size_def.x / chip_size_def.x)) * chip_size.y,
+        (end   % (int)(tex_size_def.x / chip_size_def.x)) * chip_size.x + chip_size.x,
+        (end   / (int)(tex_size_def.x / chip_size_def.x)) * chip_size.y + chip_size.y
     );
 }
 

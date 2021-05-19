@@ -60,7 +60,7 @@ public:
     static CRectangle GetEditArea(void);
     static CRectangle GetChipArea(void);
 
-    static CRectangle CalcSelectRect(int begin, int end, const Vector2& chip_size, const Vector2& tex_size);
+    static CRectangle CalcSelectRect(int begin, int end, const Vector2& chip_size_def, const Vector2& tex_size_def, float scale);
     static CRectangle CalcSelectTextureRect(int no);
     static bool ColorPicker(MofU32& color);
 
