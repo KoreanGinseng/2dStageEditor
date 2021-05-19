@@ -101,7 +101,10 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Command\WriteChipCommand.cpp" />
+    <ClCompile Include="Command\AddTextureArrayCommand.cpp" />
+    <ClCompile Include="Command\AddTextureCommand.cpp" />
+    <ClCompile Include="Command\EditChipCommand.cpp" />
+    <ClCompile Include="Command\RemoveTextureCommand.cpp" />
     <ClCompile Include="GameApp.cpp" />
     <ClCompile Include="Manager\CommandManager.cpp" />
     <ClCompile Include="Manager\ImGuiWindowManager.cpp" />
@@ -124,8 +127,11 @@
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Command\AddTextureArrayCommand.h" />
+    <ClInclude Include="Command\AddTextureCommand.h" />
     <ClInclude Include="Command\Command.h" />
-    <ClInclude Include="Command\WriteChipCommand.h" />
+    <ClInclude Include="Command\EditChipCommand.h" />
+    <ClInclude Include="Command\RemoveTextureCommand.h" />
     <ClInclude Include="EditorParam\EditorParameter.h" />
     <ClInclude Include="EditorParam\ParameterKey.h" />
     <ClInclude Include="GameApp.h" />

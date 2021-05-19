@@ -5,7 +5,7 @@
 #include "../Utilities/EditorUtilities.h"
 #include "../Manager/ImGuiWindowManager.h"
 #include "../Manager/CommandManager.h"
-#include "../Command/WriteChipCommand.h"
+#include "../Command/EditChipCommand.h"
 
 /// /////////////////////////////////////////////////////////////
 /// <summary>
@@ -19,8 +19,8 @@ void EditWindow::UpdateWriteMode(MapChip* mapchip) {
     if (select_pos == Vector2(-1, -1)) {
         return;
     }
-    if (_write_chip_command == nullptr) {
-        _write_chip_command = std::make_shared<WriteChipCommand>(mapchip);
+    if (_edit_chip_command == nullptr) {
+        _edit_chip_command = std::make_shared<EditChipCommand>(mapchip);
     }
     const int   tex_no       = mapchip->GetTextureNo();
     const auto& chip_size    = mapchip->GetChipSize();
@@ -63,6 +63,9 @@ void EditWindow::UpdateEraseMode(MapChip* mapchip) {
     }
     const auto& select_chips = theParam.GetDataPointer<std::pair<int, int>>(ParamKey::MapChipSelect);
     if (g_pInput->IsMouseKeyHold(MOFMOUSE_LBUTTON)) {
+        if (_edit_chip_command == nullptr) {
+            _edit_chip_command = std::make_shared<EditChipCommand>(mapchip);
+        }
 
         const auto& array_size   = mapchip->GetArraySize();
         const auto& chip_size    = mapchip->GetChipSize();
@@ -317,9 +320,9 @@ void EditWindow::Update(void) {
     auto mapchip = &(*_mapchip_array)[*_select_chip_layer];
 
     if (!g_pInput->IsMouseKeyHold(MOFMOUSE_LBUTTON) && !g_pInput->IsMouseKeyHold(MOFMOUSE_RBUTTON)) {
-        if (_write_chip_command) {
-            theCommandManager.Register(std::move(_write_chip_command));
-            _write_chip_command = nullptr;
+        if (_edit_chip_command) {
+            theCommandManager.Register(std::move(_edit_chip_command));
+            _edit_chip_command = nullptr;
         }
         return;
     }

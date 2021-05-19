@@ -1,6 +1,8 @@
 #pragma once
 #include <memory>
 #include <vector>
+#include <string>
+#include <sstream>
 
 // 前方宣言
 class ICommand;
@@ -28,5 +30,11 @@ public:
     /// 内部データ登録
     /// </summary>
     virtual void Register(void) = 0;
+
+    /// <summary>
+    /// ログ文字列の取得
+    /// </summary>
+    /// <returns>ログ文字列</returns>
+    virtual std::string GetLog(void) const = 0;
 };
 

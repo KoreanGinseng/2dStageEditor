@@ -5,6 +5,7 @@
 #include <atlstr.h>
 #pragma comment(lib, "version.lib")
 
+#include "FileDialog.h"
 #include "EditorUtilities.h"
 #include "../Window/WindowDefine.h"
 #include "../Stage/Stage.h"
@@ -361,4 +362,12 @@ void EditorUtilities::RenderGrid(const Vector2& offset_pos, const Vector2& max_s
     for (float x = offset_pos.x - scroll.x; x <= end_x; x += chip_size.x) {
         CGraphicsUtilities::RenderLine(x, offset_pos.y, x, end_y, MOF_COLOR_WHITE);
     }
+}
+
+bool EditorUtilities::OpenTextureFileDialog(const std::string& title, char* path, bool* array_flag) {
+    bool b = false;
+    return FileDialog::Open(g_pMainWindow->GetWindowHandle(), FileDialog::Mode::Open,
+        title.c_str(),
+        "‰æ‘œ ƒtƒ@ƒCƒ‹\0*.png;*.bmp;*.dds\0all file(*.*)\0*.*\0\0",
+        "png\0bmp\0dds", path, (array_flag == nullptr ? b : *array_flag));
 }

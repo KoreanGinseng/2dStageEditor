@@ -70,5 +70,7 @@ public:
     static int GetImGuiAlwaysScrollWindowFlag(void);
 
     static void RenderGrid(const Vector2& offset_pos, const Vector2& max_size, const Vector2& chip_size, const Vector2& scroll);
+
+    static bool OpenTextureFileDialog(const std::string& title, char* path, bool* array_flag = nullptr);
 };
 

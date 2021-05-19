@@ -17,7 +17,7 @@ private:
     float                       _scale;
     bool                        _preview_flag;
 
-    CommandPtr                  _write_chip_command;
+    CommandPtr                  _edit_chip_command;
 
     void UpdateWriteMode(MapChip* mapchip);
     void UpdateEraseMode(MapChip* mapchip);
