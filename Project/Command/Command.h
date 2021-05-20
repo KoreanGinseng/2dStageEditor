@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <iomanip>
 
 // ‘O•ûéŒ¾
 class ICommand;

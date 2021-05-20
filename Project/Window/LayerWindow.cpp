@@ -6,6 +6,9 @@
 #include "../Utilities/EditorUtilities.h"
 #include "../Utilities/FileDialog.h"
 #include "../Manager/ImGuiWindowManager.h"
+#include "../Manager/CommandManager.h"
+#include "../Command/AddTextureCommand.h"
+#include "../Command/RemoveTextureCommand.h"
 
 /// /////////////////////////////////////////////////////////////
 /// <summary>

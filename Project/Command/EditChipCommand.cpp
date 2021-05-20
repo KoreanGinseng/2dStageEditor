@@ -53,7 +53,6 @@ void EditChipCommand::Register(void) {
 std::string EditChipCommand::GetLog(void) const {
 	std::stringstream log;
 	log << "EditChipCommand\n";
-
 	const int ycnt = _chip_data_next.size();
 	for (int y = 0; y < ycnt; y++) {
 		const int xcnt = _chip_data_next[y].size();
@@ -61,9 +60,26 @@ std::string EditChipCommand::GetLog(void) const {
 			int prev = _chip_data_prev[y][x];
 			int next = _chip_data_next[y][x];
 			if (prev != next) {
-				log << "[" << x << "," << y << "]" << prev << "->" << next << "\n";
+				log << _chip_pointer->GetName();
+				log << "["  << std::setw(3) << x << "," << std::setw(3) << y << "]";
+				log << prev << "->" << next << "\n";
 			}
 		}
 	}
 	return log.str();
+}
+
+bool EditChipCommand::IsChange(void) const {
+	const int ycnt = _chip_data_next.size();
+	for (int y = 0; y < ycnt; y++) {
+		const int xcnt = _chip_data_next[y].size();
+		for (int x = 0; x < xcnt; x++) {
+			int prev = _chip_data_prev[y][x];
+			int next = _chip_pointer->GetMapChip(x, y);
+			if (prev != next) {
+				return true;
+			}
+		}
+	}
+	return false;
 }

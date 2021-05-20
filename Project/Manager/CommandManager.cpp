@@ -91,3 +91,11 @@ bool CommandManager::IsUndo(void) const {
 bool CommandManager::IsRedo(void) const {
     return (_redo_list.size() > 0);
 }
+
+const CommandList& CommandManager::GetExecList(void) const {
+    return _exec_list;
+}
+
+const CommandList& CommandManager::GetRedoList(void) const {
+    return _redo_list;
+}

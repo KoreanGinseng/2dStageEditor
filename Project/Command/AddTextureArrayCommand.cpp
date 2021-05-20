@@ -105,7 +105,11 @@ void AddTextureArrayCommand::Register(void) {
 std::string AddTextureArrayCommand::GetLog(void) const {
     std::stringstream log;
     log << "AddTextureArrayCommand\n";
-    log << "tex_no : " << _tex_no << "\n";
-    log << "";
-    return std::string();
+    log << "tex_no : "       << _tex_no                          << "\n";
+    log << "array_flag : "   << (_array_flag ? "true" : "false") << "\n";
+    log << "insert_point : " << _insert_point                    << "\n";
+    for (auto& it : _path_array) {
+        log << "path : " << it << "\n";
+    }
+    return log.str();
 }

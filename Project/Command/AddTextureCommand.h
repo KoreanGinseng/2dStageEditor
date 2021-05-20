@@ -29,5 +29,11 @@ public:
     /// </summary>
     virtual void Register(void) override;
 
+    /// <summary>
+    /// ƒƒO•¶š—ñ‚Ìæ“¾
+    /// </summary>
+    /// <returns>ƒƒO•¶š—ñ</returns>
+    virtual std::string GetLog(void) const override;
+
 };
 

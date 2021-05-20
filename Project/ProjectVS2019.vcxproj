@@ -123,6 +123,7 @@
     <ClCompile Include="Utilities\ToolIcon.cpp" />
     <ClCompile Include="Window\EditWindow.cpp" />
     <ClCompile Include="Window\LayerWindow.cpp" />
+    <ClCompile Include="Window\LogWindow.cpp" />
     <ClCompile Include="Window\MapChipWindow.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
@@ -155,6 +156,7 @@
     <ClInclude Include="Utilities\ToolIcon.h" />
     <ClInclude Include="Window\EditWindow.h" />
     <ClInclude Include="Window\LayerWindow.h" />
+    <ClInclude Include="Window\LogWindow.h" />
     <ClInclude Include="Window\MapChipWindow.h" />
     <ClInclude Include="Window\WindowDefine.h" />
   </ItemGroup>

@@ -35,5 +35,7 @@ public:
     /// </summary>
     /// <returns>ƒƒO•¶š—ñ</returns>
     virtual std::string GetLog(void) const override;
+
+    bool IsChange(void) const;
 };
 

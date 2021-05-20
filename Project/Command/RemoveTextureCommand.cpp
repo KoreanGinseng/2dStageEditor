@@ -36,3 +36,10 @@ void RemoveTextureCommand::Undo(void) {
 
 void RemoveTextureCommand::Register(void) {
 }
+
+std::string RemoveTextureCommand::GetLog(void) const {
+    std::stringstream log;
+    log << "RemoveTextureCommand\n";
+    log << "remove_name : " + _remove_name << "\n";
+    return log.str();
+}

@@ -25,11 +25,12 @@ void EditWindow::UpdateWriteMode(MapChip* mapchip) {
     const int   tex_no       = mapchip->GetTextureNo();
     const auto& chip_size    = mapchip->GetChipSize();
     auto        tex_size     = chip_size;
-    if (tex_no >= 0) {
-        if (!mapchip->IsTextureArray()) {
-            const auto texture = &(*_mapchip_texture_array)[tex_no];
-            tex_size = Vector2((float)(texture->GetWidth()), (float)(texture->GetHeight()));
-        }
+    if (tex_no < 0) {
+        return;
+    }
+    if (!mapchip->IsTextureArray()) {
+        const auto texture = &(*_mapchip_texture_array)[tex_no];
+        tex_size = Vector2((float)(texture->GetWidth()), (float)(texture->GetHeight()));
     }
     const auto& array_size   = mapchip->GetArraySize();
     const int   xcnt         = (int)(tex_size.x / chip_size.x);
@@ -298,6 +299,10 @@ void EditWindow::Initialize(void) {
 void EditWindow::Update(void) {
     Vector2 mp;
     g_pInput->GetMousePos(mp);
+    auto log_area = theImGuiWindowManager.Find(ParamKey::LogWindow);
+    if (log_area && log_area->CollisionPoint(mp)) {
+        return;
+    }
     auto edit_area = *theImGuiWindowManager.Find(ParamKey::EditWindowChild);
     if (edit_area.CollisionPoint(mp)) {
         const float wheel_move = g_pInput->GetMouseWheelMove();
@@ -321,7 +326,9 @@ void EditWindow::Update(void) {
 
     if (!g_pInput->IsMouseKeyHold(MOFMOUSE_LBUTTON) && !g_pInput->IsMouseKeyHold(MOFMOUSE_RBUTTON)) {
         if (_edit_chip_command) {
-            theCommandManager.Register(std::move(_edit_chip_command));
+            if (std::dynamic_pointer_cast<EditChipCommand>(_edit_chip_command)->IsChange()) {
+                theCommandManager.Register(std::move(_edit_chip_command));
+            }
             _edit_chip_command = nullptr;
         }
         return;
@@ -393,6 +400,24 @@ void EditWindow::Render(void) {
         EditorUtilities::RenderGrid(offset_pos, max_size, chip_size, _scroll);
     }
 
+    {
+        const auto col = *theParam.GetDataPointer<MofU32>(ParamKey::EditFontColor);
+        if (*theParam.GetDataPointer<bool>(ParamKey::MemoryX)) {
+            int i = 0;
+            for (float x = -_scroll.x; x < max_area.x; x += chip_size.x) {
+                CGraphicsUtilities::RenderLine(offset_pos.x + x, offset_pos.y, offset_pos.x + x, offset_pos.y + chip_size.y * 0.5f, col);
+                CGraphicsUtilities::RenderString(offset_pos.x + x, offset_pos.y, "%d", i++);
+            }
+        }
+        if (*theParam.GetDataPointer<bool>(ParamKey::MemoryY)) {
+            int i = 0;
+            for (float y = -_scroll.y; y < max_area.y; y += chip_size.y) {
+                CGraphicsUtilities::RenderLine(offset_pos.x, offset_pos.y + y, offset_pos.x + chip_size.x * 0.5f, offset_pos.y + y, col);
+                CGraphicsUtilities::RenderString(offset_pos.x, offset_pos.y + y, "%d", i++);
+            }
+        }
+    }
+
     auto select_pos = GetEditPos();
     if (select_pos != Vector2(-1, -1) && !EditorUtilities::IsNoEditAreaHold() && !_preview_flag) {
         const auto select_chips = *theParam.GetDataPointer<std::pair<int, int>>(ParamKey::MapChipSelect);
@@ -410,7 +435,6 @@ void EditWindow::Render(void) {
             }
         }
         RenderSelectRect(offset_pos, select_chips, select_pos, mapchip->GetChipSize(), tex_size_def);
-        MOF_PRINTLOG("%d, %d\n", select_chips.first, select_chips.second);
     }
 
     g_pGraphics->SetStencilEnable(FALSE);

@@ -122,63 +122,74 @@ void MapChipWindow::Update(void) {
     if (_mapchip_array->size() <= 0) {
         return;
     }
+    
     const auto mapchip = &(*_mapchip_array)[*_select_layer];
     const int  tex_no  = mapchip->GetTextureNo();
+    
     if (tex_no < 0) {
         return;
     }
-    const auto& child_rect = *theImGuiWindowManager.Find(ParamKey::ChipWindowChild);
+    
     Vector2 mp;
     g_pInput->GetMousePos(mp);
-    if (child_rect.CollisionPoint(mp)) {
-        float mouse_wheel = g_pInput->GetMouseWheelMove();
-        if (g_pInput->IsKeyHold(MOFKEY_LCONTROL) && mouse_wheel) {
-            _scale += mouse_wheel * 0.001f;
-            if (_scale <= 0) {
-                _scale = 0.001f;
-            }
-        }
-        if (EditorUtilities::IsNoMapChipAreaHold()) {
-            return;
-        }
-        if (!g_pInput->IsMouseKeyHold(MOFMOUSE_LBUTTON)) {
-            return;
-        }
-        const auto& mapchip_area = EditorUtilities::GetChipArea();
-        int xcnt, ycnt;
-        int selx, sely;
-        int select = 0;
-        if (mapchip->IsTextureArray()) {
-            TextureArray* tex_array = &(*_texture_arrays)[tex_no];
-            float offset_x = 0;
-            for (int i = 0; i < tex_array->size(); i++) {
-                const auto texture  = &(*tex_array)[i];
-                const auto tex_size = Vector2((float)texture->GetWidth(), (float)texture->GetHeight()) * _scale;
-                const auto tex_rect = CRectangle(offset_x, 0, offset_x + tex_size.x, tex_size.y);
-                if (tex_rect.CollisionPoint((mp.x - mapchip_area.Left + _scroll.x), (mp.y - mapchip_area.Top + _scroll.y))) {
-                    select = i;
-                    break;
-                }
-                offset_x += tex_size.x;
-            }
-        }
-        else {
-            const auto texture   = &(*_mapchip_texture_array)[tex_no];
-            const auto tex_size  = Vector2((float)texture->GetWidth(), (float)texture->GetHeight());
-            const auto chip_size = mapchip->GetChipSize();
-            xcnt   = (int)(tex_size.x                             / chip_size.x);
-            ycnt   = (int)(tex_size.y                             / chip_size.y);
-            selx   = (int)((mp.x - mapchip_area.Left + _scroll.x) / chip_size.x);
-            sely   = (int)((mp.y - mapchip_area.Top  + _scroll.y) / chip_size.y);
-            selx   = std::clamp(selx, 0, xcnt - 1);
-            sely   = std::clamp(sely, 0, ycnt - 1);
-            select = sely * xcnt + selx;
-        }
-        if (g_pInput->IsMouseKeyPush(MOFMOUSE_LBUTTON)) {
-            _select_chips.first = select;
-        }
-        _select_chips.second = select;
+
+    auto log_area = theImGuiWindowManager.Find(ParamKey::LogWindow);
+    if (log_area && log_area->CollisionPoint(mp)) {
+        return;
     }
+    
+    const auto& child_rect = *theImGuiWindowManager.Find(ParamKey::ChipWindowChild);
+    if (!child_rect.CollisionPoint(mp)) {
+        return;
+    }
+
+    float mouse_wheel = g_pInput->GetMouseWheelMove();
+    if (g_pInput->IsKeyHold(MOFKEY_LCONTROL) && mouse_wheel) {
+        _scale += mouse_wheel * 0.001f;
+        if (_scale <= 0) {
+            _scale = 0.001f;
+        }
+    }
+    if (EditorUtilities::IsNoMapChipAreaHold()) {
+        return;
+    }
+    if (!g_pInput->IsMouseKeyHold(MOFMOUSE_LBUTTON)) {
+        return;
+    }
+    const auto& mapchip_area = EditorUtilities::GetChipArea();
+    int xcnt, ycnt;
+    int selx, sely;
+    int select = 0;
+    if (mapchip->IsTextureArray()) {
+        TextureArray* tex_array = &(*_texture_arrays)[tex_no];
+        float offset_x = 0;
+        for (int i = 0; i < tex_array->size(); i++) {
+            const auto texture  = &(*tex_array)[i];
+            const auto tex_size = Vector2((float)texture->GetWidth(), (float)texture->GetHeight()) * _scale;
+            const auto tex_rect = CRectangle(offset_x, 0, offset_x + tex_size.x, tex_size.y);
+            if (tex_rect.CollisionPoint((mp.x - mapchip_area.Left + _scroll.x), (mp.y - mapchip_area.Top + _scroll.y))) {
+                select = i;
+                break;
+            }
+            offset_x += tex_size.x;
+        }
+    }
+    else {
+        const auto texture   = &(*_mapchip_texture_array)[tex_no];
+        const auto tex_size  = Vector2((float)texture->GetWidth(), (float)texture->GetHeight());
+        const auto chip_size = mapchip->GetChipSize();
+        xcnt = (int)(tex_size.x / chip_size.x);
+        ycnt = (int)(tex_size.y / chip_size.y);
+        selx = (int)((mp.x - mapchip_area.Left + _scroll.x) / chip_size.x);
+        sely = (int)((mp.y - mapchip_area.Top  + _scroll.y) / chip_size.y);
+        selx = std::clamp(selx, 0, xcnt - 1);
+        sely = std::clamp(sely, 0, ycnt - 1);
+        select = sely * xcnt + selx;
+    }
+    if (g_pInput->IsMouseKeyPush(MOFMOUSE_LBUTTON)) {
+        _select_chips.first = select;
+    }
+    _select_chips.second = select;
 }
 
 void MapChipWindow::Show(void) {

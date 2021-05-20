@@ -23,6 +23,7 @@
 #include    "Window/MapChipWindow.h"
 #include    "Window/EditWindow.h"
 #include    "Window/LayerWindow.h"
+#include    "Window/LogWindow.h"
 #include    "Manager/ImGuiWindowManager.h"
 #include    "Manager/CommandManager.h"
 
@@ -44,6 +45,9 @@ bool                     show_chip_window        = true;
 bool                     show_chip_window_child  = true;
 bool                     show_edit_window        = true;
 bool                     show_edit_window_child  = true;
+bool                     show_log_window         = false;
+bool                     show_x_memory           = false;
+bool                     show_y_memory           = false;
 
 std::string              resource_path;
 std::string              open_file = ".txt";
@@ -113,6 +117,9 @@ MofBool CGameApp::Initialize(void) {
     theParam.Register(ParamKey::TextureArrays      , stage.GetTextureArraysPointer()   );
     theParam.Register(ParamKey::DefaultCreate      , &def_create                       );
     theParam.Register(ParamKey::EditFontColor      , &edit_font_color                  );
+    theParam.Register(ParamKey::LogWindow          , &show_log_window                  );
+    theParam.Register(ParamKey::MemoryX            , &show_x_memory                    );
+    theParam.Register(ParamKey::MemoryY            , &show_y_memory                    );
     
     //open_file = "asaa";
     if (open_file != ".txt" && open_file.length()) {
@@ -151,6 +158,15 @@ MofBool CGameApp::Update(void) {
     layer_window.Show();
     map_chip_window.Show();
     edit_window.Show();
+    Vector2 mp;
+    g_pInput->GetMousePos(mp);
+    auto log_area = theImGuiWindowManager.Find(ParamKey::LogWindow);
+    if (log_area && log_area->CollisionPoint(mp) && g_pInput->IsMouseKeyHold(MOFMOUSE_LBUTTON)) {
+        ImGui::SetWindowFocus("log window");
+    }
+    if (show_log_window) {
+        LogWindow::Show();
+    }
     
     if (!EditorUtilities::IsPopupModalOpen()) {
         map_chip_window.Update();

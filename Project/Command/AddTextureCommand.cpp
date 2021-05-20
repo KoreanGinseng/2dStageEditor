@@ -50,3 +50,11 @@ void AddTextureCommand::Undo(void) {
 
 void AddTextureCommand::Register(void) {
 }
+
+std::string AddTextureCommand::GetLog(void) const {
+    std::stringstream log;
+    log << "AddTextureCommand\n";
+    log << "path : "      << _path      << "\n";
+    log << "prev_path : " << _path_prev << "\n";
+    return log.str();
+}

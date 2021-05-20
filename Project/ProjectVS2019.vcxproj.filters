@@ -138,6 +138,9 @@
     <ClCompile Include="Command\RemoveTextureCommand.cpp">
       <Filter>ソース ファイル\Command</Filter>
     </ClCompile>
+    <ClCompile Include="Window\LogWindow.cpp">
+      <Filter>ソース ファイル\Window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameApp.h">
@@ -229,6 +232,9 @@
     </ClInclude>
     <ClInclude Include="Command\RemoveTextureCommand.h">
       <Filter>ヘッダー ファイル\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\LogWindow.h">
+      <Filter>ヘッダー ファイル\Window</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
