@@ -141,6 +141,12 @@
     <ClCompile Include="Window\LogWindow.cpp">
       <Filter>ソース ファイル\Window</Filter>
     </ClCompile>
+    <ClCompile Include="Command\LoadTextureCommand.cpp">
+      <Filter>ソース ファイル\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="Command\ReleaseTextureCommand.cpp">
+      <Filter>ソース ファイル\Command</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameApp.h">
@@ -235,6 +241,12 @@
     </ClInclude>
     <ClInclude Include="Window\LogWindow.h">
       <Filter>ヘッダー ファイル\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Command\LoadTextureCommand.h">
+      <Filter>ヘッダー ファイル\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="Command\ReleaseTextureCommand.h">
+      <Filter>ヘッダー ファイル\Command</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

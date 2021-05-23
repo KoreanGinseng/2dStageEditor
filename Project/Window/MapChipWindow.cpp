@@ -53,7 +53,7 @@ void MapChipWindow::ShowTextureData(MapChip* mapchip) {
             bool       array_flag = false;
             const bool open       = EditorUtilities::OpenTextureFileDialog("マップチップ画像の読み込み", path);
             if (open) {
-                theCommandManager.Register(std::make_shared<AddTextureCommand>(path, mapchip));
+                theCommandManager.Register(std::make_shared<AddTextureCommand>(path, _mapchip_texture_array, mapchip));
             }
         } ImGui::SameLine();
         if (ImGui::Button("remove")) {

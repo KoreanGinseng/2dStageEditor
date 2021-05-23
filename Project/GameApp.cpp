@@ -90,7 +90,6 @@ void default_create(void) {
 *//**************************************************************************/
 MofBool CGameApp::Initialize(void) {
     CUtilities::SetCurrentDirectory("Resource");
-
     ToolIcon::Load();
     def_create = default_create;
     resource_path = std::filesystem::current_path().string();

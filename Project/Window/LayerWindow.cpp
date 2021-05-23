@@ -7,8 +7,8 @@
 #include "../Utilities/FileDialog.h"
 #include "../Manager/ImGuiWindowManager.h"
 #include "../Manager/CommandManager.h"
-#include "../Command/AddTextureCommand.h"
-#include "../Command/RemoveTextureCommand.h"
+#include "../Command/LoadTextureCommand.h"
+#include "../Command/ReleaseTextureCommand.h"
 
 /// /////////////////////////////////////////////////////////////
 /// <summary>
@@ -90,7 +90,7 @@ void LayerWindow::ShowBackGround(void) {
     
     // show
     bool show = false;
-    if (_background_array->size() > 0) {
+    if (_background_array->size() > 0 && (*_background_array)[0]._texture.GetName()->GetLength() > 0) {
         background_name = (*_background_array)[0]._texture.GetName()->GetString();
         show = (*_background_array)[0]._show_flag;
     }
@@ -118,25 +118,13 @@ void LayerWindow::ShowBackGround(void) {
 /// </summary>
 void LayerWindow::LoadBackGroundTexture(void) {
     char path[PATH_MAX];
-    bool array_flag = false;
-    bool open = FileDialog::Open(g_pMainWindow->GetWindowHandle(), FileDialog::Mode::Open,
-        "”wŒi‰æ‘œ‚Ì“Ç‚Ýž‚Ý",
-        "‰æ‘œ ƒtƒ@ƒCƒ‹\0*.png;*.bmp;*.dds\0all file(*.*)\0*.*\0\0",
-        "png\0dds\0bmp", path, array_flag);
+    bool open = EditorUtilities::OpenTextureFileDialog("”wŒi‰æ‘œ‚Ì“Ç‚Ýž‚Ý", path);
     if (open) {
-        std::string resource_path = EditorUtilities::GetResourcePath();
         if (_background_array->size() <= 0) {
-            BackGround tmp;
-            tmp._texture.Load(path);
-            tmp._texture.SetName(FileDialog::ChangeRelativePath(path, resource_path.c_str()).c_str());
-            _background_array->push_back(std::move(tmp));
+            _background_array->push_back(BackGround());
         }
-        else {
-            auto tmp = &(*_background_array)[0];
-            tmp->_texture.Release();
-            tmp->_texture.Load(path);
-            tmp->_texture.SetName(FileDialog::ChangeRelativePath(path, resource_path.c_str()).c_str());
-        }
+        auto tmp = &(*_background_array)[0];
+        theCommandManager.Register(std::make_shared<LoadTextureCommand>(path, &(tmp->_texture)));
     }
 }
 
@@ -147,8 +135,7 @@ void LayerWindow::LoadBackGroundTexture(void) {
 void LayerWindow::RemoveBackGroundTexture(void) {
     if (_background_array->size() > 0) {
         auto tmp = &(*_background_array)[0];
-        tmp->_texture.Release();
-        _background_array->clear();
+        theCommandManager.Register(std::make_shared<ReleaseTextureCommand>(&(tmp->_texture)));
     }
 }
 

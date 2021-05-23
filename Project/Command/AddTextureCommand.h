@@ -1,17 +1,18 @@
 #pragma once
 #include "Command.h"
-#include "../Stage/MapChip.h"
+#include "../Stage/Stage.h"
 
 class AddTextureCommand : public ICommand {
 private:
 
-    std::string _path;
-    MapChip*    _mapchip;
-    std::string _path_prev;
+    std::string   _path;
+    std::string   _path_prev;
+    TextureArray* _texture_array;
+    MapChip*      _mapchip;
 
 public:
 
-    AddTextureCommand(char* path, MapChip* mapchip);
+    AddTextureCommand(char* path, TextureArray* texture_array, MapChip* mapchip = nullptr);
     virtual ~AddTextureCommand(void);
 
     /// <summary>
