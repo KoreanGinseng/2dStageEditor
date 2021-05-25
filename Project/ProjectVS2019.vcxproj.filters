@@ -147,6 +147,9 @@
     <ClCompile Include="Command\ReleaseTextureCommand.cpp">
       <Filter>ソース ファイル\Command</Filter>
     </ClCompile>
+    <ClCompile Include="Command\ChangeMapChipCommand.cpp">
+      <Filter>ソース ファイル\Command</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameApp.h">
@@ -246,6 +249,9 @@
       <Filter>ヘッダー ファイル\Command</Filter>
     </ClInclude>
     <ClInclude Include="Command\ReleaseTextureCommand.h">
+      <Filter>ヘッダー ファイル\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="Command\ChangeMapChipCommand.h">
       <Filter>ヘッダー ファイル\Command</Filter>
     </ClInclude>
   </ItemGroup>

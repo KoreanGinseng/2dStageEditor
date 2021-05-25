@@ -9,6 +9,7 @@
 #include "../Manager/CommandManager.h"
 #include "../Command/LoadTextureCommand.h"
 #include "../Command/ReleaseTextureCommand.h"
+#include "../Command/ChangeMapChipCommand.h"
 
 /// /////////////////////////////////////////////////////////////
 /// <summary>
@@ -144,15 +145,24 @@ void LayerWindow::RemoveBackGroundTexture(void) {
 /// マップデータの表示
 /// </summary>
 void LayerWindow::ShowMapData(void) {
-    MapChip* mapchip = &(*_mapchip_array)[_select_chip_layer];
+    auto mapchip = &(*_mapchip_array)[_select_chip_layer];
 
     ImGui::Text("map data");
     int cs  = (int)mapchip->GetChipSize().x;
     int asx = (int)mapchip->GetArraySize().x;
     int asy = (int)mapchip->GetArraySize().y;
     
+    bool change_size = ImGui::InputInt("chip size", &cs);
+    bool change_x    = ImGui::InputInt("map size x", &asx, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue);
+    bool change_y    = ImGui::InputInt("map size y", &asy, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue);
+
+    if (!_mouse_hold_flag && (change_size || change_x || change_y)) {
+        _change_mapchip_command = std::make_shared<ChangeMapChipCommand>(mapchip);
+        _mouse_hold_flag = true;
+    }
+
     // chip size
-    if (ImGui::InputInt("chip size", &cs)) {
+    if (change_size) {
         cs = std::clamp(cs, 1, INT_MAX);
         EditorUtilities::ResetSelectPair();
         for (auto& it : *_mapchip_array) {
@@ -161,8 +171,6 @@ void LayerWindow::ShowMapData(void) {
     }
 
     // map size
-    bool change_x = ImGui::InputInt("map size x", &asx, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue);
-    bool change_y = ImGui::InputInt("map size y", &asy, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue);
     if (change_x || change_y) {
         if (asx > 0 && asy > 0) {
             for (auto& it : *_mapchip_array) {
@@ -174,6 +182,13 @@ void LayerWindow::ShowMapData(void) {
                 "マップサイズは1以上を指定してください。", "入力値間違えたのかな？",
                 MB_OK | MB_ICONEXCLAMATION | MB_APPLMODAL);
         }
+    }
+
+    if (_mouse_hold_flag && g_pInput->IsMouseKeyPull(MOFMOUSE_LBUTTON)) {
+        _change_mapchip_command->Register();
+        theCommandManager.Register(std::move(_change_mapchip_command));
+        _change_mapchip_command = nullptr;
+        _mouse_hold_flag = false;
     }
 }
 
