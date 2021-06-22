@@ -3,6 +3,8 @@
 #include "../Stage/Stage.h"
 #include "../Command/Command.h"
 
+constexpr int change_wait_frame = 15;
+
 class LayerWindow {
 private:
 
@@ -14,7 +16,8 @@ private:
     int                         _select_background_layer;
     int                         _select_collision_layer;
     CommandPtr                  _change_mapchip_command;
-    bool                        _mouse_hold_flag;
+    int                         _change_frame_count;
+    bool                        _change_hold_flag;
 
     // LayerTab
     void ShowMapChipLayerTab(void);

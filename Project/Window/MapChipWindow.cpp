@@ -101,7 +101,8 @@ MapChipWindow::MapChipWindow(void)
     , _mapchip_texture_array(nullptr)
     , _scroll(0, 0)
     , _scale(1)
-    , _select_chips() {
+    , _select_chips()
+    , _texture_arrays(nullptr) {
 }
 
 MapChipWindow::~MapChipWindow(void) {

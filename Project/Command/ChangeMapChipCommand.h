@@ -5,12 +5,16 @@
 class ChangeMapChipCommand : public ICommand {
 private:
 
-    MapChip* _mapchip;
-    struct {
-        Vector2 _chip_size;
-        Vector2 _map_size;
-    } _prev, _next;
     using MapData = std::vector<std::vector<int>>;
+    MapChip* _mapchip;
+    struct Data {
+        Vector2 _chip_size;
+        std::vector<MapData> _mapdata_array;
+        Vector2 GetMapSize() const {
+            auto mapdata = _mapdata_array[0];
+            return Vector2(mapdata[0].size(), mapdata.size());
+        }
+    } _prev, _next;
     std::vector<MapData> _map_data;
 
 public:

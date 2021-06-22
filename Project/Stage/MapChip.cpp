@@ -25,6 +25,7 @@ void MapChip::Release(void) {
     if (GetArrayCount() > 0) {
         free(_mapchip_array);
         _mapchip_array = nullptr;
+        _array_size = Vector2();
     }
 }
 

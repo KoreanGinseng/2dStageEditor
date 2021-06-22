@@ -156,9 +156,15 @@ void LayerWindow::ShowMapData(void) {
     bool change_x    = ImGui::InputInt("map size x", &asx, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue);
     bool change_y    = ImGui::InputInt("map size y", &asy, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue);
 
-    if (!_mouse_hold_flag && (change_size || change_x || change_y)) {
+    // 何も操作されていないとき、カウンタを増やす
+    if (!change_size && !change_x && !change_y) {
+        _change_frame_count++;
+    }
+
+    if (!_change_hold_flag && (change_size || change_x || change_y)) {
         _change_mapchip_command = std::make_shared<ChangeMapChipCommand>(mapchip);
-        _mouse_hold_flag = true;
+        _change_hold_flag   = true;
+        _change_frame_count = 0;
     }
 
     // chip size
@@ -183,12 +189,13 @@ void LayerWindow::ShowMapData(void) {
                 MB_OK | MB_ICONEXCLAMATION | MB_APPLMODAL);
         }
     }
-
-    if (_mouse_hold_flag && g_pInput->IsMouseKeyPull(MOFMOUSE_LBUTTON)) {
+    
+    if (_change_hold_flag && _change_frame_count > change_wait_frame) {
         _change_mapchip_command->Register();
         theCommandManager.Register(std::move(_change_mapchip_command));
         _change_mapchip_command = nullptr;
-        _mouse_hold_flag = false;
+        _change_hold_flag   = false;
+        _change_frame_count = 0;
     }
 }
 
@@ -234,6 +241,7 @@ void LayerWindow::Initialize(void) {
     _mapchip_array         = theParam.GetDataPointer<std::vector<MapChip>>(ParamKey::MapChipArray);
     _mapchip_texture_array = theParam.GetDataPointer<std::vector<CTexture>>(ParamKey::MapChipTextureArray);
     _background_array      = theParam.GetDataPointer<std::vector<BackGround>>(ParamKey::BackgroundArray);
+    _change_frame_count    = 0;
     theParam.Register(ParamKey::MapChipLayerSelect, &_select_chip_layer);
 }
 

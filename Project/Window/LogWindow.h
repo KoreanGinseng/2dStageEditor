@@ -9,5 +9,7 @@ private:
 public:
 
     static void Show(void);
+
+    static void Save(void);
 };
 

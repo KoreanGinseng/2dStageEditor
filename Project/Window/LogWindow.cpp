@@ -5,6 +5,7 @@
 #include "../Utilities/EditorUtilities.h"
 #include "../Manager/CommandManager.h"
 #include "../Manager/ImGuiWindowManager.h"
+#include "../Utilities/FileDialog.h"
 
 void LogWindow::Show(void) {
 
@@ -52,4 +53,9 @@ void LogWindow::Show(void) {
 
     }
     ImGui::End();
+}
+
+void LogWindow::Save(void) {
+    FILE* file_pointer = nullptr;
+
 }
