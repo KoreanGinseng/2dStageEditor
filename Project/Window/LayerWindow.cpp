@@ -26,18 +26,13 @@ void LayerWindow::ShowMapChipLayerTab(void) {
     // detail
     if (ImGui::BeginChild("detail", ImVec2(0, k_layer_detail_height), true)) {
         
-        // background
-        ShowBackGround();
-        
-        ImGui::Separator();
-
         // map data
         ShowMapData();
 
         ImGui::Separator();
 
         // chip back color
-        ShowChipBackColor();
+        //ShowChipBackColor();
 
         ImGui::EndChild();
     }
@@ -215,12 +210,20 @@ void LayerWindow::ShowChipBackColor(void) {
     }
 }
 
+void LayerWindow::ShowBackGroundLayerTab(void) {
+    // background
+    ShowBackGround();
+
+    ImGui::Separator();
+}
+
 /// /////////////////////////////////////////////////////////////
 /// <summary>
 /// êFÉ^Éu
 /// </summary>
 void LayerWindow::ShowColorEditTab(void) {
     if (ImGui::BeginChild("color", ImVec2(), true)) {
+        ShowChipBackColor();
         if (ImGui::TreeNode("edit back color")) {
             EditorUtilities::ColorPicker(*theParam.GetDataPointer<MofU32>(ParamKey::EditBackColor));
             ImGui::TreePop();
@@ -266,8 +269,9 @@ void LayerWindow::Show(void) {
     ImGui::Begin("layer window", NULL, flags); {
         theImGuiWindowManager.Register(ParamKey::LayerWindow);
         if (ImGui::BeginTabBar("layer tab")) {
-            if (ImGui::BeginTabItem("mapchip")) { ShowMapChipLayerTab(); ImGui::EndTabItem(); }
-            if (ImGui::BeginTabItem("color"))   { ShowColorEditTab();    ImGui::EndTabItem(); }
+            if (ImGui::BeginTabItem("mapchip"))    { ShowMapChipLayerTab();    ImGui::EndTabItem(); }
+            if (ImGui::BeginTabItem("background")) { ShowBackGroundLayerTab(); ImGui::EndTabItem(); }
+            if (ImGui::BeginTabItem("color"))      { ShowColorEditTab();       ImGui::EndTabItem(); }
             ImGui::EndTabBar();
         }
     }

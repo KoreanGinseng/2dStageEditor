@@ -28,6 +28,7 @@ private:
     void ShowMapData(void);
     void ShowChipBackColor(void);
 
+    void ShowBackGroundLayerTab(void);
     void ShowColorEditTab(void);
 
 public:
