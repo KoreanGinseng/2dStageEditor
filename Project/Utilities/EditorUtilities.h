@@ -4,6 +4,9 @@
 #include <string>
 #include <optional>
 
+#include <sstream>
+#include <iomanip>
+
 struct VersionResourceData {
     std::string CompanyName;
     std::string FileDescription;
@@ -72,5 +75,7 @@ public:
     static void RenderGrid(const Vector2& offset_pos, const Vector2& max_size, const Vector2& chip_size, const Vector2& scroll);
 
     static bool OpenTextureFileDialog(const std::string& title, char* path, bool* array_flag = nullptr);
+
+    static std::string getDatetimeStr(void);
 };
 

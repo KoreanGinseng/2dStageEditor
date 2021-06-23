@@ -89,6 +89,10 @@ void default_create(void) {
                         それ以外    失敗、エラーコードが戻り値となる
 *//**************************************************************************/
 MofBool CGameApp::Initialize(void) {
+    struct stat s;
+    if (stat("log", &s) != 0) {
+        std::filesystem::create_directory("log");
+    }
     CUtilities::SetCurrentDirectory("Resource");
     ToolIcon::Load();
     def_create = default_create;
@@ -252,6 +256,10 @@ MofBool CGameApp::Render(void) {
 MofBool CGameApp::Release(void) {
 
     EditorUtilities::SetCurrentPathResource();
+
+    CUtilities::SetCurrentDirectory("../log");
+    LogWindow::Save();
+    CUtilities::SetCurrentDirectory("../Resource");
 
     CMofImGui::Cleanup();
 

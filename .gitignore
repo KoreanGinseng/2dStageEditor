@@ -336,3 +336,4 @@ ASALocalRun/
 # ADD LIB
 !/Library/Library/*.lib
 !ProjectVS2019_Release.exe
+log/*.*

@@ -181,6 +181,7 @@ bool MainMenu::Close(void) {
         "ƒtƒ@ƒCƒ‹‚ð•Â‚¶‚é", MB_YESNO | MB_ICONEXCLAMATION | MB_APPLMODAL) == IDYES) {
         theParam.GetDataPointer<Stage>(ParamKey::Stage)->Release();
         *open_file = ".txt";
+        theCommandManager.Clear();
     }
     return true;
 }

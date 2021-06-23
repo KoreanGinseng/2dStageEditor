@@ -69,6 +69,7 @@ public:
     bool IsRedo(void) const;
     const CommandList& GetExecList(void) const;
     const CommandList& GetRedoList(void) const;
+    void Clear(void);
 };
 
 // シングルトン置き換え

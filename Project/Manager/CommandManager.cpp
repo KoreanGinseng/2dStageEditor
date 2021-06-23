@@ -99,3 +99,8 @@ const CommandList& CommandManager::GetExecList(void) const {
 const CommandList& CommandManager::GetRedoList(void) const {
     return _redo_list;
 }
+
+void CommandManager::Clear(void) {
+    _exec_list.clear();
+    _redo_list.clear();
+}
