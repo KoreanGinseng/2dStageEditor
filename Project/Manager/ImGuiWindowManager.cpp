@@ -28,7 +28,7 @@ void ImGuiWindowManager::Register(const ParamKey::Type& name) {
 CRectangle* ImGuiWindowManager::Find(const ParamKey::Type& name) {
     auto& data = std::find_if(_data_array.begin(), _data_array.end(),
         [&](const GuiWindowData& data) { return (data.name == name); });
-    if (data != _data_array.end()) {
+    if (data != _data_array.end() && *(data->active_pointer)) {
         return &(data->rect);
     }
     return nullptr;

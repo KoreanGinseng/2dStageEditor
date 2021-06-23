@@ -1,6 +1,9 @@
 #pragma once
 #include <memory>
 #include <vector>
+#include <string>
+#include <sstream>
+#include <iomanip>
 
 // 前方宣言
 class ICommand;
@@ -30,9 +33,9 @@ public:
     virtual void Register(void) = 0;
 
     /// <summary>
-    /// 名前の取得
+    /// ログ文字列の取得
     /// </summary>
-    /// <return>コマンド名</return>
-    virtual const char* GetName(void) const = 0;
+    /// <returns>ログ文字列</returns>
+    virtual std::string GetLog(void) const = 0;
 };
 

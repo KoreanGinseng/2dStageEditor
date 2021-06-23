@@ -4,6 +4,9 @@
 #include <string>
 #include <optional>
 
+#include <sstream>
+#include <iomanip>
+
 struct VersionResourceData {
     std::string CompanyName;
     std::string FileDescription;
@@ -60,7 +63,7 @@ public:
     static CRectangle GetEditArea(void);
     static CRectangle GetChipArea(void);
 
-    static CRectangle CalcSelectRect(int begin, int end, const Vector2& chip_size, const Vector2& tex_size);
+    static CRectangle CalcSelectRect(int begin, int end, const Vector2& chip_size_def, const Vector2& tex_size_def, float scale);
     static CRectangle CalcSelectTextureRect(int no);
     static bool ColorPicker(MofU32& color);
 
@@ -70,5 +73,9 @@ public:
     static int GetImGuiAlwaysScrollWindowFlag(void);
 
     static void RenderGrid(const Vector2& offset_pos, const Vector2& max_size, const Vector2& chip_size, const Vector2& scroll);
+
+    static bool OpenTextureFileDialog(const std::string& title, char* path, bool* array_flag = nullptr);
+
+    static std::string getDatetimeStr(void);
 };
 

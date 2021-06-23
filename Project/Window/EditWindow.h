@@ -1,6 +1,7 @@
 #pragma once
 #include <Mof.h>
 #include "../Stage/Stage.h"
+#include "../Command/Command.h"
 
 class EditWindow {
 private:
@@ -15,6 +16,8 @@ private:
     Vector2                     _scroll;
     float                       _scale;
     bool                        _preview_flag;
+
+    CommandPtr                  _edit_chip_command;
 
     void UpdateWriteMode(MapChip* mapchip);
     void UpdateEraseMode(MapChip* mapchip);

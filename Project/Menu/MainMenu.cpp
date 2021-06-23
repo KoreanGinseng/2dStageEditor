@@ -33,13 +33,16 @@ void MainMenu::Edit(void) {
 }
 
 void MainMenu::View(void) {
-    ImGui::Checkbox("chip grid", theParam.GetDataPointer<bool>(ParamKey::ChipGridFlag));
-    ImGui::Checkbox("edit grid", theParam.GetDataPointer<bool>(ParamKey::EditGridFlag));
+    if (ImGui::MenuItem("chip grid" , "", theParam.GetDataPointer<bool>(ParamKey::ChipGridFlag))) {};
+    if (ImGui::MenuItem("edit grid" , "", theParam.GetDataPointer<bool>(ParamKey::EditGridFlag))) {};
+    if (ImGui::MenuItem("log window", "", theParam.GetDataPointer<bool>(ParamKey::LogWindow)))    {};
+    if (ImGui::MenuItem("memory x"  , "", theParam.GetDataPointer<bool>(ParamKey::MemoryX)))      {};
+    if (ImGui::MenuItem("memory y"  , "", theParam.GetDataPointer<bool>(ParamKey::MemoryY)))      {};
 }
 
 void MainMenu::Help(void) {
     if (ImGui::MenuItem("open manual", "Ctrl + M")) { OpenManual(); };
-    if (ImGui::MenuItem("version", "Ctrl + I")) { Version(); };
+    if (ImGui::MenuItem("version"    , "Ctrl + I")) { Version(); };
 }
 
 void MainMenu::Show(void) {
@@ -178,6 +181,7 @@ bool MainMenu::Close(void) {
         "ƒtƒ@ƒCƒ‹‚ð•Â‚¶‚é", MB_YESNO | MB_ICONEXCLAMATION | MB_APPLMODAL) == IDYES) {
         theParam.GetDataPointer<Stage>(ParamKey::Stage)->Release();
         *open_file = ".txt";
+        theCommandManager.Clear();
     }
     return true;
 }

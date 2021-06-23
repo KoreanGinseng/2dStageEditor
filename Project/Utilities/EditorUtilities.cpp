@@ -5,6 +5,7 @@
 #include <atlstr.h>
 #pragma comment(lib, "version.lib")
 
+#include "FileDialog.h"
 #include "EditorUtilities.h"
 #include "../Window/WindowDefine.h"
 #include "../Stage/Stage.h"
@@ -282,12 +283,13 @@ CRectangle EditorUtilities::GetChipArea(void) {
     );
 }
 
-CRectangle EditorUtilities::CalcSelectRect(int begin, int end, const Vector2& chip_size, const Vector2& tex_size) {
+CRectangle EditorUtilities::CalcSelectRect(int begin, int end, const Vector2& chip_size_def, const Vector2& tex_size_def, float scale) {
+    const auto chip_size = chip_size_def * scale;
     return CRectangle(
-        (begin % (int)(tex_size.x / chip_size.x)) * chip_size.x,
-        (begin / (int)(tex_size.x / chip_size.x)) * chip_size.y,
-        (end   % (int)(tex_size.x / chip_size.x)) * chip_size.x + chip_size.x,
-        (end   / (int)(tex_size.x / chip_size.x)) * chip_size.y + chip_size.y
+        (begin % (int)(tex_size_def.x / chip_size_def.x)) * chip_size.x,
+        (begin / (int)(tex_size_def.x / chip_size_def.x)) * chip_size.y,
+        (end   % (int)(tex_size_def.x / chip_size_def.x)) * chip_size.x + chip_size.x,
+        (end   / (int)(tex_size_def.x / chip_size_def.x)) * chip_size.y + chip_size.y
     );
 }
 
@@ -360,4 +362,27 @@ void EditorUtilities::RenderGrid(const Vector2& offset_pos, const Vector2& max_s
     for (float x = offset_pos.x - scroll.x; x <= end_x; x += chip_size.x) {
         CGraphicsUtilities::RenderLine(x, offset_pos.y, x, end_y, MOF_COLOR_WHITE);
     }
+}
+
+bool EditorUtilities::OpenTextureFileDialog(const std::string& title, char* path, bool* array_flag) {
+    bool b = false;
+    return FileDialog::Open(g_pMainWindow->GetWindowHandle(), FileDialog::Mode::Open,
+        title.c_str(),
+        "画像 ファイル\0*.png;*.bmp;*.dds\0all file(*.*)\0*.*\0\0",
+        "png\0bmp\0dds", path, (array_flag == nullptr ? b : *array_flag));
+}
+
+std::string EditorUtilities::getDatetimeStr(void) {
+    time_t t = time(nullptr);
+    const tm* localTime = localtime(&t);
+    std::stringstream s;
+    s << "20" << localTime->tm_year - 100;
+    // setw(),setfill()で0詰め
+    s << std::setw(2) << std::setfill('0') << localTime->tm_mon + 1;
+    s << std::setw(2) << std::setfill('0') << localTime->tm_mday;
+    s << std::setw(2) << std::setfill('0') << localTime->tm_hour;
+    s << std::setw(2) << std::setfill('0') << localTime->tm_min;
+    s << std::setw(2) << std::setfill('0') << localTime->tm_sec;
+    // std::stringにして値を返す
+    return s.str();
 }

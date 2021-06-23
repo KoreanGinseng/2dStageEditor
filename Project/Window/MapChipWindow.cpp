@@ -6,13 +6,17 @@
 #include "../Utilities/EditorUtilities.h"
 #include "../Utilities/FileDialog.h"
 #include "../Manager/ImGuiWindowManager.h"
+#include "../Manager/CommandManager.h"
+#include "../Command/AddTextureArrayCommand.h"
+#include "../Command/AddTextureCommand.h"
+#include "../Command/RemoveTextureCommand.h"
 
 void MapChipWindow::ShowTextureData(MapChip* mapchip) {
+    const int tex_no = mapchip->GetTextureNo();
     if (mapchip->IsTextureArray()) {
         std::string file_name = "no textures";
-        int tex_no = mapchip->GetTextureNo();
         if (tex_no >= 0) {
-            TextureArray* textures = &(*_texture_arrays)[tex_no];
+            const auto textures = &(*_texture_arrays)[tex_no];
             if (!(*theParam.GetDataPointer<bool>(ParamKey::WriteMode))) {
                 file_name = "erase mode now";
             }
@@ -22,100 +26,47 @@ void MapChipWindow::ShowTextureData(MapChip* mapchip) {
         }
         ImGui::InputText("textures", &file_name[0], file_name.length(), ImGuiInputTextFlags_ReadOnly);
         if (ImGui::Button("add texture")) {
-            char path[PATH_MAX];
-            bool array_flag = false;
-            bool open = FileDialog::Open(g_pMainWindow->GetWindowHandle(), FileDialog::Mode::Open,
-                "画像の選択",
-                "画像 ファイル\0*.png;*.bmp;*.dds\0all file(*.*)\0*.*\0\0",
-                "png\0bmp\0dds", path, array_flag);
+            char       path[PATH_MAX];
+            bool       array_flag = false;
+            const bool open       = EditorUtilities::OpenTextureFileDialog("画像ファイルの選択", path, &array_flag);
             if (open) {
-                int  tex_no = mapchip->GetTextureNo();
-                auto select_array = &(*_texture_arrays)[tex_no];
-                std::string resource_path = EditorUtilities::GetResourcePath();
-                if (array_flag) {
-                    std::string current;
-                    std::vector<std::string> files;
-                    FileDialog::SeparatePath(path, files, &current);
-                    std::string relative_path = FileDialog::ChangeRelativePath(current.c_str(), resource_path.c_str());
-                    for (const auto& file : files) {
-                        CTexture texture;
-                        if (!texture.Load((current + "\\" + file).c_str())) {
-                            continue;
-                        }
-                        texture.SetName((relative_path + "\\" + file).c_str());
-                        select_array->push_back(std::move(texture));
-                    }
-                }
-                else {
-                    CTexture texture;
-                    if (texture.Load(path)) {
-                        std::string relative_path = FileDialog::ChangeRelativePath(path, resource_path.c_str());
-                        texture.SetName(relative_path.c_str());
-                        select_array->push_back(std::move(texture));
-                    }
-                }
+                theCommandManager.Register(std::make_shared<AddTextureArrayCommand>(path, tex_no, array_flag));
             }
         } ImGui::SameLine();
         if (ImGui::Button("remove texture")) {
-            int  tex_no = mapchip->GetTextureNo();
-            auto select_array = &(*_texture_arrays)[tex_no];
-            auto select_tex_no = *theParam.GetDataPointer<std::pair<int, int>>(ParamKey::MapChipSelect);
+            const auto select_array  = &(*_texture_arrays)[tex_no];
+            const auto select_tex_no = *theParam.GetDataPointer<std::pair<int, int>>(ParamKey::MapChipSelect);
             if (select_array->size() > select_tex_no.first) {
-                (*select_array)[select_tex_no.first].Release();
-                select_array->erase(select_array->begin() + select_tex_no.first);
+                theCommandManager.Register(std::make_shared<RemoveTextureCommand>(select_array, select_tex_no.first, mapchip));
             }
-            EditorUtilities::ResetSelectPair();
         }
     }
     else {
         std::string file_name = "no texture";
-        int tex_no = mapchip->GetTextureNo();
         if (tex_no >= 0) {
-            CTexture* texture = &(*_mapchip_texture_array)[tex_no];
+            const auto& texture = &(*_mapchip_texture_array)[tex_no];
             file_name = texture->GetName()->GetString();
         }
         ImGui::InputText("chip file", &file_name[0], file_name.length(), ImGuiInputTextFlags_ReadOnly);
         if (ImGui::Button("load")) {
-            char path[PATH_MAX];
-            bool array_flag = false;
-            bool open = FileDialog::Open(g_pMainWindow->GetWindowHandle(), FileDialog::Mode::Open,
-                "マップチップ画像の読み込み",
-                "画像 ファイル\0*.png;*.bmp;*.dds\0all file(*.*)\0*.*\0\0",
-                "png\0dds\0bmp", path, array_flag);
+            char       path[PATH_MAX];
+            bool       array_flag = false;
+            const bool open       = EditorUtilities::OpenTextureFileDialog("マップチップ画像の読み込み", path);
             if (open) {
-                std::string resource_path = EditorUtilities::GetResourcePath();
-                if (_mapchip_texture_array->size() <= 0) {
-                    CTexture tmp;
-                    tmp.Load(path);
-                    tmp.SetName(FileDialog::ChangeRelativePath(path, resource_path.c_str()).c_str());
-                    _mapchip_texture_array->push_back(std::move(tmp));
-                    mapchip->SetTextureNo(0);
-                }
-                else {
-                    auto tmp = &(*_mapchip_texture_array)[0];
-                    tmp->Release();
-                    tmp->Load(path);
-                    tmp->SetName(FileDialog::ChangeRelativePath(path, resource_path.c_str()).c_str());
-                }
+                theCommandManager.Register(std::make_shared<AddTextureCommand>(path, _mapchip_texture_array, mapchip));
             }
         } ImGui::SameLine();
         if (ImGui::Button("remove")) {
             if (_mapchip_texture_array->size() > 0) {
-                (*_mapchip_texture_array)[0].Release();
-                _mapchip_texture_array->clear();
-                mapchip->SetTextureNo(-1);
-                EditorUtilities::ResetSelectPair();
+                theCommandManager.Register(std::make_shared<RemoveTextureCommand>(_mapchip_texture_array, mapchip->GetTextureNo(), mapchip));
             }
         }
     }
 }
 
 void MapChipWindow::ShowDummyArea(MapChip* mapchip) {
-    ImVec2 dummy_area(0, 0);
-    int tex_no = -1;
-    if (mapchip) {
-        tex_no = mapchip->GetTextureNo();
-    }
+    ImVec2    dummy_area(0, 0);
+    const int tex_no = mapchip->GetTextureNo();
     if (tex_no >= 0) {
         if (mapchip->IsTextureArray()) {
             for (auto& texture : (*_texture_arrays)[tex_no]) {
@@ -124,17 +75,12 @@ void MapChipWindow::ShowDummyArea(MapChip* mapchip) {
             }
         }
         else {
-            CTexture* texture = &(*_mapchip_texture_array)[tex_no];
+            const auto texture = &(*_mapchip_texture_array)[tex_no];
             dummy_area.x = (texture->GetWidth()  * _scale);
             dummy_area.y = (texture->GetHeight() * _scale);
         }
     }
-    int flags =
-        ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove          |
-        ImGuiWindowFlags_NoResize   | ImGuiWindowFlags_NoSavedSettings |
-        ImGuiWindowFlags_AlwaysVerticalScrollbar |
-        ImGuiWindowFlags_AlwaysHorizontalScrollbar;
-    if (ImGui::BeginChild("mapchip area", ImVec2(), true, flags)) {
+    if (ImGui::BeginChild("mapchip area", ImVec2(), true, EditorUtilities::GetImGuiAlwaysScrollWindowFlag())) {
         theImGuiWindowManager.Register(ParamKey::ChipWindowChild);
         ImGui::Dummy(dummy_area);
         _scroll.x = ImGui::GetScrollX();
@@ -143,24 +89,9 @@ void MapChipWindow::ShowDummyArea(MapChip* mapchip) {
     }
 }
 
-void MapChipWindow::RenderTexture(float px, float py, CTexture* texture) {
-    texture->RenderScale(px - _scroll.x, py - _scroll.y, _scale);
-}
-
-void MapChipWindow::RenderGrid(float px, float py, const Vector2& max_size, const Vector2& chip_size) {
-    for (float y = py - _scroll.y; y < max_size.y + py - _scroll.y; y += chip_size.y) {
-        CGraphicsUtilities::RenderLine(px, y, max_size.x + px - _scroll.x, y, MOF_COLOR_WHITE);
-    }
-    CGraphicsUtilities::RenderLine(px, max_size.y + py - _scroll.y, max_size.x + px - _scroll.x, max_size.y + py - _scroll.y, MOF_COLOR_WHITE);
-    for (float x = px - _scroll.x; x < max_size.x + px - _scroll.x; x += chip_size.x) {
-        CGraphicsUtilities::RenderLine(x, py, x, max_size.y + py - _scroll.y, MOF_COLOR_WHITE);
-    }
-    CGraphicsUtilities::RenderLine(max_size.x + px - _scroll.x, py, max_size.x + px - _scroll.x, max_size.y + py - _scroll.y, MOF_COLOR_WHITE);
-}
-
-void MapChipWindow::RenderSelectRect(float px, float py, const Vector2& tex_size, const Vector2& chip_size) {
-    auto select_rect = EditorUtilities::CalcSelectRect(_select_chips.first, _select_chips.second, chip_size, tex_size);
-    select_rect.Translation(Vector2(px - _scroll.x, py - _scroll.y));
+void MapChipWindow::RenderSelectRect(const Vector2& offset_pos, const Vector2& tex_size_def, const Vector2& chip_size_def) {
+    auto select_rect = EditorUtilities::CalcSelectRect(_select_chips.first, _select_chips.second, chip_size_def, tex_size_def, _scale);
+    select_rect.Translation(Vector2(offset_pos.x - _scroll.x, offset_pos.y - _scroll.y));
     CGraphicsUtilities::RenderRect(select_rect, MOF_COLOR_RED);
 }
 
@@ -170,7 +101,8 @@ MapChipWindow::MapChipWindow(void)
     , _mapchip_texture_array(nullptr)
     , _scroll(0, 0)
     , _scale(1)
-    , _select_chips() {
+    , _select_chips()
+    , _texture_arrays(nullptr) {
 }
 
 MapChipWindow::~MapChipWindow(void) {
@@ -191,87 +123,97 @@ void MapChipWindow::Update(void) {
     if (_mapchip_array->size() <= 0) {
         return;
     }
-    MapChip*  mapchip = &(*_mapchip_array)[*_select_layer];
-    int       tex_no  = mapchip->GetTextureNo();
+    
+    const auto mapchip = &(*_mapchip_array)[*_select_layer];
+    const int  tex_no  = mapchip->GetTextureNo();
+    
     if (tex_no < 0) {
         return;
     }
-    CRectangle mapchip_area = *theImGuiWindowManager.Find(ParamKey::ChipWindowChild);
+    
     Vector2 mp;
     g_pInput->GetMousePos(mp);
-    if (mapchip_area.CollisionPoint(mp)) {
-        float mouse_wheel = g_pInput->GetMouseWheelMove();
-        if (g_pInput->IsKeyHold(MOFKEY_LCONTROL) && mouse_wheel) {
-            _scale += mouse_wheel * 0.001f;
-            if (_scale <= 0) {
-                _scale = 0.001f;
-            }
-        }
-        if (EditorUtilities::IsNoMapChipAreaHold()) {
-            return;
-        }
-        if (!g_pInput->IsMouseKeyHold(MOFMOUSE_LBUTTON)) {
-            return;
-        }
-        mapchip_area = EditorUtilities::GetChipArea();
-        int xcnt, ycnt;
-        int selx, sely;
-        int select = 0;
-        if (mapchip->IsTextureArray()) {
-            TextureArray* tex_array = &(*_texture_arrays)[tex_no];
-            float offset_x = 0;
-            for (int i = 0; i < tex_array->size(); i++) {
-                CTexture*  texture = &(*tex_array)[i];
-                Vector2    tex_size((texture->GetWidth() * _scale), (texture->GetHeight() * _scale));
-                CRectangle tex_rect(offset_x, 0, offset_x + tex_size.x, tex_size.y);
-                if (tex_rect.CollisionPoint((mp.x - mapchip_area.Left + _scroll.x), (mp.y - mapchip_area.Top + _scroll.y))) {
-                    select = i;
-                    break;
-                }
-                offset_x += tex_size.x;
-            }
-        }
-        else {
-            CTexture* texture   = &(*_mapchip_texture_array)[tex_no];
-            Vector2   tex_size  = Vector2((texture->GetWidth() * _scale), (texture->GetHeight() * _scale));
-            Vector2   chip_size = Vector2((mapchip->GetChipSize().x * _scale), (mapchip->GetChipSize().y  * _scale));
-            xcnt   = (int)(tex_size.x                             / chip_size.x);
-            ycnt   = (int)(tex_size.y                             / chip_size.y);
-            selx   = (int)((mp.x - mapchip_area.Left + _scroll.x) / chip_size.x);
-            sely   = (int)((mp.y - mapchip_area.Top  + _scroll.y) / chip_size.y);
-            selx   = std::clamp(selx, 0, xcnt - 1);
-            sely   = std::clamp(sely, 0, ycnt - 1);
-            select = sely * xcnt + selx;
-        }
-        if (g_pInput->IsMouseKeyPush(MOFMOUSE_LBUTTON)) {
-            _select_chips.first = select;
-        }
-        _select_chips.second = select;
+
+    auto log_area = theImGuiWindowManager.Find(ParamKey::LogWindow);
+    if (log_area && log_area->CollisionPoint(mp)) {
+        return;
     }
+    
+    const auto& child_rect = *theImGuiWindowManager.Find(ParamKey::ChipWindowChild);
+    if (!child_rect.CollisionPoint(mp)) {
+        return;
+    }
+
+    float mouse_wheel = g_pInput->GetMouseWheelMove();
+    if (g_pInput->IsKeyHold(MOFKEY_LCONTROL) && mouse_wheel) {
+        _scale += mouse_wheel * 0.001f;
+        if (_scale <= 0) {
+            _scale = 0.001f;
+        }
+    }
+    if (EditorUtilities::IsNoMapChipAreaHold()) {
+        return;
+    }
+    if (!g_pInput->IsMouseKeyHold(MOFMOUSE_LBUTTON)) {
+        return;
+    }
+    const auto& mapchip_area = EditorUtilities::GetChipArea();
+    int xcnt, ycnt;
+    int selx, sely;
+    int select = 0;
+    if (mapchip->IsTextureArray()) {
+        TextureArray* tex_array = &(*_texture_arrays)[tex_no];
+        float offset_x = 0;
+        for (int i = 0; i < tex_array->size(); i++) {
+            const auto texture  = &(*tex_array)[i];
+            const auto tex_size = Vector2((float)texture->GetWidth(), (float)texture->GetHeight()) * _scale;
+            const auto tex_rect = CRectangle(offset_x, 0, offset_x + tex_size.x, tex_size.y);
+            if (tex_rect.CollisionPoint((mp.x - mapchip_area.Left + _scroll.x), (mp.y - mapchip_area.Top + _scroll.y))) {
+                select = i;
+                break;
+            }
+            offset_x += tex_size.x;
+        }
+    }
+    else {
+        const auto texture   = &(*_mapchip_texture_array)[tex_no];
+        const auto tex_size  = Vector2((float)texture->GetWidth(), (float)texture->GetHeight());
+        const auto chip_size = mapchip->GetChipSize();
+        xcnt = (int)(tex_size.x / chip_size.x);
+        ycnt = (int)(tex_size.y / chip_size.y);
+        selx = (int)((mp.x - mapchip_area.Left + _scroll.x) / chip_size.x);
+        sely = (int)((mp.y - mapchip_area.Top  + _scroll.y) / chip_size.y);
+        selx = std::clamp(selx, 0, xcnt - 1);
+        sely = std::clamp(sely, 0, ycnt - 1);
+        select = sely * xcnt + selx;
+    }
+    if (g_pInput->IsMouseKeyPush(MOFMOUSE_LBUTTON)) {
+        _select_chips.first = select;
+    }
+    _select_chips.second = select;
 }
 
 void MapChipWindow::Show(void) {
-    float      h           = g_pGraphics->GetTargetHeight();
-    CRectangle rect        = *theImGuiWindowManager.Find(ParamKey::LayerWindow);
-    ImVec2     window_pos  = ImVec2(rect.Left, rect.Bottom);
-    ImVec2     window_size = ImVec2(rect.GetWidth(), h - rect.Bottom);
+    const float h           = g_pGraphics->GetTargetHeight();
+    const auto& rect        = *theImGuiWindowManager.Find(ParamKey::LayerWindow);
+    const auto  window_pos  = ImVec2(rect.Left, rect.Bottom);
+    const auto  window_size = ImVec2(rect.GetWidth(), h - rect.Bottom);
     ImGui::SetNextWindowBgAlpha(0);
     ImGui::SetNextWindowPos (window_pos);
     ImGui::SetNextWindowSize(window_size);
     if (h - window_pos.y < k_safe_mapchip_height) {
         return;
     }
-    int flags = 
-        ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove |
-        ImGuiWindowFlags_NoResize   | ImGuiWindowFlags_NoSavedSettings;
-    ImGui::Begin("mapchip", NULL, flags); {
+    ImGui::Begin("mapchip", NULL, EditorUtilities::GetImGuiDefWindowFlag()); {
         MapChip*  mapchip = nullptr;
         if (_mapchip_array->size() > 0) {
             mapchip = &(*_mapchip_array)[*_select_layer];
         }
         theImGuiWindowManager.Register(ParamKey::ChipWindow);
-        ShowTextureData(mapchip);
-        ShowDummyArea(mapchip);
+        if (mapchip) {
+            ShowTextureData(mapchip);
+            ShowDummyArea(mapchip);
+        }
     }
     ImGui::End();
 }
@@ -281,8 +223,8 @@ void MapChipWindow::Render(void) {
     if (_mapchip_array->size() <= 0) {
         return;
     }
-    auto* mapchip = &(*_mapchip_array)[*_select_layer];
-    int   tex_no  = mapchip->GetTextureNo();
+    const auto mapchip = &(*_mapchip_array)[*_select_layer];
+    const int  tex_no  = mapchip->GetTextureNo();
     if (tex_no < 0) {
         return;
     }
@@ -290,7 +232,7 @@ void MapChipWindow::Render(void) {
     g_pGraphics->SetStencilValue(255);
     g_pGraphics->SetStencilControl(COMPARISON_ALWAYS, STENCIL_REPLACE, STENCIL_REPLACE, STENCIL_REPLACE);
 
-    auto chip_child_rect = EditorUtilities::GetChipArea();
+    const auto& chip_child_rect = EditorUtilities::GetChipArea();
     CGraphicsUtilities::RenderFillRect(chip_child_rect, mapchip->GetBackColor());
 
     g_pGraphics->SetStencilValue(254);
@@ -299,26 +241,28 @@ void MapChipWindow::Render(void) {
     if (mapchip->IsTextureArray()) {
         float offset_x = 0;
         for (auto& texture : (*_texture_arrays)[tex_no]) {
-            RenderTexture(chip_child_rect.Left + offset_x, chip_child_rect.Top, &texture);
+            texture.RenderScale(chip_child_rect.Left + offset_x - _scroll.x, chip_child_rect.Top - _scroll.y, _scale);
             offset_x += (texture.GetWidth() * _scale);
         }
         if ((*theParam.GetDataPointer<bool>(ParamKey::WriteMode))) {
-            CRectangle select_rect = EditorUtilities::CalcSelectTextureRect(tex_no);
+            auto select_rect = EditorUtilities::CalcSelectTextureRect(tex_no);
             select_rect.Translation(Vector2(chip_child_rect.Left - _scroll.x, chip_child_rect.Top - _scroll.y));
             CGraphicsUtilities::RenderRect(select_rect, MOF_COLOR_RED);
         }
     }
     else {
-        CTexture* texture = &(*_mapchip_texture_array)[tex_no];
-        RenderTexture(chip_child_rect.Left, chip_child_rect.Top, texture);
+        const auto texture = &(*_mapchip_texture_array)[tex_no];
+        texture->RenderScale(chip_child_rect.Left - _scroll.x, chip_child_rect.Top - _scroll.y, _scale);
 
-        Vector2 tex_size  = Vector2((texture->GetWidth() * _scale), (texture->GetHeight() * _scale));
-        Vector2 chip_size = Vector2((mapchip->GetChipSize().x * _scale), (mapchip->GetChipSize().y * _scale));
+        const auto  tex_size_def  = Vector2((float)texture->GetWidth(), (float)texture->GetHeight());
+        const auto  tex_size      = tex_size_def * _scale;
+        const auto& chip_size_def = mapchip->GetChipSize();
+        const auto  chip_size     = chip_size_def * _scale;
         if (*theParam.GetDataPointer<bool>(ParamKey::ChipGridFlag)) {
-            RenderGrid(chip_child_rect.Left, chip_child_rect.Top, tex_size, chip_size);
+            EditorUtilities::RenderGrid(chip_child_rect.GetTopLeft(), tex_size, chip_size, _scroll);
         }
         if (EditorUtilities::IsWriteMode()) {
-            RenderSelectRect(chip_child_rect.Left, chip_child_rect.Top, tex_size, chip_size);
+            RenderSelectRect(chip_child_rect.GetTopLeft(), tex_size_def, chip_size_def);
         }
     }
     

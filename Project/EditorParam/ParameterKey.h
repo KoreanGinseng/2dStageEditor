@@ -37,6 +37,9 @@ namespace ParamKey {
     constexpr char* EditScale           = "EditScale";
     constexpr char* DefaultCreate       = "DefaultCreate";
     constexpr char* EditFontColor       = "EditFontColor";
+    constexpr char* LogWindow           = "LogWindow";
+    constexpr char* MemoryX             = "MemoryX";
+    constexpr char* MemoryY             = "MemoryY";
     
     using Type = const char*;
 #else
@@ -76,6 +79,9 @@ namespace ParamKey {
         EditScale          ,
         DefaultCreate      ,
         EditFontColor      ,
+        LogWindow          ,
+        MemoryX            ,
+        MemoryY            ,
     };
     using Type = int;
 #endif

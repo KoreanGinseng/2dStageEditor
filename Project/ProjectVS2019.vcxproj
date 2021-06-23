@@ -101,6 +101,13 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Command\AddTextureArrayCommand.cpp" />
+    <ClCompile Include="Command\AddTextureCommand.cpp" />
+    <ClCompile Include="Command\ChangeMapChipCommand.cpp" />
+    <ClCompile Include="Command\EditChipCommand.cpp" />
+    <ClCompile Include="Command\LoadTextureCommand.cpp" />
+    <ClCompile Include="Command\ReleaseTextureCommand.cpp" />
+    <ClCompile Include="Command\RemoveTextureCommand.cpp" />
     <ClCompile Include="GameApp.cpp" />
     <ClCompile Include="Manager\CommandManager.cpp" />
     <ClCompile Include="Manager\ImGuiWindowManager.cpp" />
@@ -119,11 +126,19 @@
     <ClCompile Include="Utilities\ToolIcon.cpp" />
     <ClCompile Include="Window\EditWindow.cpp" />
     <ClCompile Include="Window\LayerWindow.cpp" />
+    <ClCompile Include="Window\LogWindow.cpp" />
     <ClCompile Include="Window\MapChipWindow.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Command\AddTextureArrayCommand.h" />
+    <ClInclude Include="Command\AddTextureCommand.h" />
+    <ClInclude Include="Command\ChangeMapChipCommand.h" />
     <ClInclude Include="Command\Command.h" />
+    <ClInclude Include="Command\EditChipCommand.h" />
+    <ClInclude Include="Command\LoadTextureCommand.h" />
+    <ClInclude Include="Command\ReleaseTextureCommand.h" />
+    <ClInclude Include="Command\RemoveTextureCommand.h" />
     <ClInclude Include="EditorParam\EditorParameter.h" />
     <ClInclude Include="EditorParam\ParameterKey.h" />
     <ClInclude Include="GameApp.h" />
@@ -147,6 +162,7 @@
     <ClInclude Include="Utilities\ToolIcon.h" />
     <ClInclude Include="Window\EditWindow.h" />
     <ClInclude Include="Window\LayerWindow.h" />
+    <ClInclude Include="Window\LogWindow.h" />
     <ClInclude Include="Window\MapChipWindow.h" />
     <ClInclude Include="Window\WindowDefine.h" />
   </ItemGroup>

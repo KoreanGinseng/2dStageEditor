@@ -1,6 +1,9 @@
 #pragma once
 #include <Mof.h>
 #include "../Stage/Stage.h"
+#include "../Command/Command.h"
+
+constexpr int change_wait_frame = 15;
 
 class LayerWindow {
 private:
@@ -12,6 +15,9 @@ private:
     int                         _select_chip_layer;
     int                         _select_background_layer;
     int                         _select_collision_layer;
+    CommandPtr                  _change_mapchip_command;
+    int                         _change_frame_count;
+    bool                        _change_hold_flag;
 
     // LayerTab
     void ShowMapChipLayerTab(void);

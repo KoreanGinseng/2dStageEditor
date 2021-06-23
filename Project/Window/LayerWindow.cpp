@@ -6,6 +6,10 @@
 #include "../Utilities/EditorUtilities.h"
 #include "../Utilities/FileDialog.h"
 #include "../Manager/ImGuiWindowManager.h"
+#include "../Manager/CommandManager.h"
+#include "../Command/LoadTextureCommand.h"
+#include "../Command/ReleaseTextureCommand.h"
+#include "../Command/ChangeMapChipCommand.h"
 
 /// /////////////////////////////////////////////////////////////
 /// <summary>
@@ -87,7 +91,7 @@ void LayerWindow::ShowBackGround(void) {
     
     // show
     bool show = false;
-    if (_background_array->size() > 0) {
+    if (_background_array->size() > 0 && (*_background_array)[0]._texture.GetName()->GetLength() > 0) {
         background_name = (*_background_array)[0]._texture.GetName()->GetString();
         show = (*_background_array)[0]._show_flag;
     }
@@ -115,25 +119,13 @@ void LayerWindow::ShowBackGround(void) {
 /// </summary>
 void LayerWindow::LoadBackGroundTexture(void) {
     char path[PATH_MAX];
-    bool array_flag = false;
-    bool open = FileDialog::Open(g_pMainWindow->GetWindowHandle(), FileDialog::Mode::Open,
-        "背景画像の読み込み",
-        "画像 ファイル\0*.png;*.bmp;*.dds\0all file(*.*)\0*.*\0\0",
-        "png\0dds\0bmp", path, array_flag);
+    bool open = EditorUtilities::OpenTextureFileDialog("背景画像の読み込み", path);
     if (open) {
-        std::string resource_path = EditorUtilities::GetResourcePath();
         if (_background_array->size() <= 0) {
-            BackGround tmp;
-            tmp._texture.Load(path);
-            tmp._texture.SetName(FileDialog::ChangeRelativePath(path, resource_path.c_str()).c_str());
-            _background_array->push_back(std::move(tmp));
+            _background_array->push_back(BackGround());
         }
-        else {
-            auto tmp = &(*_background_array)[0];
-            tmp->_texture.Release();
-            tmp->_texture.Load(path);
-            tmp->_texture.SetName(FileDialog::ChangeRelativePath(path, resource_path.c_str()).c_str());
-        }
+        auto tmp = &(*_background_array)[0];
+        theCommandManager.Register(std::make_shared<LoadTextureCommand>(path, &(tmp->_texture)));
     }
 }
 
@@ -144,8 +136,7 @@ void LayerWindow::LoadBackGroundTexture(void) {
 void LayerWindow::RemoveBackGroundTexture(void) {
     if (_background_array->size() > 0) {
         auto tmp = &(*_background_array)[0];
-        tmp->_texture.Release();
-        _background_array->clear();
+        theCommandManager.Register(std::make_shared<ReleaseTextureCommand>(&(tmp->_texture)));
     }
 }
 
@@ -154,15 +145,30 @@ void LayerWindow::RemoveBackGroundTexture(void) {
 /// マップデータの表示
 /// </summary>
 void LayerWindow::ShowMapData(void) {
-    MapChip* mapchip = &(*_mapchip_array)[_select_chip_layer];
+    auto mapchip = &(*_mapchip_array)[_select_chip_layer];
 
     ImGui::Text("map data");
     int cs  = (int)mapchip->GetChipSize().x;
     int asx = (int)mapchip->GetArraySize().x;
     int asy = (int)mapchip->GetArraySize().y;
     
+    bool change_size = ImGui::InputInt("chip size", &cs);
+    bool change_x    = ImGui::InputInt("map size x", &asx, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue);
+    bool change_y    = ImGui::InputInt("map size y", &asy, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue);
+
+    // 何も操作されていないとき、カウンタを増やす
+    if (!change_size && !change_x && !change_y) {
+        _change_frame_count++;
+    }
+
+    if (!_change_hold_flag && (change_size || change_x || change_y)) {
+        _change_mapchip_command = std::make_shared<ChangeMapChipCommand>(mapchip);
+        _change_hold_flag   = true;
+        _change_frame_count = 0;
+    }
+
     // chip size
-    if (ImGui::InputInt("chip size", &cs)) {
+    if (change_size) {
         cs = std::clamp(cs, 1, INT_MAX);
         EditorUtilities::ResetSelectPair();
         for (auto& it : *_mapchip_array) {
@@ -171,8 +177,6 @@ void LayerWindow::ShowMapData(void) {
     }
 
     // map size
-    bool change_x = ImGui::InputInt("map size x", &asx, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue);
-    bool change_y = ImGui::InputInt("map size y", &asy, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue);
     if (change_x || change_y) {
         if (asx > 0 && asy > 0) {
             for (auto& it : *_mapchip_array) {
@@ -184,6 +188,14 @@ void LayerWindow::ShowMapData(void) {
                 "マップサイズは1以上を指定してください。", "入力値間違えたのかな？",
                 MB_OK | MB_ICONEXCLAMATION | MB_APPLMODAL);
         }
+    }
+    
+    if (_change_hold_flag && _change_frame_count > change_wait_frame) {
+        _change_mapchip_command->Register();
+        theCommandManager.Register(std::move(_change_mapchip_command));
+        _change_mapchip_command = nullptr;
+        _change_hold_flag   = false;
+        _change_frame_count = 0;
     }
 }
 
@@ -229,6 +241,7 @@ void LayerWindow::Initialize(void) {
     _mapchip_array         = theParam.GetDataPointer<std::vector<MapChip>>(ParamKey::MapChipArray);
     _mapchip_texture_array = theParam.GetDataPointer<std::vector<CTexture>>(ParamKey::MapChipTextureArray);
     _background_array      = theParam.GetDataPointer<std::vector<BackGround>>(ParamKey::BackgroundArray);
+    _change_frame_count    = 0;
     theParam.Register(ParamKey::MapChipLayerSelect, &_select_chip_layer);
 }
 
