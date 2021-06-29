@@ -39,7 +39,10 @@ bool TextExporter::Export(const std::string& file) {
         fprintf(file_pointer, "\n");
         for (int i = 1; i < mapchip_array->size(); i++) {
             mapchip = &(*mapchip_array)[i];
-            int  tex_no        = mapchip->GetTextureNo();
+            int  tex_no = mapchip->GetTextureNo();
+            if (tex_no < 0) {
+                continue;
+            }
             auto texture_array = &(*texture_arrays)[tex_no];
             fprintf(file_pointer, "%d,", texture_array->size());
             for (int i = 0; i < texture_array->size(); i++) {

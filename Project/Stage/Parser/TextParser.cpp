@@ -1,13 +1,13 @@
 #include "TextParser.h"
 
 bool TextParser::Parse(const std::string& buffer, ParseData* out) {
-    std::function<std::string(const std::string&, int&)> get_str = [](const std::string& buff, int& index) {
+    auto get_str = [](const std::string& buff, int& index) {
         std::string str    = &buff[index];
         int         length = str.find_first_of(',');
         index             += length + 1;
         return str.substr(0, length);
     };
-    std::function<int(const std::string&, int&)> get_int = [&](const std::string& buff, int& index) {
+    auto get_int = [&](const std::string& buff, int& index) {
         return std::atoi(get_str(buff, index).c_str());
     };
     int     index = 0;

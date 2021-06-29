@@ -40,6 +40,7 @@ void EditWindow::UpdateWriteMode(MapChip* mapchip) {
     const int   cnt          = selects.size();
     const int   select_x_cnt = select_rect.GetWidth()  / chip_size.x;
     const int   select_y_cnt = select_rect.GetHeight() / chip_size.y;
+
     for (int i = 0; i < cnt; i++) {
         const int x = i % select_x_cnt;
         const int y = i / select_x_cnt;
@@ -330,6 +331,12 @@ void EditWindow::Update(void) {
                 theCommandManager.Register(std::move(_edit_chip_command));
             }
             _edit_chip_command = nullptr;
+        }
+        if (g_pInput->IsMouseKeyPush(2)) {
+            const auto& select_pos  = GetEditPos();
+            auto&       select_chip = *theParam.GetDataPointer<std::pair<int, int>>(ParamKey::MapChipSelect);
+            int         copy_chip   = mapchip->GetMapChip(select_pos.x, select_pos.y);
+            select_chip.first = select_chip.second = copy_chip - 1;
         }
         return;
     }
