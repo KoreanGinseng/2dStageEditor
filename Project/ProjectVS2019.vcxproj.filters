@@ -150,6 +150,9 @@
     <ClCompile Include="Command\ChangeMapChipCommand.cpp">
       <Filter>ソース ファイル\Command</Filter>
     </ClCompile>
+    <ClCompile Include="Manager\ClipBoardManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameApp.h">
@@ -253,6 +256,9 @@
     </ClInclude>
     <ClInclude Include="Command\ChangeMapChipCommand.h">
       <Filter>ヘッダー ファイル\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager\ClipBoardManager.h">
+      <Filter>ヘッダー ファイル\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

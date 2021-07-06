@@ -109,6 +109,7 @@
     <ClCompile Include="Command\ReleaseTextureCommand.cpp" />
     <ClCompile Include="Command\RemoveTextureCommand.cpp" />
     <ClCompile Include="GameApp.cpp" />
+    <ClCompile Include="Manager\ClipBoardManager.cpp" />
     <ClCompile Include="Manager\CommandManager.cpp" />
     <ClCompile Include="Manager\ImGuiWindowManager.cpp" />
     <ClCompile Include="Menu\MainMenu.cpp" />
@@ -142,6 +143,7 @@
     <ClInclude Include="EditorParam\EditorParameter.h" />
     <ClInclude Include="EditorParam\ParameterKey.h" />
     <ClInclude Include="GameApp.h" />
+    <ClInclude Include="Manager\ClipBoardManager.h" />
     <ClInclude Include="Manager\CommandManager.h" />
     <ClInclude Include="Manager\ImGuiWindowManager.h" />
     <ClInclude Include="Menu\MainMenu.h" />
