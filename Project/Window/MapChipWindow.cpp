@@ -17,7 +17,7 @@ void MapChipWindow::ShowTextureData(MapChip* mapchip) {
         std::string file_name = "no textures";
         if (tex_no >= 0) {
             const auto textures = &(*_texture_arrays)[tex_no];
-            if (!(*theParam.GetDataPointer<bool>(ParamKey::WriteMode))) {
+            if (!(*theParam.GetDataPointer<bool>(ParamKey::EditMode))) {
                 file_name = "erase mode now";
             }
             else if (textures->size() > 0) {
@@ -244,7 +244,7 @@ void MapChipWindow::Render(void) {
             texture.RenderScale(chip_child_rect.Left + offset_x - _scroll.x, chip_child_rect.Top - _scroll.y, _scale);
             offset_x += (texture.GetWidth() * _scale);
         }
-        if ((*theParam.GetDataPointer<bool>(ParamKey::WriteMode))) {
+        if ((*theParam.GetDataPointer<bool>(ParamKey::EditMode))) {
             auto select_rect = EditorUtilities::CalcSelectTextureRect(tex_no);
             select_rect.Translation(Vector2(chip_child_rect.Left - _scroll.x, chip_child_rect.Top - _scroll.y));
             CGraphicsUtilities::RenderRect(select_rect, MOF_COLOR_RED);

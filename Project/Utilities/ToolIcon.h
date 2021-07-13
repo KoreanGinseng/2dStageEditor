@@ -4,6 +4,7 @@
 #include <memory>
 #include <Mof.h>
 #include "../EditorParam/ParameterKey.h"
+#include "InResourceTexture.h"
 
 // ********************************************************************************
 /// <summary>
@@ -17,8 +18,8 @@ private:
     ~ToolIcon(void) = delete;
 
 public:
-    using TexturePtr   = std::shared_ptr<CTexture>;
-    using TextureArray = std::vector<TexturePtr>;
+    using InResourceTexturePtr   = std::shared_ptr<CInResourceTexture>;
+    using InResourceTextureArray = std::vector<InResourceTexturePtr>;
 
     static bool Load(void);
 
@@ -27,6 +28,6 @@ public:
     static void Release(void);
 
     static std::vector<ParamKey::Type>& GetKeyArray(void);
-    static TextureArray& GetTextureArray(void);
+    static InResourceTextureArray& GetTextureArray(void);
 };
 

@@ -46,22 +46,23 @@ void ToolMenu::Show(void) {
             theCommandManager.Redo();
         }ImGui::SameLine();
         ImGui::Dummy(ImVec2(size.x * 3.5f, size.y)); ImGui::SameLine();
-        bool write = EditorUtilities::IsWriteMode();
-        ImVec4 on_color    = ImVec4(0.9f, 0.9f, 0.9f, 1.0f);
-        ImVec4 off_color   = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
-        ImVec4 def_color   = ImGui::GetStyle().Colors[ImGuiCol_Button];
-        ImVec4 write_color = (write ? on_color  : off_color);
-        ImVec4 erase_color = (write ? off_color : on_color );
-        ImGui::GetStyle().Colors[ImGuiCol_Button] = (write ? write_color : def_color);
+        ImVec4 on_color     = ImVec4(0.9f, 0.9f, 0.9f, 1.0f);
+        ImVec4 off_color    = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
+        ImVec4 def_color    = ImGui::GetStyle().Colors[ImGuiCol_Button];
+        ImVec4 write_color  = (EditorUtilities::IsWriteMode()  ? on_color : off_color);
+        ImVec4 erase_color  = (EditorUtilities::IsDeleteMode() ? on_color : off_color);
+        ImVec4 select_color = (EditorUtilities::IsSelectMode() ? on_color : off_color);
+        ImGui::GetStyle().Colors[ImGuiCol_Button] = (EditorUtilities::IsWriteMode() ? write_color : def_color);
         if (ImGui::ImageButton(ToolIcon::GetTexture(ParamKey::IconModeWrite), size, uv0, uv1, -1, write_color)) {
-            EditorUtilities::SetWriteMode(true);
-            EditorUtilities::ResetSelectPair();
+            EditorUtilities::SetWriteMode();
         }ImGui::SameLine();
-        ImGui::GetStyle().Colors[ImGuiCol_Button] = (!write ? erase_color : def_color);
+        ImGui::GetStyle().Colors[ImGuiCol_Button] = (EditorUtilities::IsDeleteMode() ? erase_color : def_color);
         if (ImGui::ImageButton(ToolIcon::GetTexture(ParamKey::IconModeErase), size, uv0, uv1, -1, erase_color)) {
-            EditorUtilities::SetWriteMode(false);
-            EditorUtilities::ResetSelectPair();
-
+            EditorUtilities::SetDeleteMode();
+        }ImGui::SameLine();
+        ImGui::GetStyle().Colors[ImGuiCol_Button] = (EditorUtilities::IsSelectMode() ? select_color : def_color);
+        if (ImGui::ImageButton(ToolIcon::GetTexture(ParamKey::IconModeSelect), size, uv0, uv1, -1, select_color)) {
+            EditorUtilities::SetSelectMode();
         }ImGui::SameLine();
         ImGui::GetStyle().Colors[ImGuiCol_Button] = def_color;
     }

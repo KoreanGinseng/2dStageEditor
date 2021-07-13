@@ -1,23 +1,20 @@
 #include "ClipBoardManager.h"
 
-ClipBoardManager::ClipBoardManager(void)
-{
+ClipBoardManager::ClipBoardManager(void) {
 }
 
-ClipBoardManager::~ClipBoardManager(void)
-{
+ClipBoardManager::~ClipBoardManager(void) {
 }
 
-ClipBoardManager& ClipBoardManager::GetInstance(void)
-{
-    // TODO: return ステートメントをここに挿入します
+ClipBoardManager& ClipBoardManager::GetInstance(void) {
+    static ClipBoardManager instance;
+    return instance;
 }
 
-void ClipBoardManager::Register(const CopyObject& obj)
-{
+void ClipBoardManager::Register(const CopyObject& obj) {
+    _copy_object = obj;
 }
 
-CopyObject ClipBoardManager::GetCopyObject(void) const
-{
-    return CopyObject();
+const CopyObject* ClipBoardManager::GetCopyObject(void) const {
+    return &_copy_object;
 }

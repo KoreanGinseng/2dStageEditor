@@ -14,7 +14,7 @@
     <ProjectGuid>{582B9C61-742D-4D2B-9C72-42C088CE473D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>SimpleProject</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -161,6 +161,7 @@
     <ClInclude Include="Stage\Stage.h" />
     <ClInclude Include="Utilities\EditorUtilities.h" />
     <ClInclude Include="Utilities\FileDialog.h" />
+    <ClInclude Include="Utilities\InResourceTexture.h" />
     <ClInclude Include="Utilities\ToolIcon.h" />
     <ClInclude Include="Window\EditWindow.h" />
     <ClInclude Include="Window\LayerWindow.h" />
@@ -173,6 +174,14 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon.ico" />
+    <Image Include="icons\back-arrow.png" />
+    <Image Include="icons\diskette.png" />
+    <Image Include="icons\edit.png" />
+    <Image Include="icons\eraser-tool.png" />
+    <Image Include="icons\folder.png" />
+    <Image Include="icons\new-document.png" />
+    <Image Include="icons\redo-arrow.png" />
+    <Image Include="icons\selection.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

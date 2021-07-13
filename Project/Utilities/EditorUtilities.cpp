@@ -210,11 +210,36 @@ void EditorUtilities::SetCurrentPathResource(void) {
 }
 
 bool EditorUtilities::IsWriteMode(void) {
-    return *theParam.GetDataPointer<bool>(ParamKey::WriteMode);
+    auto mode = *theParam.GetDataPointer<EditMode>(ParamKey::EditMode);
+    return (mode == EditMode::Write);
 }
 
-void EditorUtilities::SetWriteMode(bool b) {
-    *theParam.GetDataPointer<bool>(ParamKey::WriteMode) = b;
+bool EditorUtilities::IsDeleteMode(void) {
+    auto mode = *theParam.GetDataPointer<EditMode>(ParamKey::EditMode);
+    return (mode == EditMode::Delete);
+}
+
+bool EditorUtilities::IsSelectMode(void) {
+    auto mode = *theParam.GetDataPointer<EditMode>(ParamKey::EditMode);
+    return (mode == EditMode::Select);
+}
+
+void EditorUtilities::SetWriteMode(void) {
+    EditorUtilities::ResetSelectPair();
+    auto mode = theParam.GetDataPointer<EditMode>(ParamKey::EditMode);
+    *mode = EditMode::Write;
+}
+
+void EditorUtilities::SetDeleteMode(void) {
+    EditorUtilities::ResetSelectPair();
+    auto mode = theParam.GetDataPointer<EditMode>(ParamKey::EditMode);
+    *mode = EditMode::Delete;
+}
+
+void EditorUtilities::SetSelectMode(void) {
+    EditorUtilities::ResetSelectPair();
+    auto mode = theParam.GetDataPointer<EditMode>(ParamKey::EditMode);
+    *mode = EditMode::Select;
 }
 
 void EditorUtilities::ResetSelectPair(void) {

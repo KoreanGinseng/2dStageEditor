@@ -64,6 +64,9 @@
     <Filter Include="ヘッダー ファイル\Stage\Parser">
       <UniqueIdentifier>{7d400cb6-1aaf-408e-81ca-e72597954fc9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="リソース ファイル\MenuIcons">
+      <UniqueIdentifier>{d1eb5405-7107-4334-bc38-dafb7d8aa4e5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -151,7 +154,7 @@
       <Filter>ソース ファイル\Command</Filter>
     </ClCompile>
     <ClCompile Include="Manager\ClipBoardManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -260,6 +263,9 @@
     <ClInclude Include="Manager\ClipBoardManager.h">
       <Filter>ヘッダー ファイル\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="Utilities\InResourceTexture.h">
+      <Filter>ヘッダー ファイル\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Version.rc">
@@ -269,6 +275,30 @@
   <ItemGroup>
     <Image Include="icon.ico">
       <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="icons\back-arrow.png">
+      <Filter>リソース ファイル\MenuIcons</Filter>
+    </Image>
+    <Image Include="icons\diskette.png">
+      <Filter>リソース ファイル\MenuIcons</Filter>
+    </Image>
+    <Image Include="icons\edit.png">
+      <Filter>リソース ファイル\MenuIcons</Filter>
+    </Image>
+    <Image Include="icons\eraser-tool.png">
+      <Filter>リソース ファイル\MenuIcons</Filter>
+    </Image>
+    <Image Include="icons\folder.png">
+      <Filter>リソース ファイル\MenuIcons</Filter>
+    </Image>
+    <Image Include="icons\new-document.png">
+      <Filter>リソース ファイル\MenuIcons</Filter>
+    </Image>
+    <Image Include="icons\redo-arrow.png">
+      <Filter>リソース ファイル\MenuIcons</Filter>
+    </Image>
+    <Image Include="icons\selection.png">
+      <Filter>リソース ファイル\MenuIcons</Filter>
     </Image>
   </ItemGroup>
 </Project>

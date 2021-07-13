@@ -22,6 +22,7 @@ public:
 
 	void Register(const CopyObject& obj);
 
-	CopyObject GetCopyObject(void) const;
+	const CopyObject* GetCopyObject(void) const;
 };
 
+#define theClipboardManager ClipBoardManager::GetInstance()

@@ -6,6 +6,7 @@
 #include "../Manager/ImGuiWindowManager.h"
 #include "../Manager/CommandManager.h"
 #include "../Command/EditChipCommand.h"
+#include "../Manager/ClipBoardManager.h"
 
 /// /////////////////////////////////////////////////////////////
 /// <summary>
@@ -101,6 +102,56 @@ void EditWindow::UpdateEraseMode(MapChip* mapchip) {
             select_chips->first = select;
         }
         select_chips->second = select;
+    }
+}
+
+void EditWindow::UpdateSelectMode(MapChip* mapchip) {
+    Vector2 mp;
+    g_pInput->GetMousePos(mp);
+    const auto& edit_area = EditorUtilities::GetEditArea();
+    if (!edit_area.CollisionPoint(mp)) {
+        return;
+    }
+    const auto& select_chips = theParam.GetDataPointer<std::pair<int, int>>(ParamKey::MapChipSelect);
+    if (g_pInput->IsMouseKeyHold(MOFMOUSE_LBUTTON)) {
+        const int xcnt = (int)(mapchip->GetArraySize().x);
+        const int ycnt = (int)(mapchip->GetArraySize().y);
+        int       selx = (int)((mp.x - edit_area.Left + _scroll.x) / (int)(mapchip->GetChipSize().x * _scale));
+        int       sely = (int)((mp.y - edit_area.Top  + _scroll.y) / (int)(mapchip->GetChipSize().y * _scale));
+        selx = std::clamp(selx, 0, xcnt - 1);
+        sely = std::clamp(sely, 0, ycnt - 1);
+        const int select = sely * xcnt + selx;
+        if (g_pInput->IsMouseKeyPush(MOFMOUSE_LBUTTON)) {
+            select_chips->first = select;
+        }
+        select_chips->second = select;
+    }
+    auto is_ctrl = g_pInput->IsKeyHold(MOFKEY_LCONTROL) && g_pInput->IsKeyHold(MOFKEY_RCONTROL);
+    if (is_ctrl && g_pInput->IsKeyPush(MOFKEY_C)) {
+        const int xcnt = (int)(mapchip->GetArraySize().x);
+        const int ycnt = (int)(mapchip->GetArraySize().y);
+        const int offset_x = (select_chips->first % xcnt);
+        CopyObject copy_object;
+        copy_object._x_count = (select_chips->second % xcnt) - offset_x;
+        copy_object._selects = *select_chips;
+        for (int i = select_chips->first, j = 0; i < select_chips->second; j++) {
+            auto chip_array = mapchip->GetMapChip();
+            copy_object._chips.push_back(chip_array[i]);
+            if (j >= copy_object._x_count) {
+                j = 0;
+                i += offset_x;
+            }
+            else {
+                i++;
+            }
+        }
+        theClipboardManager.Register(copy_object);
+    }
+    if (is_ctrl && g_pInput->IsKeyPush(MOFKEY_V)) {
+        auto copy_object = theClipboardManager.GetCopyObject();
+        copy_object->_x_count;
+        const int  xcnt = mapchip->GetArraySize().x;
+        const int offset_x = select_chips->first % xcnt;
     }
 }
 
@@ -342,8 +393,11 @@ void EditWindow::Update(void) {
     if (EditorUtilities::IsWriteMode()) {
         UpdateWriteMode(mapchip);
     }
-    else {
+    else if (EditorUtilities::IsDeleteMode()) {
         UpdateEraseMode(mapchip);
+    }
+    else if (EditorUtilities::IsSelectMode()) {
+        UpdateSelectMode(mapchip);
     }
 }
 
@@ -425,7 +479,7 @@ void EditWindow::Render(void) {
     }
 
     auto select_pos = GetEditPos();
-    if (select_pos != Vector2(-1, -1) && !EditorUtilities::IsNoEditAreaHold() && !_preview_flag) {
+    if (!_preview_flag) {
         const auto select_chips = *theParam.GetDataPointer<std::pair<int, int>>(ParamKey::MapChipSelect);
         const int  tex_no       = mapchip->GetTextureNo();
         auto       tex_size_def = mapchip->GetChipSize();
@@ -433,7 +487,12 @@ void EditWindow::Render(void) {
             const auto texture = &(*_mapchip_texture_array)[tex_no];
             tex_size_def = Vector2((float)texture->GetWidth(), (float)texture->GetHeight());
         }
-        if (!EditorUtilities::IsWriteMode()) {
+        if (EditorUtilities::IsSelectMode()) {
+            tex_size_def = array_size * mapchip->GetChipSize();
+            select_pos.x = select_chips.first % (int)array_size.x;
+            select_pos.y = select_chips.first / (int)array_size.x;
+        }
+        else if (select_pos != Vector2(-1, -1) && !EditorUtilities::IsNoEditAreaHold() && EditorUtilities::IsDeleteMode()) {
             tex_size_def = array_size * mapchip->GetChipSize();
             if (g_pInput->IsMouseKeyHold(MOFMOUSE_RBUTTON)) {
                 select_pos.x = select_chips.first % (int)array_size.x;

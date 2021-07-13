@@ -22,7 +22,7 @@ namespace ParamKey {
     constexpr char* EditScroll          = "EditScroll";
     constexpr char* ChipScroll          = "ChipScroll";
     constexpr char* ResourcePath        = "ResourcePath";
-    constexpr char* WriteMode           = "WriteMode";
+    constexpr char* EditMode           = "EditMode";
     constexpr char* IconNewFile         = "IconNewFile";
     constexpr char* IconOpenFile        = "IconOpenFile";
     constexpr char* IconSaveFile        = "IconSaveFile";
@@ -30,6 +30,7 @@ namespace ParamKey {
     constexpr char* IconRedo            = "IconRedo";
     constexpr char* IconModeWrite       = "IconModeWrite";
     constexpr char* IconModeErase       = "IconModeErase";
+    constexpr char* IconModeSelect      = "IconModeSelect";
     constexpr char* OpenFile            = "OpenFile";
     constexpr char* Stage               = "Stage";
     constexpr char* TextureArrays       = "TextureArrays";
@@ -64,7 +65,7 @@ namespace ParamKey {
         EditScroll         ,
         ChipScroll         ,
         ResourcePath       ,
-        WriteMode          ,
+        EditMode           ,
         IconNewFile        ,
         IconOpenFile       ,
         IconSaveFile       ,
@@ -72,6 +73,7 @@ namespace ParamKey {
         IconRedo           ,
         IconModeWrite      ,
         IconModeErase      ,
+        IconModeSelect     ,
         OpenFile           ,
         Stage              ,
         TextureArrays      ,

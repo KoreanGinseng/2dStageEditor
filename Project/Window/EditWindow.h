@@ -21,6 +21,7 @@ private:
 
     void UpdateWriteMode(MapChip* mapchip);
     void UpdateEraseMode(MapChip* mapchip);
+    void UpdateSelectMode(MapChip* mapchip);
 
     Vector2 GetEditPos(void);
 

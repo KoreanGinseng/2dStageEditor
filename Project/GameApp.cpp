@@ -36,7 +36,7 @@ LayerWindow              layer_window;
 MofU32                   edit_background_color = MOF_COLOR_CBLACK;
 MofU32                   edit_font_color       = MOF_COLOR_WHITE;
 
-bool                     write_mode_flag = true;
+EditMode                 edit_mode = EditMode::Write;
 
 bool                     show_main_menu          = true;
 bool                     show_tool_menu          = true;
@@ -112,7 +112,7 @@ MofBool CGameApp::Initialize(void) {
     theParam.Register(ParamKey::ChipWindowChild    , &show_chip_window_child           );
     theParam.Register(ParamKey::EditWindowChild    , &show_edit_window_child           );
     theParam.Register(ParamKey::ResourcePath       , &resource_path                    );
-    theParam.Register(ParamKey::WriteMode          , &write_mode_flag                  );
+    theParam.Register(ParamKey::EditMode           , &edit_mode                  );
     theParam.Register(ParamKey::MapChipTextureArray, stage.GetChipTextureArrayPointer());
     theParam.Register(ParamKey::BackgroundArray    , stage.GetBackgroundArrayPointer() );
     theParam.Register(ParamKey::OpenFile           , &open_file                        );
@@ -204,10 +204,17 @@ MofBool CGameApp::Update(void) {
     }
     bool is_not_mouse_hold = (!g_pInput->IsMouseKeyHold(MOFMOUSE_LBUTTON) && !g_pInput->IsMouseKeyHold(MOFMOUSE_RBUTTON));
     if (is_not_mouse_hold && g_pInput->IsKeyPush(MOFKEY_W)) {
-        write_mode_flag = true;
+        EditorUtilities::SetWriteMode();
     }
     if (is_not_mouse_hold && g_pInput->IsKeyPush(MOFKEY_E)) {
-        write_mode_flag = false;
+        EditorUtilities::SetDeleteMode();
+    }
+    auto select_mode_key = g_pInput->IsKeyPush(MOFKEY_R) ||
+        ((EditorUtilities::IsWriteMode() &&
+        g_pInput->IsKeyPush(MOFKEY_LSHIFT) ||
+        g_pInput->IsKeyPush(MOFKEY_RSHIFT)));
+    if (is_not_mouse_hold && select_mode_key) {
+        EditorUtilities::SetSelectMode();
     }
 
     //ImGui::ShowDemoWindow();

@@ -1,21 +1,33 @@
 #include "ToolIcon.h"
 #include "../EditorParam/EditorParameter.h"
+#include "../Resource.h"
 
 bool ToolIcon::Load(void) {
     LPCMofChar file[] = {
-        "icons/new-document.png",
-        "icons/folder.png",
-        "icons/diskette.png",
         "icons/back-arrow.png",
-        "icons/redo-arrow.png",
+        "icons/diskette.png",
         "icons/edit.png",
         "icons/eraser-tool.png",
+        "icons/folder.png",
+        "icons/new-document.png",
+        "icons/redo-arrow.png",
+        "icons/selection.png",
+    };
+    DWORD ids[] = {
+        IDB_PNG1,
+        IDB_PNG2,
+        IDB_PNG3,
+        IDB_PNG4,
+        IDB_PNG5,
+        IDB_PNG6,
+        IDB_PNG7,
+        IDB_PNG8,
     };
     int i = 0;
-    TextureArray& tex_array = GetTextureArray();
+    auto& tex_array = GetTextureArray();
     for (const auto& it : GetKeyArray()) {
-        tex_array.push_back(std::make_shared<CTexture>());
-        if (!tex_array[i]->Load(file[i])) {
+        tex_array.push_back(std::make_shared<CInResourceTexture>());
+        if (!tex_array[i]->Load(ids[i], file[i])) {
             return false;
         }
         i++;
@@ -24,7 +36,7 @@ bool ToolIcon::Load(void) {
 }
 
 void* ToolIcon::GetTexture(const ParamKey::Type& key) {
-    TextureArray& tex_array = GetTextureArray();
+    auto& tex_array = GetTextureArray();
     int no = 0;
     for (const auto& it : GetKeyArray()) {
         if (it == key) {
@@ -48,18 +60,19 @@ void ToolIcon::Release(void) {
 
 std::vector<ParamKey::Type>& ToolIcon::GetKeyArray(void) {
     static std::vector<ParamKey::Type> key = {
-        ParamKey::IconNewFile,
-        ParamKey::IconOpenFile,
-        ParamKey::IconSaveFile,
         ParamKey::IconUndo,
-        ParamKey::IconRedo,
+        ParamKey::IconSaveFile,
         ParamKey::IconModeWrite,
         ParamKey::IconModeErase,
+        ParamKey::IconOpenFile,
+        ParamKey::IconNewFile,
+        ParamKey::IconRedo,
+        ParamKey::IconModeSelect,
     };
     return key;
 }
 
-ToolIcon::TextureArray& ToolIcon::GetTextureArray(void) {
-    static TextureArray tex_array;
+ToolIcon::InResourceTextureArray& ToolIcon::GetTextureArray(void) {
+    static InResourceTextureArray tex_array;
     return tex_array;
 }

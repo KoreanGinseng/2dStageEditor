@@ -7,6 +7,12 @@
 #include <sstream>
 #include <iomanip>
 
+enum class EditMode {
+    Write,
+    Delete,
+    Select,
+};
+
 struct VersionResourceData {
     std::string CompanyName;
     std::string FileDescription;
@@ -54,7 +60,11 @@ public:
     static void SetCurrentPathResource(void);
 
     static bool IsWriteMode(void);
-    static void SetWriteMode(bool b);
+    static bool IsDeleteMode(void);
+    static bool IsSelectMode(void);
+    static void SetWriteMode(void);
+    static void SetDeleteMode(void);
+    static void SetSelectMode(void);
 
     static void ResetSelectPair(void);
 
