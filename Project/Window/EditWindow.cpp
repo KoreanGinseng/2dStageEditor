@@ -116,8 +116,8 @@ void EditWindow::UpdateSelectMode(MapChip* mapchip) {
     if (g_pInput->IsMouseKeyHold(MOFMOUSE_LBUTTON)) {
         const int xcnt = (int)(mapchip->GetArraySize().x);
         const int ycnt = (int)(mapchip->GetArraySize().y);
-        int       selx = (int)((mp.x - edit_area.Left + _scroll.x) / (int)(mapchip->GetChipSize().x * _scale));
-        int       sely = (int)((mp.y - edit_area.Top  + _scroll.y) / (int)(mapchip->GetChipSize().y * _scale));
+        int       selx = (int)((mp.x - edit_area.Left + _scroll.x) / (mapchip->GetChipSize().x * _scale));
+        int       sely = (int)((mp.y - edit_area.Top  + _scroll.y) / (mapchip->GetChipSize().y * _scale));
         selx = std::clamp(selx, 0, xcnt - 1);
         sely = std::clamp(sely, 0, ycnt - 1);
         const int select = sely * xcnt + selx;
@@ -126,32 +126,49 @@ void EditWindow::UpdateSelectMode(MapChip* mapchip) {
         }
         select_chips->second = select;
     }
-    auto is_ctrl = g_pInput->IsKeyHold(MOFKEY_LCONTROL) && g_pInput->IsKeyHold(MOFKEY_RCONTROL);
+    auto is_ctrl = g_pInput->IsKeyHold(MOFKEY_LCONTROL) || g_pInput->IsKeyHold(MOFKEY_RCONTROL);
     if (is_ctrl && g_pInput->IsKeyPush(MOFKEY_C)) {
         const int xcnt = (int)(mapchip->GetArraySize().x);
         const int ycnt = (int)(mapchip->GetArraySize().y);
         const int offset_x = (select_chips->first % xcnt);
+        const int offset_y = (select_chips->first / xcnt);
         CopyObject copy_object;
         copy_object._x_count = (select_chips->second % xcnt) - offset_x;
+        copy_object._y_count = (select_chips->second / xcnt) - offset_y;
         copy_object._selects = *select_chips;
-        for (int i = select_chips->first, j = 0; i < select_chips->second; j++) {
+        for (int i = select_chips->first, j = 0; i <= select_chips->second;) {
             auto chip_array = mapchip->GetMapChip();
             copy_object._chips.push_back(chip_array[i]);
             if (j >= copy_object._x_count) {
                 j = 0;
-                i += offset_x;
+                i += offset_x + (mapchip->GetArraySize().x - (select_chips->second % xcnt));
             }
             else {
                 i++;
+                j++;
             }
         }
         theClipboardManager.Register(copy_object);
     }
     if (is_ctrl && g_pInput->IsKeyPush(MOFKEY_V)) {
+        if (_edit_chip_command == nullptr) {
+            _edit_chip_command = std::make_shared<EditChipCommand>(mapchip);
+        }
         auto copy_object = theClipboardManager.GetCopyObject();
-        copy_object->_x_count;
-        const int  xcnt = mapchip->GetArraySize().x;
+        if (copy_object->_chips.size() <= 0) {
+            return;
+        }
+        const int xcnt     = mapchip->GetArraySize().x;
         const int offset_x = select_chips->first % xcnt;
+        const int offset_y = select_chips->first / xcnt;
+        const int x_range  = copy_object->_x_count + 1;
+        const int y_range  = copy_object->_y_count + 1;
+        int index = 0;
+        for (int y = offset_y; y < offset_y + y_range; y++) {
+            for (int x = offset_x; x < offset_x + x_range; x++) {
+                mapchip->SetMapChip(x, y, copy_object->_chips[index++]);
+            }
+        }
     }
 }
 
@@ -388,7 +405,9 @@ void EditWindow::Update(void) {
             int         copy_chip   = mapchip->GetMapChip(select_pos.x, select_pos.y);
             select_chip.first = select_chip.second = copy_chip - 1;
         }
-        return;
+        if (!EditorUtilities::IsSelectMode()) {
+            return;
+        }
     }
     if (EditorUtilities::IsWriteMode()) {
         UpdateWriteMode(mapchip);

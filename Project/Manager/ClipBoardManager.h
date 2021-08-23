@@ -2,9 +2,10 @@
 #include <Mof.h>
 
 struct CopyObject {
-	int                 _x_count;
-	std::pair<int, int> _selects;
-	std::vector<int>    _chips;
+	int                 _x_count{ 0 };
+	int                 _y_count{ 0 };
+	std::pair<int, int> _selects{ 0, 0 };
+	std::vector<int>    _chips  {};
 };
 
 class ClipBoardManager {
