@@ -3,11 +3,11 @@ namespace ParamKey {
 #ifdef _DEBUG
 
     constexpr char* WindowRectArray     = "WindowRectArray";
-    constexpr char* LayerWindow         = "LayerWindow";
-    constexpr char* ChipWindow          = "ChipWindow";
-    constexpr char* ChipWindowChild     = "ChipWindowChild";
-    constexpr char* EditWindow          = "EditWindow";
-    constexpr char* EditWindowChild     = "EditWindowChild";
+    constexpr char* ShowLayerWindow     = "ShowLayerWindow";
+    constexpr char* ShowMapChipWindow   = "ShowMapChipWindow";
+    constexpr char* ShowMapChipWindowChild = "ShowMapChipWindowChild";
+    constexpr char* ShowEditWindow      = "ShowEditWindow";
+    constexpr char* ShowEditWindowChild = "ShowEditWindowChild";
     constexpr char* MainMenu            = "MainMenu";
     constexpr char* ToolMenu            = "ToolMenu";
     constexpr char* MapChipLayerSelect  = "MapChipLayerSelect";
@@ -22,7 +22,7 @@ namespace ParamKey {
     constexpr char* EditScroll          = "EditScroll";
     constexpr char* ChipScroll          = "ChipScroll";
     constexpr char* ResourcePath        = "ResourcePath";
-    constexpr char* EditMode           = "EditMode";
+    constexpr char* EditMode            = "EditMode";
     constexpr char* IconNewFile         = "IconNewFile";
     constexpr char* IconOpenFile        = "IconOpenFile";
     constexpr char* IconSaveFile        = "IconSaveFile";
@@ -38,7 +38,7 @@ namespace ParamKey {
     constexpr char* EditScale           = "EditScale";
     constexpr char* DefaultCreate       = "DefaultCreate";
     constexpr char* EditFontColor       = "EditFontColor";
-    constexpr char* LogWindow           = "LogWindow";
+    constexpr char* ShowLogWindow       = "ShowLogWindow";
     constexpr char* MemoryX             = "MemoryX";
     constexpr char* MemoryY             = "MemoryY";
     
@@ -46,11 +46,11 @@ namespace ParamKey {
 #else
     enum detail {
         WindowRectArray    ,
-        LayerWindow        ,
-        ChipWindow         ,
-        ChipWindowChild    ,
-        EditWindow         ,
-        EditWindowChild    ,
+        ShowLayerWindow    ,
+        ShowMapChipWindow  ,
+        ShowMapChipWindowChild,
+        ShowEditWindow     ,
+        ShowEditWindowChild,
         MainMenu           ,
         ToolMenu           ,
         MapChipLayerSelect ,
@@ -81,7 +81,7 @@ namespace ParamKey {
         EditScale          ,
         DefaultCreate      ,
         EditFontColor      ,
-        LogWindow          ,
+        ShowLogWindow      ,
         MemoryX            ,
         MemoryY            ,
     };

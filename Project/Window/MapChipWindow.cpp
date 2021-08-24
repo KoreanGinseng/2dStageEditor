@@ -1,4 +1,4 @@
-#include <MofImGui/MofImGui.h>
+#include "../ImGui/MofImGui.h"
 
 #include "WindowDefine.h"
 #include "MapChipWindow.h"
@@ -83,7 +83,7 @@ void MapChipWindow::ShowDummyArea(MapChip* mapchip) {
         }
     }
     if (ImGui::BeginChild("mapchip area", ImVec2(), true, EditorUtilities::GetImGuiAlwaysScrollWindowFlag())) {
-        theImGuiWindowManager.Register(ParamKey::ChipWindowChild);
+        theImGuiWindowManager.Register(ParamKey::ShowMapChipWindowChild);
         ImGui::Dummy(dummy_area);
         _scroll.x = ImGui::GetScrollX();
         _scroll.y = ImGui::GetScrollY();
@@ -136,12 +136,12 @@ void MapChipWindow::Update(void) {
     Vector2 mp;
     g_pInput->GetMousePos(mp);
 
-    auto log_area = theImGuiWindowManager.Find(ParamKey::LogWindow);
+    auto log_area = theImGuiWindowManager.Find(ParamKey::ShowLogWindow);
     if (log_area && log_area->CollisionPoint(mp)) {
         return;
     }
     
-    const auto& child_rect = *theImGuiWindowManager.Find(ParamKey::ChipWindowChild);
+    const auto& child_rect = *theImGuiWindowManager.Find(ParamKey::ShowMapChipWindowChild);
     if (!child_rect.CollisionPoint(mp)) {
         return;
     }
@@ -196,8 +196,12 @@ void MapChipWindow::Update(void) {
 }
 
 void MapChipWindow::Show(void) {
+    auto show = theParam.GetDataPointer<bool>(ParamKey::ShowMapChipWindow);
+    if (!(*show)) {
+        return;
+    }
     const float h           = g_pGraphics->GetTargetHeight();
-    const auto& rect        = *theImGuiWindowManager.Find(ParamKey::LayerWindow);
+    const auto& rect        = *theImGuiWindowManager.Find(ParamKey::ShowLayerWindow);
     const auto  window_pos  = ImVec2(rect.Left, rect.Bottom);
     const auto  window_size = ImVec2(rect.GetWidth(), h - rect.Bottom);
     ImGui::SetNextWindowBgAlpha(0);
@@ -206,12 +210,12 @@ void MapChipWindow::Show(void) {
     if (h - window_pos.y < k_safe_mapchip_height) {
         return;
     }
-    ImGui::Begin("mapchip", NULL, EditorUtilities::GetImGuiDefWindowFlag()); {
+    ImGui::Begin("mapchip", show, EditorUtilities::GetImGuiDefWindowFlag()); {
         MapChip*  mapchip = nullptr;
         if (_mapchip_array->size() > 0) {
             mapchip = &(*_mapchip_array)[*_select_layer];
         }
-        theImGuiWindowManager.Register(ParamKey::ChipWindow);
+        theImGuiWindowManager.Register(ParamKey::ShowMapChipWindow);
         if (mapchip) {
             ShowTextureData(mapchip);
             ShowDummyArea(mapchip);
@@ -221,7 +225,7 @@ void MapChipWindow::Show(void) {
 }
 
 void MapChipWindow::Render(void) {
-    CGraphicsUtilities::RenderFillRect(*theImGuiWindowManager.Find(ParamKey::ChipWindow), MOF_XRGB(16, 16, 16));
+    CGraphicsUtilities::RenderFillRect(*theImGuiWindowManager.Find(ParamKey::ShowMapChipWindow), MOF_XRGB(16, 16, 16));
     if (_mapchip_array->size() <= 0) {
         return;
     }

@@ -1,4 +1,4 @@
-#include <MofImGui/MofImGui.h>
+#include "../ImGui/MofImGui.h"
 
 #include "LayerWindow.h"
 #include "WindowDefine.h"
@@ -25,6 +25,10 @@ void LayerWindow::ShowMapChipLayerTab(void) {
 
     // detail
     if (ImGui::BeginChild("detail", ImVec2(0, k_layer_detail_height), true)) {
+        
+        ShowLayerData();
+
+        ImGui::Separator();
         
         // map data
         ShowMapData();
@@ -133,6 +137,14 @@ void LayerWindow::RemoveBackGroundTexture(void) {
         auto tmp = &(*_background_array)[0];
         theCommandManager.Register(std::make_shared<ReleaseTextureCommand>(&(tmp->_texture)));
     }
+}
+
+void LayerWindow::ShowLayerData(void) {
+    auto mapchip = &(*_mapchip_array)[_select_chip_layer];
+    char tmp_name[MAX_PATH] = "";
+    strcpy(tmp_name, mapchip->GetName().c_str());
+    bool change_name = ImGui::InputText("name", tmp_name, MAX_PATH, ImGuiInputTextFlags_EnterReturnsTrue);
+    if(change_name) mapchip->SetName(tmp_name);
 }
 
 /// /////////////////////////////////////////////////////////////
@@ -253,6 +265,10 @@ void LayerWindow::Initialize(void) {
 /// ImGuiŽü‚è‚Ì•\Ž¦
 /// </summary>
 void LayerWindow::Show(void) {
+    auto show = theParam.GetDataPointer<bool>(ParamKey::ShowLayerWindow);
+    if (!(*show)) {
+        return;
+    }
     float  w           = g_pGraphics->GetTargetWidth();
     float  h           = g_pGraphics->GetTargetHeight();
     float  size_w      = min(w * k_layer_width_ratio, k_layer_width_max);
@@ -265,9 +281,9 @@ void LayerWindow::Show(void) {
     if (h - window_pos.y < k_safe_layer_height) {
         return;
     }
-    int flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings;
-    ImGui::Begin("layer window", NULL, flags); {
-        theImGuiWindowManager.Register(ParamKey::LayerWindow);
+    int flags = EditorUtilities::GetImGuiDefWindowFlag();
+    ImGui::Begin("layer window", show, flags); {
+        theImGuiWindowManager.Register(ParamKey::ShowLayerWindow);
         if (ImGui::BeginTabBar("layer tab")) {
             if (ImGui::BeginTabItem("mapchip"))    { ShowMapChipLayerTab();    ImGui::EndTabItem(); }
             if (ImGui::BeginTabItem("background")) { ShowBackGroundLayerTab(); ImGui::EndTabItem(); }

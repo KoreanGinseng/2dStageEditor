@@ -25,6 +25,7 @@ private:
     void ShowBackGround(void);
     void LoadBackGroundTexture(void);
     void RemoveBackGroundTexture(void);
+    void ShowLayerData(void);
     void ShowMapData(void);
     void ShowChipBackColor(void);
 

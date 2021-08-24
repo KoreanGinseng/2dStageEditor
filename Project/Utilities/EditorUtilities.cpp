@@ -1,4 +1,4 @@
-#include <MofImGui/MofImGui.h>
+#include "../ImGui/MofImGui.h"
 #include <filesystem>
 #include <functional>
 #include <Windows.h>
@@ -266,7 +266,7 @@ CRectangle EditorUtilities::GetEditArea(void) {
     Vector2    chip_size = Vector2(mapchip->GetChipSize().x * scale, mapchip->GetChipSize().y * scale);
     Vector2    max_size  = chip_size * mapchip->GetArraySize();
     Vector2    scroll    = *theParam.GetDataPointer<Vector2>(ParamKey::EditScroll);
-    CRectangle edit_rect = *theImGuiWindowManager.Find(ParamKey::EditWindowChild);
+    CRectangle edit_rect = *theImGuiWindowManager.Find(ParamKey::ShowEditWindowChild);
     return CRectangle(
         edit_rect.Left, edit_rect.Top,
         edit_rect.Left + min(max_size.x - scroll.x, edit_rect.GetWidth()  - k_scrollbar_size),
@@ -300,7 +300,7 @@ CRectangle EditorUtilities::GetChipArea(void) {
         tex_size = Vector2((texture->GetWidth() * scale), (texture->GetHeight() * scale));
     }
     Vector2    scroll     = *theParam.GetDataPointer<Vector2>(ParamKey::ChipScroll);
-    CRectangle rect_child = *theImGuiWindowManager.Find(ParamKey::ChipWindowChild);
+    CRectangle rect_child = *theImGuiWindowManager.Find(ParamKey::ShowMapChipWindowChild);
     return CRectangle(
         rect_child.Left + k_mapchip_offset, rect_child.Top + k_mapchip_offset,
         rect_child.Left + min(tex_size.x - scroll.x, rect_child.GetWidth()  - k_scrollbar_size) + k_mapchip_offset,

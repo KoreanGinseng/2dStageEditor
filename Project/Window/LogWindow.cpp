@@ -1,4 +1,4 @@
-#include <MofImGui/MofImGui.h>
+#include "../ImGui/MofImGui.h"
 
 #include "LogWindow.h"
 #include "../EditorParam/EditorParameter.h"
@@ -12,8 +12,8 @@ int LogWindow::_save_log_count = 5;
 
 void LogWindow::Show(void) {
 
-    ImGui::Begin("log window", theParam.GetDataPointer<bool>(ParamKey::LogWindow)); {
-        theImGuiWindowManager.Register(ParamKey::LogWindow);
+    ImGui::Begin("log window", theParam.GetDataPointer<bool>(ParamKey::ShowLogWindow)); {
+        theImGuiWindowManager.Register(ParamKey::ShowLogWindow);
 
         if (ImGui::BeginTabBar("log_tab")) {
 

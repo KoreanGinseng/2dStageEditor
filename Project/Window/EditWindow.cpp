@@ -1,4 +1,4 @@
-#include <MofImGui/MofImGui.h>
+#include "../ImGui/MofImGui.h"
 #include "EditWindow.h"
 #include "WindowDefine.h"
 #include "../EditorParam/EditorParameter.h"
@@ -197,7 +197,7 @@ void EditWindow::ShowDummyArea(void) {
         return;
     }
     if (ImGui::BeginChild("edit window child", ImVec2(), true, EditorUtilities::GetImGuiAlwaysScrollWindowFlag())) {
-        theImGuiWindowManager.Register(ParamKey::EditWindowChild);
+        theImGuiWindowManager.Register(ParamKey::ShowEditWindowChild);
         const int   layer     = *_select_chip_layer;
         auto        dummyarea = ImVec2(0, 0);
         if (_mapchip_array->size() > 0 && layer >= 0) {
@@ -367,11 +367,11 @@ void EditWindow::Initialize(void) {
 void EditWindow::Update(void) {
     Vector2 mp;
     g_pInput->GetMousePos(mp);
-    auto log_area = theImGuiWindowManager.Find(ParamKey::LogWindow);
+    auto log_area = theImGuiWindowManager.Find(ParamKey::ShowLogWindow);
     if (log_area && log_area->CollisionPoint(mp)) {
         return;
     }
-    auto edit_area = *theImGuiWindowManager.Find(ParamKey::EditWindowChild);
+    auto edit_area = *theImGuiWindowManager.Find(ParamKey::ShowEditWindowChild);
     if (edit_area.CollisionPoint(mp)) {
         const float wheel_move = g_pInput->GetMouseWheelMove();
         if (g_pInput->IsKeyHold(MOFKEY_LCONTROL) && wheel_move) {
@@ -421,6 +421,10 @@ void EditWindow::Update(void) {
 }
 
 void EditWindow::Show(void) {
+    auto show = theParam.GetDataPointer<bool>(ParamKey::ShowEditWindow);
+    if (!(*show)) {
+        return;
+    }
     const int   w         = g_pGraphics->GetTargetWidth();
     const int   h         = g_pGraphics->GetTargetHeight();
     const int   size_w    = min(w * k_layer_width_ratio, k_layer_width_max);
@@ -428,8 +432,8 @@ void EditWindow::Show(void) {
     ImGui::SetNextWindowPos (ImVec2(    size_w,     tool_rect.Bottom));
     ImGui::SetNextWindowSize(ImVec2(w - size_w, h - tool_rect.Bottom));
     ImGui::SetNextWindowBgAlpha(0);
-    ImGui::Begin("editwindow", NULL, EditorUtilities::GetImGuiDefWindowFlag()); {
-        theImGuiWindowManager.Register(ParamKey::EditWindow);
+    ImGui::Begin("editwindow", show, EditorUtilities::GetImGuiDefWindowFlag()); {
+        theImGuiWindowManager.Register(ParamKey::ShowEditWindow);
         if (ImGui::BeginTabBar("edit tabbar")) {
             if (ImGui::BeginTabItem("edit")) {
                 _preview_flag = false;
@@ -455,7 +459,7 @@ void EditWindow::Render(void) {
     const auto& chip_size        = mapchip->GetChipSize() * _scale;
     const auto& array_size       = mapchip->GetArraySize();
     const auto& max_size         = array_size * chip_size;
-    const auto  edit_window_rect = *theImGuiWindowManager.Find(ParamKey::EditWindow);
+    const auto  edit_window_rect = *theImGuiWindowManager.Find(ParamKey::ShowEditWindow);
     
     CGraphicsUtilities::RenderFillRect(edit_window_rect, MOF_XRGB(16, 16, 16));
     

@@ -1,7 +1,7 @@
 #include "MainMenu.h"
 
 #include <fstream>
-#include <MofImGui/MofImGui.h>
+#include "../EditorCommon.h"
 #include "../Manager/ImGuiWindowManager.h"
 #include "../Manager/CommandManager.h"
 #include "../EditorParam/EditorParameter.h"
@@ -19,7 +19,7 @@
 void MainMenu::File(void) {
     if (ImGui::MenuItem("new"       , "Ctrl + N"))         { NewProject();    };
     if (ImGui::MenuItem("open"      , "Ctrl + O"))         { OpenProject();   };
-    //if (ImGui::MenuItem("close"     , "Ctrl + Shift + C")) { Close();         };
+    if (ImGui::MenuItem("close"     , "Ctrl + Shift + C")) { Close();         };
     ImGui::Separator();
     if (ImGui::MenuItem("save"      , "Ctrl + S"))         { SaveProject();   };
     if (ImGui::MenuItem("save as...", "Ctrl + Shift + S")) { SaveAsProject(); };
@@ -35,7 +35,7 @@ void MainMenu::Edit(void) {
 void MainMenu::View(void) {
     if (ImGui::MenuItem("chip grid" , "", theParam.GetDataPointer<bool>(ParamKey::ChipGridFlag))) {};
     if (ImGui::MenuItem("edit grid" , "", theParam.GetDataPointer<bool>(ParamKey::EditGridFlag))) {};
-    if (ImGui::MenuItem("log window", "", theParam.GetDataPointer<bool>(ParamKey::LogWindow)))    {};
+    if (ImGui::MenuItem("log window", "", theParam.GetDataPointer<bool>(ParamKey::ShowLogWindow))){};
     if (ImGui::MenuItem("memory x"  , "", theParam.GetDataPointer<bool>(ParamKey::MemoryX)))      {};
     if (ImGui::MenuItem("memory y"  , "", theParam.GetDataPointer<bool>(ParamKey::MemoryY)))      {};
 }
@@ -175,15 +175,26 @@ bool MainMenu::SaveAsProject(void) {
 }
 
 bool MainMenu::Close(void) {
-    auto open_file = theParam.GetDataPointer<std::string>(ParamKey::OpenFile);
-    if (open_file->length() && MessageBox(g_pMainWindow->GetWindowHandle(),
-        "保存されていないデータは復元できません。\nよろしいですか？",
-        "ファイルを閉じる", MB_YESNO | MB_ICONEXCLAMATION | MB_APPLMODAL) == IDYES) {
+    //開いているファイル名の取得
+    auto open_file  = theParam.GetDataPointer<std::string>(ParamKey::OpenFile);
+    //ファイルが変更されているか空ではないかをチェックする
+    bool notEmpty   = *open_file != kEmptyFileName || theCommandManager.GetExecList().size() > 0;
+    //閉じていいかのチェックをする
+    bool closeCheck = true;
+    if (notEmpty) {
+        closeCheck = (MessageBox(
+            g_pMainWindow->GetWindowHandle(),
+            "保存されていないデータは復元できません。\nよろしいですか？",
+            "ファイルを閉じる", MB_YESNO | MB_ICONEXCLAMATION | MB_APPLMODAL
+        ) == IDYES);
+    }
+    //閉じる処理
+    if (closeCheck) {
         theParam.GetDataPointer<Stage>(ParamKey::Stage)->Release();
         *open_file = ".txt";
         theCommandManager.Clear();
     }
-    return true;
+    return closeCheck;
 }
 
 void MainMenu::Quit(void) {

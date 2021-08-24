@@ -9,50 +9,54 @@
 
 //INCLUDE
 #include    "GameApp.h"
+#include    "ImGui/MofImGui.h"
 #include    "Resource.h"
-#include    "Utilities/EditorUtilities.h"
-#include    "Utilities/ToolIcon.h"
 #include    <filesystem>
-#include    <MofImGui/MofImGui.h>
-
 #include    "Stage/Stage.h"
 
+//UTIL
+#include    "Utilities/EditorUtilities.h"
+#include    "Utilities/ToolIcon.h"
 #include    "EditorParam/EditorParameter.h"
-#include    "Menu/MainMenu.h"
-#include    "Menu/ToolMenu.h"
-#include    "Window/MapChipWindow.h"
-#include    "Window/EditWindow.h"
-#include    "Window/LayerWindow.h"
-#include    "Window/LogWindow.h"
+#include    "EditorParam/ParameterKey.h"
+
+//MNG
 #include    "Manager/ImGuiWindowManager.h"
 #include    "Manager/CommandManager.h"
 
-bool                     edit_grid_flag = false;
-bool                     chip_grid_flag = false;
-Stage                    stage;
-MapChipWindow            map_chip_window;
-EditWindow               edit_window;
-LayerWindow              layer_window;
-MofU32                   edit_background_color = MOF_COLOR_CBLACK;
-MofU32                   edit_font_color       = MOF_COLOR_WHITE;
+//WINDOW
+#include    "Window/LogWindow.h"
+#include    "Window/EditWindow.h"
+#include    "Window/MapChipWindow.h"
+#include    "Window/LayerWindow.h"
 
+//MENU
+#include    "Menu/MainMenu.h"
+#include    "Menu/ToolMenu.h"
+
+//GLOBAL
+std::string              resource_path;
+std::string              open_file = ".txt";
 EditMode                 edit_mode = EditMode::Write;
-
-bool                     show_main_menu          = true;
-bool                     show_tool_menu          = true;
 bool                     show_layer_window       = true;
 bool                     show_chip_window        = true;
 bool                     show_chip_window_child  = true;
 bool                     show_edit_window        = true;
 bool                     show_edit_window_child  = true;
+bool                     show_main_menu          = true;
+bool                     show_tool_menu          = true;
 bool                     show_log_window         = false;
 bool                     show_x_memory           = false;
 bool                     show_y_memory           = false;
+bool                     edit_grid_flag          = false;
+bool                     chip_grid_flag          = false;
+MofU32                   edit_background_color = MOF_COLOR_CBLACK;
+MofU32                   edit_font_color       = MOF_COLOR_WHITE;
+EditWindow               edit_window;
+MapChipWindow            mapchip_window;
+LayerWindow              layer_window;
+Stage                    stage;
 
-std::string              resource_path;
-std::string              open_file = ".txt";
-
-#include "Stage/Parser/TextParser.h"
 std::function<void(void)> def_create;
 
 void default_create(void) {
@@ -93,38 +97,41 @@ MofBool CGameApp::Initialize(void) {
     if (stat("log", &s) != 0) {
         std::filesystem::create_directory("log");
     }
-    CUtilities::SetCurrentDirectory("Resource");
     ToolIcon::Load();
-    def_create = default_create;
+    CUtilities::SetCurrentDirectory("Resource");
+
     resource_path = std::filesystem::current_path().string();
+    def_create = default_create;
 
     CMofImGui::Setup(false, false);
-    
-    theParam.Register(ParamKey::MapChipArray       , stage.GetChipArrayPointer()       );
-    theParam.Register(ParamKey::ChipGridFlag       , &chip_grid_flag                   );
-    theParam.Register(ParamKey::EditGridFlag       , &edit_grid_flag                   );
-    theParam.Register(ParamKey::EditBackColor      , &edit_background_color            );
-    theParam.Register(ParamKey::MainMenu           , &show_main_menu                   );
-    theParam.Register(ParamKey::ToolMenu           , &show_tool_menu                   );
-    theParam.Register(ParamKey::LayerWindow        , &show_layer_window                );
-    theParam.Register(ParamKey::ChipWindow         , &show_chip_window                 );
-    theParam.Register(ParamKey::EditWindow         , &show_edit_window                 );
-    theParam.Register(ParamKey::ChipWindowChild    , &show_chip_window_child           );
-    theParam.Register(ParamKey::EditWindowChild    , &show_edit_window_child           );
-    theParam.Register(ParamKey::ResourcePath       , &resource_path                    );
-    theParam.Register(ParamKey::EditMode           , &edit_mode                  );
+    auto& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+    //PARAM REGISTERS
+    theParam.Register(ParamKey::EditMode, &edit_mode);
+    theParam.Register(ParamKey::OpenFile, &open_file);
+    theParam.Register(ParamKey::MainMenu, &show_main_menu);
+    theParam.Register(ParamKey::ToolMenu, &show_tool_menu);
+    theParam.Register(ParamKey::ResourcePath, &resource_path);
+    theParam.Register(ParamKey::ChipGridFlag, &chip_grid_flag);
+    theParam.Register(ParamKey::EditGridFlag, &edit_grid_flag);
+    theParam.Register(ParamKey::ShowMapChipWindow, &show_chip_window);
+    theParam.Register(ParamKey::ShowMapChipWindowChild, &show_chip_window_child);
+    theParam.Register(ParamKey::ShowEditWindow, &show_edit_window);
+    theParam.Register(ParamKey::ShowEditWindowChild, &show_edit_window_child);
+    theParam.Register(ParamKey::ShowLayerWindow, &show_layer_window);
+    theParam.Register(ParamKey::ShowLogWindow, &show_log_window);
+    theParam.Register(ParamKey::Stage, &stage);
+    theParam.Register(ParamKey::TextureArrays, stage.GetTextureArraysPointer());
     theParam.Register(ParamKey::MapChipTextureArray, stage.GetChipTextureArrayPointer());
-    theParam.Register(ParamKey::BackgroundArray    , stage.GetBackgroundArrayPointer() );
-    theParam.Register(ParamKey::OpenFile           , &open_file                        );
-    theParam.Register(ParamKey::Stage              , &stage                            );
-    theParam.Register(ParamKey::TextureArrays      , stage.GetTextureArraysPointer()   );
-    theParam.Register(ParamKey::DefaultCreate      , &def_create                       );
-    theParam.Register(ParamKey::EditFontColor      , &edit_font_color                  );
-    theParam.Register(ParamKey::LogWindow          , &show_log_window                  );
-    theParam.Register(ParamKey::MemoryX            , &show_x_memory                    );
-    theParam.Register(ParamKey::MemoryY            , &show_y_memory                    );
-    
-    //open_file = "asaa";
+    theParam.Register(ParamKey::BackgroundArray, stage.GetBackgroundArrayPointer());
+    theParam.Register(ParamKey::MapChipArray, stage.GetChipArrayPointer());
+    theParam.Register(ParamKey::EditBackColor, &edit_background_color);
+    theParam.Register(ParamKey::EditFontColor, &edit_font_color);
+    theParam.Register(ParamKey::DefaultCreate, &def_create);
+    theParam.Register(ParamKey::MemoryX, &show_x_memory);
+    theParam.Register(ParamKey::MemoryY, &show_y_memory);
+
     if (open_file != ".txt" && open_file.length()) {
         stage.Load(open_file);
     }
@@ -133,7 +140,7 @@ MofBool CGameApp::Initialize(void) {
     }
 
     layer_window.Initialize();   /*  first
-  */map_chip_window.Initialize();/*  second
+  */mapchip_window.Initialize(); /*  second
   */edit_window.Initialize();    /*  third
   */
 
@@ -149,8 +156,8 @@ MofBool CGameApp::Initialize(void) {
 MofBool CGameApp::Update(void) {
     //キーの更新
     g_pInput->RefreshKey();
-    CMofImGui::Refresh();
-    EditorUtilities::HitAreaRefresh();
+    CMofImGui::Update();
+    
     if (std::optional<RECT> rect = EditorUtilities::ChangeWindowSize()) {
 
     }
@@ -159,21 +166,23 @@ MofBool CGameApp::Update(void) {
     ToolMenu::Show();
 
     layer_window.Show();
-    map_chip_window.Show();
+    mapchip_window.Show();
     edit_window.Show();
+
+    if (!EditorUtilities::IsPopupModalOpen()) {
+        mapchip_window.Update();
+        edit_window.Update();
+    }
+
     Vector2 mp;
     g_pInput->GetMousePos(mp);
-    auto log_area = theImGuiWindowManager.Find(ParamKey::LogWindow);
+
+    auto log_area = theImGuiWindowManager.Find(ParamKey::ShowLogWindow);
     if (log_area && log_area->CollisionPoint(mp) && g_pInput->IsMouseKeyHold(MOFMOUSE_LBUTTON)) {
         ImGui::SetWindowFocus("log window");
     }
     if (show_log_window) {
         LogWindow::Show();
-    }
-    
-    if (!EditorUtilities::IsPopupModalOpen()) {
-        map_chip_window.Update();
-        edit_window.Update();
     }
 
     bool is_ctrl_hold  = g_pInput->IsKeyHold(MOFKEY_LCONTROL) || g_pInput->IsKeyHold(MOFKEY_RCONTROL);
@@ -234,21 +243,14 @@ MofBool CGameApp::Render(void) {
     //画面のクリア
     g_pGraphics->ClearTarget(0.06f, 0.06f, 0.06f, 0.0f, 1.0f, 0);
 
-    //stage.Render();
 
     edit_window.Render();
-    map_chip_window.Render();
-
+    mapchip_window.Render();
 
     CMofImGui::RenderSetup();
-    CMofImGui::RenderGui();
+    CMofImGui::RenderImGui();
 
-    //CGraphicsUtilities::RenderRect(EditorUtilities::GetChipArea(), MOF_COLOR_GREEN);
-    //CGraphicsUtilities::RenderRect(EditorUtilities::GetEditArea(), MOF_COLOR_GREEN);
-    //CGraphicsUtilities::RenderRect(*theImGuiWindowManager.Find(ParamKey::EditWindowChild), MOF_COLOR_GREEN);
-    //float scale = *theParam.GetDataPointer<float>(ParamKey::ChipScale);
-    //CGraphicsUtilities::RenderString(500, 300, "%.3f, %.3f, %d, %.3f", ImGui::GetMousePos().x, ImGui::GetMousePos().y, (int)(32 * scale), scale);
-
+    
     //描画の終了
     g_pGraphics->RenderEnd();
     return TRUE;

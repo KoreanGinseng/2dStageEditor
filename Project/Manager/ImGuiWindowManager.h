@@ -1,6 +1,6 @@
 #pragma once
 #include "../EditorParam/ParameterKey.h"
-#include <MofImGui/MofImGui.h>
+#include "../ImGui/MofImGui.h"
 
 struct GuiWindowData {
     ParamKey::Type name          { };

@@ -16,11 +16,11 @@ void ImGuiWindowManager::Register(const ParamKey::Type& name) {
     if (rect_pointer != nullptr) {
         *rect_pointer   = rect;
     }
-    else if (std::optional<bool*> active_pointer = theParam.GetData<bool>(name)) {
+    else if (auto active_pointer = theParam.GetDataPointer<bool>(name)) {
         GuiWindowData data;
         data.name = name;
         data.rect = rect;
-        data.active_pointer = active_pointer.value();
+        data.active_pointer = active_pointer;
         _data_array.push_back(data);
     }
 }
