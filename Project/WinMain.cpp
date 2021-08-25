@@ -1,6 +1,5 @@
 #include    "GameApp.h"
 #include    "Resource.h"
-#include    "Utilities/EditorUtilities.h"
 #include    "ImGui/MofImGui.h"
 
 int WINAPI _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow )
@@ -12,7 +11,7 @@ int WINAPI _tWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
     Info.WindowCreateInfo.pProc  = NEW CMofImGuiProc();
     Info.WindowCreateInfo.hIcon  = ::LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON));
     Info.WindowCreateInfo.Style  = WS_OVERLAPPEDWINDOW;
-    Info.WindowCreateInfo.Title  = EditorUtilities::GetVersionResourceData()->ProductName.c_str();
+    Info.WindowCreateInfo.Title  = "EditorUtilities::GetVersionResourceData()->ProductName.c_str()";
     Info.WindowCreateInfo.Width  = 1280;
     Info.WindowCreateInfo.Height =  720;
     Info.GraphicsCreateInfo.bMSAA = FALSE;
