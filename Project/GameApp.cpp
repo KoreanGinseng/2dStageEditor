@@ -70,12 +70,12 @@ void default_create(void) {
     stage.GetChipArrayPointer()->push_back(std::move(mapchip_layer));
     enemy_layer.SetName("enemy");
     enemy_layer.SetTextureArray(true);
-    enemy_layer.SetTextureNo(0);
+    enemy_layer.SetTextureNo(-1);
     enemy_layer.SetChipSize(Vector2(32, 32));
     enemy_layer.Create(70, 25);
     stage.GetChipArrayPointer()->push_back(std::move(enemy_layer));
     item_layer.SetName("item");
-    item_layer.SetTextureNo(1);
+    item_layer.SetTextureNo(-1);
     item_layer.SetTextureArray(true);
     item_layer.SetChipSize(Vector2(32, 32));
     item_layer.Create(70, 25);
@@ -136,7 +136,7 @@ MofBool CGameApp::Initialize(void) {
         stage.Load(open_file);
     }
     else {
-        default_create();
+        //default_create();
     }
 
     layer_window.Initialize();   /*  first
@@ -218,15 +218,15 @@ MofBool CGameApp::Update(void) {
     if (is_not_mouse_hold && g_pInput->IsKeyPush(MOFKEY_E)) {
         EditorUtilities::SetDeleteMode();
     }
-    auto select_mode_key = g_pInput->IsKeyPush(MOFKEY_R) ||
+    auto select_mode_key = g_pInput->IsKeyPush(MOFKEY_R)/* ||
         ((EditorUtilities::IsWriteMode() &&
         g_pInput->IsKeyPush(MOFKEY_LSHIFT) ||
-        g_pInput->IsKeyPush(MOFKEY_RSHIFT)));
+        g_pInput->IsKeyPush(MOFKEY_RSHIFT)))*/;
     if (is_not_mouse_hold && select_mode_key) {
         EditorUtilities::SetSelectMode();
     }
 
-    //ImGui::ShowDemoWindow();
+    ImGui::ShowDemoWindow();
 
     return TRUE;
 }

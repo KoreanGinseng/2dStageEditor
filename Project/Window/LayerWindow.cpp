@@ -27,6 +27,12 @@ void LayerWindow::ShowMapChipLayerTab(void) {
     if (ImGui::BeginChild("detail", ImVec2(0, k_layer_detail_height), true)) {
         
         ShowLayerData();
+        if (ImGui::Button("add layer")) {
+
+        } ImGui::SameLine();
+        if (ImGui::Button("remove layer")) {
+
+        }
 
         ImGui::Separator();
         
@@ -140,11 +146,21 @@ void LayerWindow::RemoveBackGroundTexture(void) {
 }
 
 void LayerWindow::ShowLayerData(void) {
+    if (_mapchip_array->size() <= 0) {
+        ImGui::LabelText("no layer", "");
+        return;
+    }
     auto mapchip = &(*_mapchip_array)[_select_chip_layer];
     char tmp_name[MAX_PATH] = "";
     strcpy(tmp_name, mapchip->GetName().c_str());
     bool change_name = ImGui::InputText("name", tmp_name, MAX_PATH, ImGuiInputTextFlags_EnterReturnsTrue);
-    if(change_name) mapchip->SetName(tmp_name);
+    if (change_name) {
+        mapchip->SetName(tmp_name);
+    }
+    bool texture_array = mapchip->IsTextureArray();
+    if (ImGui::Checkbox("texture array", &texture_array)) {
+        mapchip->SetTextureArray(texture_array);
+    }
 }
 
 /// /////////////////////////////////////////////////////////////
@@ -152,9 +168,13 @@ void LayerWindow::ShowLayerData(void) {
 /// マップデータの表示
 /// </summary>
 void LayerWindow::ShowMapData(void) {
+    ImGui::Text("map data");
+    if (_mapchip_array->size() <= 0) {
+        ImGui::LabelText("no layer", "");
+        return;
+    }
     auto mapchip = &(*_mapchip_array)[_select_chip_layer];
 
-    ImGui::Text("map data");
     int cs  = (int)mapchip->GetChipSize().x;
     int asx = (int)mapchip->GetArraySize().x;
     int asy = (int)mapchip->GetArraySize().y;
@@ -211,6 +231,10 @@ void LayerWindow::ShowMapData(void) {
 /// マップチップの背景色
 /// </summary>
 void LayerWindow::ShowChipBackColor(void) {
+    if (_mapchip_array->size() <= 0) {
+        ImGui::LabelText("no layer", "");
+        return;
+    }
     MapChip* mapchip = &(*_mapchip_array)[_select_chip_layer];
 
     if (ImGui::TreeNode("chip back color")) {
@@ -284,12 +308,16 @@ void LayerWindow::Show(void) {
     int flags = EditorUtilities::GetImGuiDefWindowFlag();
     ImGui::Begin("layer window", show, flags); {
         theImGuiWindowManager.Register(ParamKey::ShowLayerWindow);
-        if (ImGui::BeginTabBar("layer tab")) {
+        /*if (ImGui::BeginTabBar("layer tab")) {
             if (ImGui::BeginTabItem("mapchip"))    { ShowMapChipLayerTab();    ImGui::EndTabItem(); }
             if (ImGui::BeginTabItem("background")) { ShowBackGroundLayerTab(); ImGui::EndTabItem(); }
             if (ImGui::BeginTabItem("color"))      { ShowColorEditTab();       ImGui::EndTabItem(); }
             ImGui::EndTabBar();
-        }
+        }*/
+        ImGui::Begin("mapchip");    { ShowMapChipLayerTab();    } ImGui::End();
+        ImGui::Begin("background"); { ShowBackGroundLayerTab(); } ImGui::End();
+        ImGui::Begin("color");      { ShowColorEditTab();       } ImGui::End();
+        
     }
     ImGui::End();
 }

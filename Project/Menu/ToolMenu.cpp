@@ -10,9 +10,7 @@
 #include "../Utilities/EditorUtilities.h"
 
 void ToolMenu::Show(void) {
-    ImGuiWindowFlags window_flags = 
-        ImGuiWindowFlags_NoMove   | ImGuiWindowFlags_NoTitleBar |
-        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings;
+    ImGuiWindowFlags window_flags = EditorUtilities::GetImGuiDefWindowFlag();
 
     float w = g_pGraphics->GetTargetWidth();
     ImGui::SetNextWindowPos (ImVec2(0, k_main_menu_height));

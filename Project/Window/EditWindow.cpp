@@ -190,7 +190,7 @@ Vector2 EditWindow::GetEditPos(void) {
     return Vector2(selx, sely);
 }
 
-void EditWindow::ShowDummyArea(void) {
+void EditWindow::ShowDummyArea() {
     const float h          = g_pGraphics->GetTargetHeight();
     const auto& window_pos = ImGui::GetWindowPos();
     if (h - window_pos.y < k_safe_edit_height) {
@@ -347,6 +347,83 @@ void EditWindow::RenderSelectRect(const Vector2& offset_pos, const std::pair<int
     CGraphicsUtilities::RenderRect(select_rect, MOF_COLOR_RED);
 }
 
+void EditWindow::RenderMapChips() {
+    auto        mapchip          = &(*_mapchip_array)[*_select_chip_layer];
+    const auto& chip_size        = mapchip->GetChipSize() * _scale;
+    const auto& array_size       = mapchip->GetArraySize();
+    const auto& max_size         = array_size * chip_size;
+    const auto  edit_window_rect = *theImGuiWindowManager.Find(ParamKey::ShowEditWindow);
+    
+    CGraphicsUtilities::RenderFillRect(edit_window_rect, MOF_XRGB(16, 16, 16));
+    
+    g_pGraphics->SetStencilEnable(TRUE);
+    g_pGraphics->SetStencilValue(245);
+    g_pGraphics->SetStencilControl(COMPARISON_ALWAYS, STENCIL_REPLACE, STENCIL_REPLACE, STENCIL_REPLACE);
+    
+    const auto  edit_child_rect = EditorUtilities::GetEditArea();
+    CGraphicsUtilities::RenderFillRect(edit_child_rect, *theParam.GetDataPointer<MofU32>(ParamKey::EditBackColor));
+    
+    g_pGraphics->SetStencilValue(244);
+    g_pGraphics->SetStencilControl(COMPARISON_LESS_EQUAL, STENCIL_KEEP, STENCIL_KEEP, STENCIL_KEEP);
+
+    const auto  max_area   = Vector2(min(edit_child_rect.GetWidth(), max_size.x), min(edit_child_rect.GetHeight(), max_size.y));
+    const auto& offset_pos = edit_child_rect.GetTopLeft();
+    RenderbackGround(offset_pos, offset_pos + max_area);
+
+    RenderChips(offset_pos);
+
+    if (*theParam.GetDataPointer<bool>(ParamKey::EditGridFlag)) {
+        EditorUtilities::RenderGrid(offset_pos, max_size, chip_size, _scroll);
+    }
+
+    {
+        const auto col = *theParam.GetDataPointer<MofU32>(ParamKey::EditFontColor);
+        if (*theParam.GetDataPointer<bool>(ParamKey::MemoryX)) {
+            int i = 0;
+            for (float x = -_scroll.x; x < max_area.x; x += chip_size.x) {
+                CGraphicsUtilities::RenderLine(offset_pos.x + x, offset_pos.y, offset_pos.x + x, offset_pos.y + chip_size.y * 0.5f, col);
+                CGraphicsUtilities::RenderString(offset_pos.x + x, offset_pos.y, "%d", i++);
+            }
+        }
+        if (*theParam.GetDataPointer<bool>(ParamKey::MemoryY)) {
+            int i = 0;
+            for (float y = -_scroll.y; y < max_area.y; y += chip_size.y) {
+                CGraphicsUtilities::RenderLine(offset_pos.x, offset_pos.y + y, offset_pos.x + chip_size.x * 0.5f, offset_pos.y + y, col);
+                CGraphicsUtilities::RenderString(offset_pos.x, offset_pos.y + y, "%d", i++);
+            }
+        }
+    }
+
+    auto select_pos = GetEditPos();
+    if (!_preview_flag) {
+        const auto select_chips = *theParam.GetDataPointer<std::pair<int, int>>(ParamKey::MapChipSelect);
+        const int  tex_no       = mapchip->GetTextureNo();
+        auto       tex_size_def = mapchip->GetChipSize();
+        if (tex_no >= 0 && !mapchip->IsTextureArray()) {
+            const auto texture = &(*_mapchip_texture_array)[tex_no];
+            tex_size_def = Vector2((float)texture->GetWidth(), (float)texture->GetHeight());
+        }
+        if (EditorUtilities::IsSelectMode()) {
+            tex_size_def = array_size * mapchip->GetChipSize();
+            select_pos.x = select_chips.first % (int)array_size.x;
+            select_pos.y = select_chips.first / (int)array_size.x;
+        }
+        else if (select_pos != Vector2(-1, -1) && !EditorUtilities::IsNoEditAreaHold() && EditorUtilities::IsDeleteMode()) {
+            tex_size_def = array_size * mapchip->GetChipSize();
+            if (g_pInput->IsMouseKeyHold(MOFMOUSE_RBUTTON)) {
+                select_pos.x = select_chips.first % (int)array_size.x;
+                select_pos.y = select_chips.first / (int)array_size.x;
+            }
+        }
+        RenderSelectRect(offset_pos, select_chips, select_pos, mapchip->GetChipSize(), tex_size_def);
+    }
+
+    g_pGraphics->SetStencilEnable(FALSE);
+}
+
+void EditWindow::RenderRectEdit() {
+}
+
 EditWindow::EditWindow(void) {
 }
 
@@ -434,19 +511,49 @@ void EditWindow::Show(void) {
     ImGui::SetNextWindowBgAlpha(0);
     ImGui::Begin("editwindow", show, EditorUtilities::GetImGuiDefWindowFlag()); {
         theImGuiWindowManager.Register(ParamKey::ShowEditWindow);
-        if (ImGui::BeginTabBar("edit tabbar")) {
+        /*if (ImGui::BeginTabBar("edit tabbar")) {
             if (ImGui::BeginTabItem("edit")) {
                 _preview_flag = false;
+                _rectedit_flag = false;
                 ShowDummyArea();
                 ImGui::EndTabItem();
             }
             if (ImGui::BeginTabItem("preview")) {
                 _preview_flag = true;
+                _rectedit_flag = false;
+                ShowDummyArea();
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("rect")) {
+                _rectedit_flag = true;
                 ShowDummyArea();
                 ImGui::EndTabItem();
             }
             ImGui::EndTabBar();
+        }*/
+    }
+    ImGui::End();
+    ImGui::Begin("map"); {
+        if (ImGui::BeginTabBar("edit tabbar")) {
+                if (ImGui::BeginTabItem("edit")) {
+                    _preview_flag = false;
+                    _rectedit_flag = false;
+                    ShowDummyArea();
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("preview")) {
+                    _preview_flag = true;
+                    _rectedit_flag = false;
+                    ShowDummyArea();
+                    ImGui::EndTabItem();
+                }
+                ImGui::EndTabBar();
         }
+    }
+    ImGui::End();
+    ImGui::Begin("rect"); {
+        _rectedit_flag = true;
+        ImGui::LabelText("##label_rect", "edit rect");
     }
     ImGui::End();
 }
@@ -455,75 +562,10 @@ void EditWindow::Render(void) {
     if (_mapchip_array->size() <= 0) {
         return;
     }
-    auto        mapchip          = &(*_mapchip_array)[*_select_chip_layer];
-    const auto& chip_size        = mapchip->GetChipSize() * _scale;
-    const auto& array_size       = mapchip->GetArraySize();
-    const auto& max_size         = array_size * chip_size;
-    const auto  edit_window_rect = *theImGuiWindowManager.Find(ParamKey::ShowEditWindow);
-    
-    CGraphicsUtilities::RenderFillRect(edit_window_rect, MOF_XRGB(16, 16, 16));
-    
-    g_pGraphics->SetStencilEnable(TRUE);
-    g_pGraphics->SetStencilValue(245);
-    g_pGraphics->SetStencilControl(COMPARISON_ALWAYS, STENCIL_REPLACE, STENCIL_REPLACE, STENCIL_REPLACE);
-    
-    const auto  edit_child_rect = EditorUtilities::GetEditArea();
-    CGraphicsUtilities::RenderFillRect(edit_child_rect, *theParam.GetDataPointer<MofU32>(ParamKey::EditBackColor));
-    
-    g_pGraphics->SetStencilValue(244);
-    g_pGraphics->SetStencilControl(COMPARISON_LESS_EQUAL, STENCIL_KEEP, STENCIL_KEEP, STENCIL_KEEP);
-
-    const auto  max_area   = Vector2(min(edit_child_rect.GetWidth(), max_size.x), min(edit_child_rect.GetHeight(), max_size.y));
-    const auto& offset_pos = edit_child_rect.GetTopLeft();
-    RenderbackGround(offset_pos, offset_pos + max_area);
-
-    RenderChips(offset_pos);
-
-    if (*theParam.GetDataPointer<bool>(ParamKey::EditGridFlag)) {
-        EditorUtilities::RenderGrid(offset_pos, max_size, chip_size, _scroll);
+    if (!_rectedit_flag) {
+        RenderMapChips();
     }
-
-    {
-        const auto col = *theParam.GetDataPointer<MofU32>(ParamKey::EditFontColor);
-        if (*theParam.GetDataPointer<bool>(ParamKey::MemoryX)) {
-            int i = 0;
-            for (float x = -_scroll.x; x < max_area.x; x += chip_size.x) {
-                CGraphicsUtilities::RenderLine(offset_pos.x + x, offset_pos.y, offset_pos.x + x, offset_pos.y + chip_size.y * 0.5f, col);
-                CGraphicsUtilities::RenderString(offset_pos.x + x, offset_pos.y, "%d", i++);
-            }
-        }
-        if (*theParam.GetDataPointer<bool>(ParamKey::MemoryY)) {
-            int i = 0;
-            for (float y = -_scroll.y; y < max_area.y; y += chip_size.y) {
-                CGraphicsUtilities::RenderLine(offset_pos.x, offset_pos.y + y, offset_pos.x + chip_size.x * 0.5f, offset_pos.y + y, col);
-                CGraphicsUtilities::RenderString(offset_pos.x, offset_pos.y + y, "%d", i++);
-            }
-        }
+    else {
+        RenderRectEdit();
     }
-
-    auto select_pos = GetEditPos();
-    if (!_preview_flag) {
-        const auto select_chips = *theParam.GetDataPointer<std::pair<int, int>>(ParamKey::MapChipSelect);
-        const int  tex_no       = mapchip->GetTextureNo();
-        auto       tex_size_def = mapchip->GetChipSize();
-        if (tex_no >= 0 && !mapchip->IsTextureArray()) {
-            const auto texture = &(*_mapchip_texture_array)[tex_no];
-            tex_size_def = Vector2((float)texture->GetWidth(), (float)texture->GetHeight());
-        }
-        if (EditorUtilities::IsSelectMode()) {
-            tex_size_def = array_size * mapchip->GetChipSize();
-            select_pos.x = select_chips.first % (int)array_size.x;
-            select_pos.y = select_chips.first / (int)array_size.x;
-        }
-        else if (select_pos != Vector2(-1, -1) && !EditorUtilities::IsNoEditAreaHold() && EditorUtilities::IsDeleteMode()) {
-            tex_size_def = array_size * mapchip->GetChipSize();
-            if (g_pInput->IsMouseKeyHold(MOFMOUSE_RBUTTON)) {
-                select_pos.x = select_chips.first % (int)array_size.x;
-                select_pos.y = select_chips.first / (int)array_size.x;
-            }
-        }
-        RenderSelectRect(offset_pos, select_chips, select_pos, mapchip->GetChipSize(), tex_size_def);
-    }
-
-    g_pGraphics->SetStencilEnable(FALSE);
 }

@@ -364,7 +364,7 @@ std::vector<int> EditorUtilities::GetSelectChips(int begin, int end, int xcnt)  
 int EditorUtilities::GetImGuiDefWindowFlag(void) {
     const int flags =
         ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove          |
-        ImGuiWindowFlags_NoResize   | ImGuiWindowFlags_NoSavedSettings ;
+        ImGuiWindowFlags_NoResize   | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoDocking;
     return flags;
 }
 

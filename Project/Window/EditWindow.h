@@ -16,6 +16,7 @@ private:
     Vector2                     _scroll;
     float                       _scale;
     bool                        _preview_flag;
+    bool                        _rectedit_flag;
 
     CommandPtr                  _edit_chip_command;
 
@@ -37,6 +38,10 @@ private:
 
     void RenderSelectRect(const Vector2& offset_pos, const std::pair<int, int>& select_chips, const Vector2& select_pos, const Vector2& chip_size, const Vector2& tex_size);
 
+
+    void RenderMapChips();
+
+    void RenderRectEdit();
 public:
 
     EditWindow(void);
