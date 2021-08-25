@@ -17,6 +17,35 @@
 ImVec2 menu_pos, menu_size;
 ImVec2 tool_pos, tool_size;
 
+//SHOW
+enum class ShowFlag {
+    layer,
+    layer_data,
+    background,
+    color,
+    textures,
+    maphcip_texture,
+    rect_edit,
+    map_edit,
+    map_edit_tab,
+    map_preview_tab,
+    count,
+};
+constexpr char* show_flag_names[] = {
+    "layer",
+    "layer_data",
+    "background",
+    "color",
+    "textures",
+    "maphcip_texture",
+    "rect_edit",
+    "map_edit",
+    "map_edit_tab",
+    "map_preview_tab",
+    "count",
+};
+bool show_flags[static_cast<int>(ShowFlag::count)];
+
 /*************************************************************************//*!
         @brief            アプリケーションの初期化
         @param            None
@@ -35,6 +64,9 @@ MofBool CGameApp::Initialize(void) {
     CMofImGui::Setup(false, false);
     auto& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+    //SHOWFLAG
+    memset(show_flags, true, sizeof(show_flags));
 
     return TRUE;
 }
@@ -86,6 +118,10 @@ MofBool CGameApp::Update(void) {
             ImGui::EndMenu();
         }
         if (ImGui::BeginMenu("View")) {
+            //SHOW FLAGS
+            for (int i = 0; i < (int)ShowFlag::count; i++) {
+                ImGui::Checkbox(show_flag_names[i], &show_flags[i]);
+            }
             ImGui::EndMenu();
         }
         ImGui::EndMainMenuBar();
@@ -102,64 +138,84 @@ MofBool CGameApp::Update(void) {
     ImGui::End();
 
     //LAYER
-    ImGui::Begin("Layer"); {
+    if (show_flags[(int)ShowFlag::layer]) {
+        ImGui::Begin("Layer", &show_flags[(int)ShowFlag::layer]); {
 
+        }
+        ImGui::End();
     }
-    ImGui::End();
 
     //LAYER Detail
-    ImGui::Begin("LayerData"); {
+    if (show_flags[(int)ShowFlag::layer_data]) {
+        ImGui::Begin("LayerData", &show_flags[(int)ShowFlag::layer_data]); {
 
+        }
+        ImGui::End();
     }
-    ImGui::End();
 
     //BACKGROUND
-    ImGui::Begin("BackGround"); {
+    if (show_flags[(int)ShowFlag::background]) {
+        ImGui::Begin("BackGround", &show_flags[(int)ShowFlag::background]); {
 
+        }
+        ImGui::End();
     }
-    ImGui::End();
 
     //COLOR
-    ImGui::Begin("Color"); {
+    if (show_flags[(int)ShowFlag::color]) {
+        ImGui::Begin("Color", &show_flags[(int)ShowFlag::color]); {
 
+        }
+        ImGui::End();
     }
-    ImGui::End();
 
     //Textures
-    ImGui::Begin("Textures"); {
+    if (show_flags[(int)ShowFlag::textures]) {
+        ImGui::Begin("Textures", &show_flags[(int)ShowFlag::textures]); {
 
+        }
+        ImGui::End();
     }
-    ImGui::End();
 
     //MapChipTexture
-    ImGui::Begin("MapChipTexture"); {
+    if (show_flags[(int)ShowFlag::maphcip_texture]) {
+        ImGui::Begin("MapChipTexture", &show_flags[(int)ShowFlag::maphcip_texture]); {
 
+        }
+        ImGui::End();
     }
-    ImGui::End();
 
     //RECT EDIT
-    ImGui::Begin("RectEdit"); {
+    if (show_flags[(int)ShowFlag::rect_edit]) {
+        ImGui::Begin("RectEdit", &show_flags[(int)ShowFlag::rect_edit]); {
 
+        }
+        ImGui::End();
     }
-    ImGui::End();
 
     //MAP EDIT
-    ImGui::Begin("MapEdit"); {
-        if (ImGui::BeginTabBar("##MapEdit")) {
+    if (show_flags[(int)ShowFlag::map_edit]) {
+        ImGui::Begin("MapEdit", &show_flags[(int)ShowFlag::map_edit]); {
+            if (ImGui::BeginTabBar("##MapEdit")) {
 
-            //EDIT
-            if (ImGui::BeginTabItem("Edit")) {
-                ImGui::EndTabItem();
-            }
+                //EDIT
+                if (show_flags[(int)ShowFlag::map_edit_tab]) {
+                    if (ImGui::BeginTabItem("Edit", &show_flags[(int)ShowFlag::map_edit_tab])) {
+                        ImGui::EndTabItem();
+                    }
+                }
 
-            //PREVIEW
-            if (ImGui::BeginTabItem("Preview")) {
-                ImGui::EndTabItem();
+                //PREVIEW
+                if (show_flags[(int)ShowFlag::map_preview_tab]) {
+                    if (ImGui::BeginTabItem("Preview", &show_flags[(int)ShowFlag::map_preview_tab])) {
+                        ImGui::EndTabItem();
+                    }
+                }
             }
+            ImGui::EndTabBar();
         }
-        ImGui::EndTabBar();
+        ImGui::End();
     }
-    ImGui::End();
 
     return TRUE;
 }
