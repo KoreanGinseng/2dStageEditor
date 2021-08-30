@@ -12,39 +12,18 @@
 #include    "ImGui/MofImGui.h"
 #include    "Resource.h"
 #include    <filesystem>
-    
-//POS,SIZE
-ImVec2 menu_pos, menu_size;
-ImVec2 tool_pos, tool_size;
 
-//SHOW
-enum class ShowFlag {
-    layer,
-    layer_data,
-    background,
-    color,
-    textures,
-    maphcip_texture,
-    rect_edit,
-    map_edit,
-    map_edit_tab,
-    map_preview_tab,
-    count,
-};
-constexpr char* show_flag_names[] = {
-    "layer",
-    "layer_data",
-    "background",
-    "color",
-    "textures",
-    "maphcip_texture",
-    "rect_edit",
-    "map_edit",
-    "map_edit_tab",
-    "map_preview_tab",
-    "count",
-};
+//MENU
+#include    "Menu/MainMenu.h"
+#include    "Menu/ToolBar.h"
+
+
 bool show_flags[static_cast<int>(ShowFlag::count)];
+
+//GLOBAL
+MainMenu main_menu;
+ToolBar  tool_bar;
+EditorMode editor_mode = EditorMode::write;
 
 /*************************************************************************//*!
         @brief            アプリケーションの初期化
@@ -59,14 +38,19 @@ MofBool CGameApp::Initialize(void) {
         std::filesystem::create_directory("log");
     }
 
-    CUtilities::SetCurrentDirectory("Resource");
-
     CMofImGui::Setup(false, false);
     auto& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
     //SHOWFLAG
     memset(show_flags, true, sizeof(show_flags));
+
+    //LOAD
+    for (int i = 0; i < (int)BB_InResourceTexture::count; i++) {
+        auto texture = new CInResourceTexture();
+        texture->Load(in_resource_texture_ids[i], in_resource_texture_names[i]);
+        theBB_InResourceTexture.Register((BB_InResourceTexture)i, texture);
+    }
 
     return TRUE;
 }
@@ -82,13 +66,19 @@ MofBool CGameApp::Update(void) {
     g_pInput->RefreshKey();
     CMofImGui::Update();
 
+    if (auto rect = EditorUtilities::ChangeWindowSize()) {
+        //ChangeWindow
+    }
+
     //DOCKING BACKGROUNDS
     {
+        auto tool_pos = theBB_ImVec2.GetData(BB_ImVec2::ToolBarPos);
+        auto tool_size = theBB_ImVec2.GetData(BB_ImVec2::ToolBarSize);
         ImGuiWindowFlags dockspace_window_flag = ImGuiWindowFlags_NoDocking;
         dockspace_window_flag |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
         dockspace_window_flag |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-        ImGui::SetNextWindowPos(ImVec2(0, tool_pos.y + tool_size.y));
-        ImGui::SetNextWindowSize(ImVec2(g_pGraphics->GetTargetWidth(), g_pGraphics->GetTargetHeight() - (tool_pos.y + tool_size.y)));
+        ImGui::SetNextWindowPos(ImVec2(0, tool_pos->y + tool_size->y));
+        ImGui::SetNextWindowSize(ImVec2(g_pGraphics->GetTargetWidth(), g_pGraphics->GetTargetHeight() - (tool_pos->y + tool_size->y)));
         ImGui::SetNextWindowViewport(ImGui::GetMainViewport()->ID);
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
         ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
@@ -108,34 +98,10 @@ MofBool CGameApp::Update(void) {
     //ImGui::ShowDemoWindow();
     
     //MAINMENU
-    if (ImGui::BeginMainMenuBar()) {
-        menu_pos  = ImGui::GetWindowPos();
-        menu_size = ImGui::GetWindowSize();
-        if (ImGui::BeginMenu("File")) {
-            ImGui::EndMenu();
-        }
-        if (ImGui::BeginMenu("Edit")) {
-            ImGui::EndMenu();
-        }
-        if (ImGui::BeginMenu("View")) {
-            //SHOW FLAGS
-            for (int i = 0; i < (int)ShowFlag::count; i++) {
-                ImGui::Checkbox(show_flag_names[i], &show_flags[i]);
-            }
-            ImGui::EndMenu();
-        }
-        ImGui::EndMainMenuBar();
-    }
+    main_menu.UpdateGui();
     
     //TOOLBAR
-    int toolbar_flag = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar;
-    ImGui::SetNextWindowPos(ImVec2(0, menu_pos.y + menu_size.y));
-    ImGui::SetNextWindowSize(ImVec2(g_pGraphics->GetTargetWidth() * 1.0f, g_pGraphics->GetTargetHeight() * 0.03f));
-    ImGui::Begin("##ToolBar", NULL, toolbar_flag); {
-        tool_pos  = ImGui::GetWindowPos();
-        tool_size = ImGui::GetWindowSize();
-    }
-    ImGui::End();
+    tool_bar.UpdateGui();
 
     //LAYER
     if (show_flags[(int)ShowFlag::layer]) {
@@ -145,7 +111,7 @@ MofBool CGameApp::Update(void) {
         ImGui::End();
     }
 
-    //LAYER Detail
+    //LAYER DATA
     if (show_flags[(int)ShowFlag::layer_data]) {
         ImGui::Begin("LayerData", &show_flags[(int)ShowFlag::layer_data]); {
 
@@ -248,11 +214,15 @@ MofBool CGameApp::Render(void) {
 *//**************************************************************************/
 MofBool CGameApp::Release(void) {
 
-    CUtilities::SetCurrentDirectory("../log");
+    CUtilities::SetCurrentDirectory("log");
     //SAVELOGS
-    CUtilities::SetCurrentDirectory("../Resource");
+    CUtilities::SetCurrentDirectory("../");
 
     CMofImGui::Cleanup();
+
+    theBB_string.Clear();
+    theBB_ImVec2.Clear();
+    theBB_InResourceTexture.AllDelete();
 
     return TRUE;
 }

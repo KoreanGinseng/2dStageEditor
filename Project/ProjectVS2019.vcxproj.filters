@@ -16,6 +16,27 @@
     <Filter Include="ImGui">
       <UniqueIdentifier>{36b04e2d-dd3e-424f-ad1b-fad75ee65d45}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Menu">
+      <UniqueIdentifier>{1a118ecf-febe-4e78-b93b-02b78065f2e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Menu">
+      <UniqueIdentifier>{48b9bb0e-24e2-451d-9d4c-08cbd756ee4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Utilities">
+      <UniqueIdentifier>{f614a3cd-84c3-4ddd-8bc4-e42562c6d486}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Utilities">
+      <UniqueIdentifier>{3d848c33-7e1d-422f-8b87-aef0b1961408}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Manager">
+      <UniqueIdentifier>{d64c8a05-5eaf-4837-8300-b45cf2da7d86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Manager">
+      <UniqueIdentifier>{ea66f28b-7286-468c-a53d-34ca47ee9843}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\icons">
+      <UniqueIdentifier>{ea13ca6e-8605-4031-a961-c88ee14501fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -50,6 +71,18 @@
     </ClCompile>
     <ClCompile Include="ImGui\MofImGui.cpp">
       <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Menu\MainMenu.cpp">
+      <Filter>ソース ファイル\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Menu\ToolBar.cpp">
+      <Filter>ソース ファイル\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\EditorUtilities.cpp">
+      <Filter>ソース ファイル\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\FileDialog.cpp">
+      <Filter>ソース ファイル\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -89,6 +122,24 @@
     <ClInclude Include="EditorCommon.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Menu\MainMenu.h">
+      <Filter>ヘッダー ファイル\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu\ToolBar.h">
+      <Filter>ヘッダー ファイル\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities\BlackBoardContainer.h">
+      <Filter>ヘッダー ファイル\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities\EditorUtilities.h">
+      <Filter>ヘッダー ファイル\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities\FileDialog.h">
+      <Filter>ヘッダー ファイル\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities\InResourceTexture.h">
+      <Filter>ヘッダー ファイル\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Version.rc">
@@ -98,6 +149,30 @@
   <ItemGroup>
     <Image Include="icon.ico">
       <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="icons\new-document.png">
+      <Filter>リソース ファイル\icons</Filter>
+    </Image>
+    <Image Include="icons\folder.png">
+      <Filter>リソース ファイル\icons</Filter>
+    </Image>
+    <Image Include="icons\diskette.png">
+      <Filter>リソース ファイル\icons</Filter>
+    </Image>
+    <Image Include="icons\back-arrow.png">
+      <Filter>リソース ファイル\icons</Filter>
+    </Image>
+    <Image Include="icons\redo-arrow.png">
+      <Filter>リソース ファイル\icons</Filter>
+    </Image>
+    <Image Include="icons\edit.png">
+      <Filter>リソース ファイル\icons</Filter>
+    </Image>
+    <Image Include="icons\eraser-tool.png">
+      <Filter>リソース ファイル\icons</Filter>
+    </Image>
+    <Image Include="icons\selection.png">
+      <Filter>リソース ファイル\icons</Filter>
     </Image>
   </ItemGroup>
 </Project>

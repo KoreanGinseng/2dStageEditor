@@ -111,6 +111,10 @@
     <ClCompile Include="ImGui\imgui_tables.cpp" />
     <ClCompile Include="ImGui\imgui_widgets.cpp" />
     <ClCompile Include="ImGui\MofImGui.cpp" />
+    <ClCompile Include="Menu\MainMenu.cpp" />
+    <ClCompile Include="Menu\ToolBar.cpp" />
+    <ClCompile Include="Utilities\EditorUtilities.cpp" />
+    <ClCompile Include="Utilities\FileDialog.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -125,13 +129,27 @@
     <ClInclude Include="ImGui\imstb_textedit.h" />
     <ClInclude Include="ImGui\imstb_truetype.h" />
     <ClInclude Include="ImGui\MofImGui.h" />
+    <ClInclude Include="Menu\MainMenu.h" />
+    <ClInclude Include="Menu\ToolBar.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Utilities\BlackBoardContainer.h" />
+    <ClInclude Include="Utilities\EditorUtilities.h" />
+    <ClInclude Include="Utilities\FileDialog.h" />
+    <ClInclude Include="Utilities\InResourceTexture.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Version.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon.ico" />
+    <Image Include="icons\back-arrow.png" />
+    <Image Include="icons\diskette.png" />
+    <Image Include="icons\edit.png" />
+    <Image Include="icons\eraser-tool.png" />
+    <Image Include="icons\folder.png" />
+    <Image Include="icons\new-document.png" />
+    <Image Include="icons\redo-arrow.png" />
+    <Image Include="icons\selection.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
