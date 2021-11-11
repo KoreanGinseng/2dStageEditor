@@ -151,5 +151,15 @@ public:
     /// <changed>inoue,2021/08/27</changed>
     // ********************************************************************************
     static std::string GetDatetimeStr(void);
+
+    // ********************************************************************************
+    /// <summary>
+    /// GuiWindowFlag�̎擾
+    /// </summary>
+    /// <returns>GuiWindowFlag</returns>
+    /// <created>inoue,2021/08/31</created>
+    /// <changed>inoue,2021/08/31</changed>
+    // ********************************************************************************
+    static int GetGuiWindowFlag(void);
 };
 

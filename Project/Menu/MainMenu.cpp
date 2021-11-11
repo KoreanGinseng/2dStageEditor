@@ -47,9 +47,12 @@ void MainMenu::UpdateViewMenu() {
         return;
     }
 
-    //SHOW FLAGS
-    for (int i = 0; i < (int)ShowFlag::count; i++) {
-        ImGui::Checkbox(show_flag_names[i], &show_flags[i]);
+    if (ImGui::BeginMenu("shows")) {
+        //SHOW FLAGS
+        for (int i = 0; i < (int)ShowFlag::count; i++) {
+            ImGui::Checkbox(show_flag_names[i], &show_flags[i]);
+        }
+        ImGui::EndMenu();
     }
 
     //Menu‚ÌI—¹

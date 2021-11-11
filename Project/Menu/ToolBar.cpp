@@ -82,9 +82,11 @@ void ToolBar::UpdateGui() {
         bool is_write       = (editor_mode == EditorMode::write);
         bool is_erase       = (editor_mode == EditorMode::erase);
         bool is_select      = (editor_mode == EditorMode::select);
+        bool is_layout      = (editor_mode == EditorMode::layout);
         ImVec4 write_color  = (is_write  ? on_color : off_color);
         ImVec4 erase_color  = (is_erase  ? on_color : off_color);
         ImVec4 select_color = (is_select ? on_color : off_color);
+        ImVec4 layout_color = (is_layout ? on_color : off_color);
         ImGui::GetStyle().Colors[ImGuiCol_Button] = (is_write ? write_color : def_color);
         if (ImGui::ImageButton(theBB_InResourceTexture.GetData(BB_InResourceTexture::edit)->GetTexture(), size, uv0, uv1, -1, write_color)) {
             editor_mode = EditorMode::write;
@@ -96,6 +98,10 @@ void ToolBar::UpdateGui() {
         ImGui::GetStyle().Colors[ImGuiCol_Button] = (is_select ? select_color : def_color);
         if (ImGui::ImageButton(theBB_InResourceTexture.GetData(BB_InResourceTexture::selection)->GetTexture(), size, uv0, uv1, -1, select_color)) {
             editor_mode = EditorMode::select;
+        }ImGui::SameLine();
+        ImGui::GetStyle().Colors[ImGuiCol_Button] = (is_layout ? layout_color : def_color);
+        if (ImGui::ImageButton(theBB_InResourceTexture.GetData(BB_InResourceTexture::layout)->GetTexture(), size, uv0, uv1, -1, layout_color)) {
+            editor_mode = EditorMode::layout;
         }ImGui::SameLine();
         ImGui::GetStyle().Colors[ImGuiCol_Button] = def_color;
     }

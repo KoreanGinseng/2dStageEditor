@@ -103,9 +103,11 @@ MofBool CGameApp::Update(void) {
     //TOOLBAR
     tool_bar.UpdateGui();
 
+    MOF_PRINTLOG("%s\n", (ImGui::IsAnyItemHovered() ? "TRUE" : "FALSE"));
+
     //LAYER
     if (show_flags[(int)ShowFlag::layer]) {
-        ImGui::Begin("Layer", &show_flags[(int)ShowFlag::layer]); {
+        ImGui::Begin("Layer", &show_flags[(int)ShowFlag::layer], EditorUtilities::GetGuiWindowFlag()); {
 
         }
         ImGui::End();
@@ -113,7 +115,7 @@ MofBool CGameApp::Update(void) {
 
     //LAYER DATA
     if (show_flags[(int)ShowFlag::layer_data]) {
-        ImGui::Begin("LayerData", &show_flags[(int)ShowFlag::layer_data]); {
+        ImGui::Begin("LayerData", &show_flags[(int)ShowFlag::layer_data], EditorUtilities::GetGuiWindowFlag()); {
 
         }
         ImGui::End();
@@ -121,7 +123,7 @@ MofBool CGameApp::Update(void) {
 
     //BACKGROUND
     if (show_flags[(int)ShowFlag::background]) {
-        ImGui::Begin("BackGround", &show_flags[(int)ShowFlag::background]); {
+        ImGui::Begin("BackGround", &show_flags[(int)ShowFlag::background], EditorUtilities::GetGuiWindowFlag()); {
 
         }
         ImGui::End();
@@ -129,7 +131,7 @@ MofBool CGameApp::Update(void) {
 
     //COLOR
     if (show_flags[(int)ShowFlag::color]) {
-        ImGui::Begin("Color", &show_flags[(int)ShowFlag::color]); {
+        ImGui::Begin("Color", &show_flags[(int)ShowFlag::color], EditorUtilities::GetGuiWindowFlag()); {
 
         }
         ImGui::End();
@@ -137,7 +139,7 @@ MofBool CGameApp::Update(void) {
 
     //Textures
     if (show_flags[(int)ShowFlag::textures]) {
-        ImGui::Begin("Textures", &show_flags[(int)ShowFlag::textures]); {
+        ImGui::Begin("Textures", &show_flags[(int)ShowFlag::textures], EditorUtilities::GetGuiWindowFlag()); {
 
         }
         ImGui::End();
@@ -145,7 +147,7 @@ MofBool CGameApp::Update(void) {
 
     //MapChipTexture
     if (show_flags[(int)ShowFlag::maphcip_texture]) {
-        ImGui::Begin("MapChipTexture", &show_flags[(int)ShowFlag::maphcip_texture]); {
+        ImGui::Begin("MapChipTexture", &show_flags[(int)ShowFlag::maphcip_texture], EditorUtilities::GetGuiWindowFlag()); {
 
         }
         ImGui::End();
@@ -153,7 +155,7 @@ MofBool CGameApp::Update(void) {
 
     //RECT EDIT
     if (show_flags[(int)ShowFlag::rect_edit]) {
-        ImGui::Begin("RectEdit", &show_flags[(int)ShowFlag::rect_edit]); {
+        ImGui::Begin("RectEdit", &show_flags[(int)ShowFlag::rect_edit], EditorUtilities::GetGuiWindowFlag()); {
 
         }
         ImGui::End();
@@ -161,7 +163,7 @@ MofBool CGameApp::Update(void) {
 
     //MAP EDIT
     if (show_flags[(int)ShowFlag::map_edit]) {
-        ImGui::Begin("MapEdit", &show_flags[(int)ShowFlag::map_edit]); {
+        ImGui::Begin("MapEdit", &show_flags[(int)ShowFlag::map_edit], EditorUtilities::GetGuiWindowFlag()); {
             if (ImGui::BeginTabBar("##MapEdit")) {
 
                 //EDIT

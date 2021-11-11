@@ -12,6 +12,7 @@ enum class EditorMode {
     write,
     erase,
     select,
+    layout,
 };
 
 extern EditorMode editor_mode;
@@ -74,6 +75,7 @@ enum class BB_InResourceTexture {
     edit,
     eraser_tool,
     selection,
+    layout,
     count,
 };
 
@@ -86,6 +88,7 @@ constexpr int in_resource_texture_ids[] = {
     IDB_PNG6,
     IDB_PNG7,
     IDB_PNG8,
+    IDB_PNG9,
     -1, //COUNT END
 };
 
@@ -98,6 +101,7 @@ constexpr char* in_resource_texture_names[] = {
     "icons/edit.png",
     "icons/eraser-tool.png",
     "icons/selection.png",
+    "icons/layout.png",
     "count",
 };
 

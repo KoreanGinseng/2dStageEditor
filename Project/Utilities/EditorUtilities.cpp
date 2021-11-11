@@ -270,3 +270,19 @@ std::string EditorUtilities::GetDatetimeStr(void) {
     // std::string‚É‚µ‚Ä’l‚ð•Ô‚·
     return s.str();
 }
+
+// ********************************************************************************
+/// <summary>
+/// GuiWindowFlag‚ÌŽæ“¾
+/// </summary>
+/// <returns>GuiWindowFlag</returns>
+/// <created>inoue,2021/08/31</created>
+/// <changed>inoue,2021/08/31</changed>
+// ********************************************************************************
+int EditorUtilities::GetGuiWindowFlag(void) {
+    int flag = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize;
+    if (editor_mode == EditorMode::layout) {
+        flag = ImGuiWindowFlags_None;
+    }
+    return flag;
+}

@@ -37,6 +37,9 @@
     <Filter Include="リソース ファイル\icons">
       <UniqueIdentifier>{ea13ca6e-8605-4031-a961-c88ee14501fd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="リソース ファイル\inis">
+      <UniqueIdentifier>{6e7a5f19-c45c-4df5-ad64-24d28d0c2390}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -83,6 +86,9 @@
     </ClCompile>
     <ClCompile Include="Utilities\FileDialog.cpp">
       <Filter>ソース ファイル\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="LayerData.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -140,6 +146,9 @@
     <ClInclude Include="Utilities\InResourceTexture.h">
       <Filter>ヘッダー ファイル\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="LayerData.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Version.rc">
@@ -174,5 +183,13 @@
     <Image Include="icons\selection.png">
       <Filter>リソース ファイル\icons</Filter>
     </Image>
+    <Image Include="icons\layout.png">
+      <Filter>リソース ファイル\icons</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inis\default.ini">
+      <Filter>リソース ファイル\inis</Filter>
+    </None>
   </ItemGroup>
 </Project>
