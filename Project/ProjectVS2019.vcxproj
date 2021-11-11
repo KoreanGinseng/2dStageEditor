@@ -14,7 +14,7 @@
     <ProjectGuid>{582B9C61-742D-4D2B-9C72-42C088CE473D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>SimpleProject</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -42,15 +42,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>../../MofLibrary/Include;../../../MofLibrary/Include;$(IncludePath);</IncludePath>
-    <LibraryPath>../../MofLibrary/Library;../../../MofLibrary/Library;$(LibraryPath);</LibraryPath>
+    <IncludePath>../../MofLibrary/Include;../../../MofLibrary/Include;../../../../MofLibrary/Include;$(IncludePath)</IncludePath>
+    <LibraryPath>../../MofLibrary/Library;../../../MofLibrary/Library;../../../../MofLibrary/Library;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)\</OutDir>
     <TargetName>$(ProjectName)_Debug</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>../../MofLibrary/Include;../../../MofLibrary/Include;$(IncludePath);</IncludePath>
-    <LibraryPath>../../MofLibrary/Library;../../../MofLibrary/Library;$(LibraryPath);</LibraryPath>
+    <IncludePath>../../MofLibrary/Include;../../../MofLibrary/Include;../../../../MofLibrary/Include;$(IncludePath)</IncludePath>
+    <LibraryPath>../../MofLibrary/Library;../../../MofLibrary/Library;../../../../MofLibrary/Library;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)\</OutDir>
     <TargetName>$(ProjectName)_Release</TargetName>
   </PropertyGroup>
@@ -60,16 +60,16 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>EDITOR;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)\Library\Include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)\Library\Library;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBCMTD;</IgnoreSpecificDefaultLibraries>
-      <AdditionalDependencies>MofImGui_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>USERNAME=$(USERNAME);</PreprocessorDefinitions>
@@ -83,9 +83,11 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>EDITOR;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)\Library\Include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -94,94 +96,74 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)\Library\Library;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBCMT;</IgnoreSpecificDefaultLibraries>
-      <AdditionalDependencies>MofImGui.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>USERNAME=$(USERNAME);</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Command\AddTextureArrayCommand.cpp" />
-    <ClCompile Include="Command\AddTextureCommand.cpp" />
-    <ClCompile Include="Command\ChangeMapChipCommand.cpp" />
-    <ClCompile Include="Command\EditChipCommand.cpp" />
-    <ClCompile Include="Command\LoadTextureCommand.cpp" />
-    <ClCompile Include="Command\ReleaseTextureCommand.cpp" />
-    <ClCompile Include="Command\RemoveTextureCommand.cpp" />
+    <ClCompile Include="ChipWindow.cpp" />
+    <ClCompile Include="EditorFunc.cpp" />
+    <ClCompile Include="AnimationData.cpp" />
+    <ClCompile Include="CommandManager.cpp" />
+    <ClCompile Include="EditorUtilities.cpp" />
+    <ClCompile Include="EditWindow.cpp" />
+    <ClCompile Include="FileDialog.cpp" />
     <ClCompile Include="GameApp.cpp" />
-    <ClCompile Include="Manager\ClipBoardManager.cpp" />
-    <ClCompile Include="Manager\CommandManager.cpp" />
-    <ClCompile Include="Manager\ImGuiWindowManager.cpp" />
-    <ClCompile Include="Menu\MainMenu.cpp" />
-    <ClCompile Include="Menu\ToolMenu.cpp" />
-    <ClCompile Include="Stage\Exporter\JsonExporter.cpp" />
-    <ClCompile Include="Stage\Exporter\OriginalExporter.cpp" />
-    <ClCompile Include="Stage\Exporter\TextExporter.cpp" />
-    <ClCompile Include="Stage\MapChip.cpp" />
-    <ClCompile Include="Stage\Parser\JsonParser.cpp" />
-    <ClCompile Include="Stage\Parser\OriginalParser.cpp" />
-    <ClCompile Include="Stage\Parser\TextParser.cpp" />
-    <ClCompile Include="Stage\Stage.cpp" />
-    <ClCompile Include="Utilities\EditorUtilities.cpp" />
-    <ClCompile Include="Utilities\FileDialog.cpp" />
-    <ClCompile Include="Utilities\ToolIcon.cpp" />
-    <ClCompile Include="Window\EditWindow.cpp" />
-    <ClCompile Include="Window\LayerWindow.cpp" />
-    <ClCompile Include="Window\LogWindow.cpp" />
-    <ClCompile Include="Window\MapChipWindow.cpp" />
+    <ClCompile Include="ImGui\backends\imgui_impl_dx11.cpp" />
+    <ClCompile Include="ImGui\backends\imgui_impl_win32.cpp" />
+    <ClCompile Include="ImGui\imgui.cpp" />
+    <ClCompile Include="ImGui\imgui_demo.cpp" />
+    <ClCompile Include="ImGui\imgui_draw.cpp" />
+    <ClCompile Include="ImGui\imgui_tables.cpp" />
+    <ClCompile Include="ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="LayerWindow.cpp" />
+    <ClCompile Include="MenuBar.cpp" />
+    <ClCompile Include="MofGridRender.cpp" />
+    <ClCompile Include="MofImGui.cpp" />
+    <ClCompile Include="ParserSac.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Command\AddTextureArrayCommand.h" />
-    <ClInclude Include="Command\AddTextureCommand.h" />
-    <ClInclude Include="Command\ChangeMapChipCommand.h" />
-    <ClInclude Include="Command\Command.h" />
-    <ClInclude Include="Command\EditChipCommand.h" />
-    <ClInclude Include="Command\LoadTextureCommand.h" />
-    <ClInclude Include="Command\ReleaseTextureCommand.h" />
-    <ClInclude Include="Command\RemoveTextureCommand.h" />
-    <ClInclude Include="EditorParam\EditorParameter.h" />
-    <ClInclude Include="EditorParam\ParameterKey.h" />
+    <ClInclude Include="ChipWindow.h" />
+    <ClInclude Include="EditorDefine.h" />
+    <ClInclude Include="EditorFunc.h" />
+    <ClInclude Include="AnimationData.h" />
+    <ClInclude Include="Blackboard.h" />
+    <ClInclude Include="Command.h" />
+    <ClInclude Include="CommandManager.h" />
+    <ClInclude Include="EditorUtilities.h" />
+    <ClInclude Include="EditWindow.h" />
+    <ClInclude Include="Exporter.h" />
+    <ClInclude Include="FileBinaryLoader.h" />
+    <ClInclude Include="FileDialog.h" />
+    <ClInclude Include="FileLoader.h" />
     <ClInclude Include="GameApp.h" />
-    <ClInclude Include="Manager\ClipBoardManager.h" />
-    <ClInclude Include="Manager\CommandManager.h" />
-    <ClInclude Include="Manager\ImGuiWindowManager.h" />
-    <ClInclude Include="Menu\MainMenu.h" />
-    <ClInclude Include="Menu\ToolMenu.h" />
-    <ClInclude Include="Resource.h" />
-    <ClInclude Include="Stage\Exporter\Exporter.h" />
-    <ClInclude Include="Stage\Exporter\JsonExporter.h" />
-    <ClInclude Include="Stage\Exporter\OriginalExporter.h" />
-    <ClInclude Include="Stage\Exporter\TextExporter.h" />
-    <ClInclude Include="Stage\MapChip.h" />
-    <ClInclude Include="Stage\Parser\JsonParser.h" />
-    <ClInclude Include="Stage\Parser\OriginalParser.h" />
-    <ClInclude Include="Stage\Parser\Parser.h" />
-    <ClInclude Include="Stage\Parser\TextParser.h" />
-    <ClInclude Include="Stage\Stage.h" />
-    <ClInclude Include="Utilities\EditorUtilities.h" />
-    <ClInclude Include="Utilities\FileDialog.h" />
-    <ClInclude Include="Utilities\InResourceTexture.h" />
-    <ClInclude Include="Utilities\ToolIcon.h" />
-    <ClInclude Include="Window\EditWindow.h" />
-    <ClInclude Include="Window\LayerWindow.h" />
-    <ClInclude Include="Window\LogWindow.h" />
-    <ClInclude Include="Window\MapChipWindow.h" />
-    <ClInclude Include="Window\WindowDefine.h" />
+    <ClInclude Include="ImGui\backends\imgui_impl_dx11.h" />
+    <ClInclude Include="ImGui\backends\imgui_impl_win32.h" />
+    <ClInclude Include="ImGui\imconfig.h" />
+    <ClInclude Include="ImGui\imgui.h" />
+    <ClInclude Include="ImGui\imgui_internal.h" />
+    <ClInclude Include="ImGui\imstb_rectpack.h" />
+    <ClInclude Include="ImGui\imstb_textedit.h" />
+    <ClInclude Include="ImGui\imstb_truetype.h" />
+    <ClInclude Include="LayerWindow.h" />
+    <ClInclude Include="MofGridRender.h" />
+    <ClInclude Include="Parser.h" />
+    <ClInclude Include="MenuBar.h" />
+    <ClInclude Include="MofImGui.h" />
+    <ClInclude Include="ParameterMap.h" />
+    <ClInclude Include="ParserSac.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="ServiceLocator.h" />
+    <ClInclude Include="Singleton.h" />
+    <ClInclude Include="SingletonBlackboard.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Version.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="icon.ico" />
-    <Image Include="icons\back-arrow.png" />
-    <Image Include="icons\diskette.png" />
-    <Image Include="icons\edit.png" />
-    <Image Include="icons\eraser-tool.png" />
-    <Image Include="icons\folder.png" />
-    <Image Include="icons\new-document.png" />
-    <Image Include="icons\redo-arrow.png" />
-    <Image Include="icons\selection.png" />
+    <Image Include="icon1.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,278 +1,215 @@
 /*************************************************************************//*!
 
-                    @file    GameApp.cpp
-                    @brief    基本ゲームアプリ。
+					@file	GameApp.cpp
+					@brief	基本ゲームアプリ。
 
-                                                            @author    濱田　享
-                                                            @date    2014.05.14
+															@author	濱田　享
+															@date	2014.05.14
 *//**************************************************************************/
 
 //INCLUDE
-#include    "GameApp.h"
-#include    "Resource.h"
-#include    "Utilities/EditorUtilities.h"
-#include    "Utilities/ToolIcon.h"
+#include	"GameApp.h"
+#include    "EditorDefine.h"
 #include    <filesystem>
-#include    <MofImGui/MofImGui.h>
 
-#include    "Stage/Stage.h"
+using namespace Editor;
 
-#include    "EditorParam/EditorParameter.h"
-#include    "Menu/MainMenu.h"
-#include    "Menu/ToolMenu.h"
-#include    "Window/MapChipWindow.h"
-#include    "Window/EditWindow.h"
-#include    "Window/LayerWindow.h"
-#include    "Window/LogWindow.h"
-#include    "Manager/ImGuiWindowManager.h"
-#include    "Manager/CommandManager.h"
+std::filesystem::path def_path;
 
-bool                     edit_grid_flag = false;
-bool                     chip_grid_flag = false;
-Stage                    stage;
-MapChipWindow            map_chip_window;
-EditWindow               edit_window;
-LayerWindow              layer_window;
-MofU32                   edit_background_color = MOF_COLOR_CBLACK;
-MofU32                   edit_font_color       = MOF_COLOR_WHITE;
-
-EditMode                 edit_mode = EditMode::Write;
-
-bool                     show_main_menu          = true;
-bool                     show_tool_menu          = true;
-bool                     show_layer_window       = true;
-bool                     show_chip_window        = true;
-bool                     show_chip_window_child  = true;
-bool                     show_edit_window        = true;
-bool                     show_edit_window_child  = true;
-bool                     show_log_window         = false;
-bool                     show_x_memory           = false;
-bool                     show_y_memory           = false;
-
-std::string              resource_path;
-std::string              open_file = ".txt";
-
-#include "Stage/Parser/TextParser.h"
-std::function<void(void)> def_create;
-
-void default_create(void) {
-    MapChip mapchip_layer;
-    MapChip enemy_layer;
-    MapChip item_layer;
-    mapchip_layer.SetName("mapchip");
-    mapchip_layer.SetTextureNo(-1);
-    mapchip_layer.SetChipSize(Vector2(32, 32));
-    mapchip_layer.Create(70, 25);
-    stage.GetChipArrayPointer()->push_back(std::move(mapchip_layer));
-    enemy_layer.SetName("enemy");
-    enemy_layer.SetTextureArray(true);
-    enemy_layer.SetTextureNo(0);
-    enemy_layer.SetChipSize(Vector2(32, 32));
-    enemy_layer.Create(70, 25);
-    stage.GetChipArrayPointer()->push_back(std::move(enemy_layer));
-    item_layer.SetName("item");
-    item_layer.SetTextureNo(1);
-    item_layer.SetTextureArray(true);
-    item_layer.SetChipSize(Vector2(32, 32));
-    item_layer.Create(70, 25);
-    stage.GetChipArrayPointer()->push_back(std::move(item_layer));
-
-    stage.GetTextureArraysPointer()->push_back(TextureArray());
-    stage.GetTextureArraysPointer()->push_back(TextureArray());
+void ImGui_IsWindow()
+{
+	ImGui::Begin("bools");
+	ImGui::Text("IsAnyItemActive            : %s", ImGui::IsAnyItemActive()            ? "TRUE" : "FALSE");		
+	ImGui::Text("IsAnyItemFocused           : %s", ImGui::IsAnyItemFocused()           ? "TRUE" : "FALSE");		
+	ImGui::Text("IsAnyItemHovered           : %s", ImGui::IsAnyItemHovered()           ? "TRUE" : "FALSE");		
+	ImGui::Text("IsAnyMouseDown             : %s", ImGui::IsAnyMouseDown()             ? "TRUE" : "FALSE");		
+	ImGui::Text("IsItemActivated            : %s", ImGui::IsItemActivated()            ? "TRUE" : "FALSE");		
+	ImGui::Text("IsItemActive               : %s", ImGui::IsItemActive()               ? "TRUE" : "FALSE");		
+	ImGui::Text("IsItemClicked              : %s", ImGui::IsItemClicked()              ? "TRUE" : "FALSE");		
+	ImGui::Text("IsItemDeactivated          : %s", ImGui::IsItemDeactivated()          ? "TRUE" : "FALSE");
+	ImGui::Text("IsItemDeactivatedAfterEdit : %s", ImGui::IsItemDeactivatedAfterEdit() ? "TRUE" : "FALSE");
+	ImGui::Text("IsItemEdited               : %s", ImGui::IsItemEdited()               ? "TRUE" : "FALSE");
+	ImGui::Text("IsItemFocused              : %s", ImGui::IsItemFocused()              ? "TRUE" : "FALSE");
+	ImGui::Text("IsItemHovered              : %s", ImGui::IsItemHovered()              ? "TRUE" : "FALSE");
+	ImGui::Text("IsItemToggledOpen          : %s", ImGui::IsItemToggledOpen()          ? "TRUE" : "FALSE");
+	ImGui::Text("IsItemVisible              : %s", ImGui::IsItemVisible()              ? "TRUE" : "FALSE");
+	ImGui::Text("IsMousePosValid            : %s", ImGui::IsMousePosValid()            ? "TRUE" : "FALSE");
+	ImGui::Text("IsWindowAppearing          : %s", ImGui::IsWindowAppearing()          ? "TRUE" : "FALSE");
+	ImGui::Text("IsWindowCollapsed          : %s", ImGui::IsWindowCollapsed()          ? "TRUE" : "FALSE");
+	ImGui::Text("IsWindowDocked             : %s", ImGui::IsWindowDocked()             ? "TRUE" : "FALSE");
+	ImGui::Text("IsWindowFocused            : %s", ImGui::IsWindowFocused()            ? "TRUE" : "FALSE");
+	ImGui::Text("IsWindowHovered            : %s", ImGui::IsWindowHovered()            ? "TRUE" : "FALSE");
+	ImGui::End();
 }
 
 /*************************************************************************//*!
-        @brief            アプリケーションの初期化
-        @param            None
+		@brief			アプリケーションの初期化
+		@param			None
 
-        @return            TRUE        成功<br>
-                        それ以外    失敗、エラーコードが戻り値となる
+		@return			TRUE		成功<br>
+						それ以外	失敗、エラーコードが戻り値となる
 *//**************************************************************************/
 MofBool CGameApp::Initialize(void) {
-    struct stat s;
-    if (stat("log", &s) != 0) {
-        std::filesystem::create_directory("log");
-    }
-    CUtilities::SetCurrentDirectory("Resource");
-    ToolIcon::Load();
-    def_create = default_create;
-    resource_path = std::filesystem::current_path().string();
 
-    CMofImGui::Setup(false, false);
-    
-    theParam.Register(ParamKey::MapChipArray       , stage.GetChipArrayPointer()       );
-    theParam.Register(ParamKey::ChipGridFlag       , &chip_grid_flag                   );
-    theParam.Register(ParamKey::EditGridFlag       , &edit_grid_flag                   );
-    theParam.Register(ParamKey::EditBackColor      , &edit_background_color            );
-    theParam.Register(ParamKey::MainMenu           , &show_main_menu                   );
-    theParam.Register(ParamKey::ToolMenu           , &show_tool_menu                   );
-    theParam.Register(ParamKey::LayerWindow        , &show_layer_window                );
-    theParam.Register(ParamKey::ChipWindow         , &show_chip_window                 );
-    theParam.Register(ParamKey::EditWindow         , &show_edit_window                 );
-    theParam.Register(ParamKey::ChipWindowChild    , &show_chip_window_child           );
-    theParam.Register(ParamKey::EditWindowChild    , &show_edit_window_child           );
-    theParam.Register(ParamKey::ResourcePath       , &resource_path                    );
-    theParam.Register(ParamKey::EditMode           , &edit_mode                  );
-    theParam.Register(ParamKey::MapChipTextureArray, stage.GetChipTextureArrayPointer());
-    theParam.Register(ParamKey::BackgroundArray    , stage.GetBackgroundArrayPointer() );
-    theParam.Register(ParamKey::OpenFile           , &open_file                        );
-    theParam.Register(ParamKey::Stage              , &stage                            );
-    theParam.Register(ParamKey::TextureArrays      , stage.GetTextureArraysPointer()   );
-    theParam.Register(ParamKey::DefaultCreate      , &def_create                       );
-    theParam.Register(ParamKey::EditFontColor      , &edit_font_color                  );
-    theParam.Register(ParamKey::LogWindow          , &show_log_window                  );
-    theParam.Register(ParamKey::MemoryX            , &show_x_memory                    );
-    theParam.Register(ParamKey::MemoryY            , &show_y_memory                    );
-    
-    //open_file = "asaa";
-    if (open_file != ".txt" && open_file.length()) {
-        stage.Load(open_file);
-    }
-    else {
-        default_create();
-    }
+	def_path = std::filesystem::current_path();
 
-    layer_window.Initialize();   /*  first
-  */map_chip_window.Initialize();/*  second
-  */edit_window.Initialize();    /*  third
-  */
+	m_SaveFileName     = "none";
+	m_bItemChenged     = FALSE;
+	m_bItemPrevActived = FALSE;
+	m_bCheck           = FALSE;
+	m_bSaveCheck       = FALSE;
+	m_FrameCount       = 0;
+	m_SaveCheckWait    = 60;
 
-    return TRUE;
+	CMofImGui::Setup();
+	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+	//CSingletonBlackboard<>::GetInstance()
+	//	.Get<>()->Add("AnimationData", m_AnimationData);
+	//CSingletonBlackboard<>::GetInstance()
+	//	.Get<>()->Add("SaveData", m_SaveData);
+	CSingletonBlackboard<MofBool>::GetInstance()
+		.Get<MofBool>()->Add("ItemChenge", m_bItemChenged);
+	CSingletonBlackboard<MofBool>::GetInstance()
+		.Get<MofBool>()->Add("Check", m_bCheck);
+	CSingletonBlackboard<MofBool>::GetInstance()
+		.Get<MofBool>()->Add("SaveCheck", m_bSaveCheck);
+	CSingletonBlackboard<std::string>::GetInstance()
+		.Get<std::string>()->Add("SaveFileName", m_SaveFileName);
+	CSingletonBlackboard<CEditWindow>::GetInstance()
+		.Get<CEditWindow>()->Add("EditWindow", m_EditWindow);
+	CSingletonBlackboard<CLayerWindow>::GetInstance()
+		.Get<CLayerWindow>()->Add("LayerWindow", m_LayerWindow);
+	CSingletonBlackboard<CChipWindow>::GetInstance()
+		.Get<CChipWindow>()->Add("ChipWindow", m_ChipWindow);
+
+	//m_SaveData = m_MapData;
+	
+	m_ChipWindow.DummyCreate();
+	m_EditWindow.Create(k_SceneW, k_SceneH);
+	m_ChipWindow.Initialize();
+
+	CGraphicsUtilities::Get2DSpriteBind()->SetSamplerType(0, SAMPLER_POINT);
+	return TRUE;
 }
 /*************************************************************************//*!
-        @brief            アプリケーションの更新
-        @param            None
+		@brief			アプリケーションの更新
+		@param			None
 
-        @return            TRUE        成功<br>
-                        それ以外    失敗、エラーコードが戻り値となる
+		@return			TRUE		成功<br>
+						それ以外	失敗、エラーコードが戻り値となる
 *//**************************************************************************/
 MofBool CGameApp::Update(void) {
-    //キーの更新
-    g_pInput->RefreshKey();
-    CMofImGui::Refresh();
-    EditorUtilities::HitAreaRefresh();
-    if (std::optional<RECT> rect = EditorUtilities::ChangeWindowSize()) {
+	//キーの更新
+	g_pInput->RefreshKey();
+	CMofImGui::Refresh();
 
-    }
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+	const ImGuiViewport* viewport = ImGui::GetMainViewport();
+	ImGui::SetNextWindowPos(viewport->WorkPos);
+	ImGui::SetNextWindowSize(viewport->WorkSize);
+	ImGui::SetNextWindowViewport(viewport->ID);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+	window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+	window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+	ImGui::Begin("#DockSpace", nullptr, window_flags);
+	ImGui::PopStyleVar(3);
+	m_MenuBar.Update();
+	ImGui::DockSpace(ImGui::GetID("MyDockSpace"));
 
-    MainMenu::Show();
-    ToolMenu::Show();
 
-    layer_window.Show();
-    map_chip_window.Show();
-    edit_window.Show();
-    Vector2 mp;
-    g_pInput->GetMousePos(mp);
-    auto log_area = theImGuiWindowManager.Find(ParamKey::LogWindow);
-    if (log_area && log_area->CollisionPoint(mp) && g_pInput->IsMouseKeyHold(MOFMOUSE_LBUTTON)) {
-        ImGui::SetWindowFocus("log window");
-    }
-    if (show_log_window) {
-        LogWindow::Show();
-    }
-    
-    if (!EditorUtilities::IsPopupModalOpen()) {
-        map_chip_window.Update();
-        edit_window.Update();
-    }
+	//アイテム変更の監視
+	m_bItemChenged = FALSE;
+	if (ImGui::IsAnyItemActive())
+	{
+		m_bItemPrevActived = TRUE;
+	}
+	else if (m_bItemPrevActived)
+	{
+		m_bItemChenged = TRUE;
+		m_bItemPrevActived = FALSE;
+	}
 
-    bool is_ctrl_hold  = g_pInput->IsKeyHold(MOFKEY_LCONTROL) || g_pInput->IsKeyHold(MOFKEY_RCONTROL);
-    bool is_shift_hold = g_pInput->IsKeyHold(MOFKEY_LSHIFT)   || g_pInput->IsKeyHold(MOFKEY_RSHIFT);
-    if (is_ctrl_hold && g_pInput->IsKeyPush(MOFKEY_N)) {
-        MainMenu::NewProject();
-    }
-    if (is_ctrl_hold && g_pInput->IsKeyPush(MOFKEY_O)) {
-        MainMenu::OpenProject();
-    }
-    if (is_ctrl_hold && g_pInput->IsKeyPush(MOFKEY_S)) {
-        MainMenu::SaveProject();
-    }
-    if (is_ctrl_hold && is_shift_hold && g_pInput->IsKeyPush(MOFKEY_S)) {
-        MainMenu::SaveAsProject();
-    }
-    if (is_ctrl_hold && g_pInput->IsKeyPush(MOFKEY_Z)) {
-        theCommandManager.Undo();
-    }
-    if (is_ctrl_hold && g_pInput->IsKeyPush(MOFKEY_Y)) {
-        theCommandManager.Redo();
-    }
-    if (is_ctrl_hold && g_pInput->IsKeyPush(MOFKEY_M)) {
-        MainMenu::OpenManual();
-    }
-    if (is_ctrl_hold && g_pInput->IsKeyPush(MOFKEY_I)) {
-        MainMenu::Version();
-    }
-    bool is_not_mouse_hold = (!g_pInput->IsMouseKeyHold(MOFMOUSE_LBUTTON) && !g_pInput->IsMouseKeyHold(MOFMOUSE_RBUTTON));
-    if (is_not_mouse_hold && g_pInput->IsKeyPush(MOFKEY_W)) {
-        EditorUtilities::SetWriteMode();
-    }
-    if (is_not_mouse_hold && g_pInput->IsKeyPush(MOFKEY_E)) {
-        EditorUtilities::SetDeleteMode();
-    }
-    auto select_mode_key = g_pInput->IsKeyPush(MOFKEY_R) ||
-        ((EditorUtilities::IsWriteMode() &&
-        g_pInput->IsKeyPush(MOFKEY_LSHIFT) ||
-        g_pInput->IsKeyPush(MOFKEY_RSHIFT)));
-    if (is_not_mouse_hold && select_mode_key) {
-        EditorUtilities::SetSelectMode();
-    }
+	//ImGui::ShowDemoWindow();
+	//ImGui_IsWindow();
 
-    //ImGui::ShowDemoWindow();
+	m_LayerWindow.Update();
+	m_ChipWindow.Update();
 
-    return TRUE;
+	ImGui::End();
+
+	m_FrameCount++;
+	if (m_FrameCount >= m_SaveCheckWait)
+	{
+		m_FrameCount = 0;
+		//m_bSaveCheck = ((m_MapData != m_SaveData) ? TRUE : FALSE);
+	}
+
+	m_bCheck = FALSE;
+	return TRUE;
 }
 /*************************************************************************//*!
-        @brief            アプリケーションの描画
-        @param            None
+		@brief			アプリケーションの描画
+		@param			None
 
-        @return            TRUE        成功<br>
-                        それ以外    失敗、エラーコードが戻り値となる
+		@return			TRUE		成功<br>
+						それ以外	失敗、エラーコードが戻り値となる
 *//**************************************************************************/
 MofBool CGameApp::Render(void) {
-    //描画開始
-    g_pGraphics->RenderStart();
-    //画面のクリア
-    g_pGraphics->ClearTarget(0.06f, 0.06f, 0.06f, 0.0f, 1.0f, 0);
+	//描画開始
+	g_pGraphics->RenderStart();
+	//画面のクリア
+	g_pGraphics->ClearTarget(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
-    //stage.Render();
+	m_ChipWindow.Render();
+	
+	m_EditWindow.Render();
+	
+	CMofImGui::RenderSetup();
+	CMofImGui::RenderGui();
 
-    edit_window.Render();
-    map_chip_window.Render();
-
-
-    CMofImGui::RenderSetup();
-    CMofImGui::RenderGui();
-
-    //CGraphicsUtilities::RenderRect(EditorUtilities::GetChipArea(), MOF_COLOR_GREEN);
-    //CGraphicsUtilities::RenderRect(EditorUtilities::GetEditArea(), MOF_COLOR_GREEN);
-    //CGraphicsUtilities::RenderRect(*theImGuiWindowManager.Find(ParamKey::EditWindowChild), MOF_COLOR_GREEN);
-    //float scale = *theParam.GetDataPointer<float>(ParamKey::ChipScale);
-    //CGraphicsUtilities::RenderString(500, 300, "%.3f, %.3f, %d, %.3f", ImGui::GetMousePos().x, ImGui::GetMousePos().y, (int)(32 * scale), scale);
-
-    //描画の終了
-    g_pGraphics->RenderEnd();
-    return TRUE;
+	//描画の終了
+	g_pGraphics->RenderEnd();
+	return TRUE;
 }
 /*************************************************************************//*!
-        @brief            アプリケーションの解放
-        @param            None
+		@brief			アプリケーションの解放
+		@param			None
 
-        @return            TRUE        成功<br>
-                        それ以外    失敗、エラーコードが戻り値となる
+		@return			TRUE		成功<br>
+						それ以外	失敗、エラーコードが戻り値となる
 *//**************************************************************************/
 MofBool CGameApp::Release(void) {
 
-    EditorUtilities::SetCurrentPathResource();
+	CUtilities::SetCurrentDirectory(def_path.string().c_str());
+	//m_MapData.Release();
+	//m_SaveData.Release();
 
-    CUtilities::SetCurrentDirectory("../log");
-    LogWindow::Save();
-    CUtilities::SetCurrentDirectory("../Resource");
+	m_ChipWindow.Release();
+	m_EditWindow.Release();
 
-    CMofImGui::Cleanup();
+	/*CSingletonBlackboard<>::GetInstance()
+		.Get<>()->Delete("MapData");
+	CSingletonBlackboard<>::GetInstance()
+		.Get<>()->Delete("SaveData");*/
+	CSingletonBlackboard<MofBool>::GetInstance()
+		.Get<MofBool>()->Delete("ItemChenge");
+	CSingletonBlackboard<MofBool>::GetInstance()
+		.Get<MofBool>()->Delete("Check");
+	CSingletonBlackboard<MofBool>::GetInstance()
+		.Get<MofBool>()->Delete("SaveCheck");
+	CSingletonBlackboard<std::string>::GetInstance()
+		.Get<std::string>()->Delete("SaveFileName");
+	CSingletonBlackboard<CEditWindow>::GetInstance()
+		.Get<CEditWindow>()->Delete("EditWindow");
+	CSingletonBlackboard<CLayerWindow>::GetInstance()
+		.Get<CLayerWindow>()->Delete("LayerWindow");
+	CSingletonBlackboard<CChipWindow>::GetInstance()
+		.Get<CChipWindow>()->Delete("ChipWindow");
 
-    ToolIcon::Release();
+	CMofImGui::Cleanup();
 
-    stage.Release();
-
-    return TRUE;
+	return TRUE;
 }

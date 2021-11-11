@@ -13,59 +13,11 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="ヘッダー ファイル\Command">
-      <UniqueIdentifier>{ca4a5500-13e0-44e3-a610-28e6efaea9f7}</UniqueIdentifier>
+    <Filter Include="ImGui">
+      <UniqueIdentifier>{9eef1abe-a629-4b39-95be-2c998f7e6e29}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Command">
-      <UniqueIdentifier>{ecd15a08-dd14-4b0b-a7ae-565610e0b42f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Manager">
-      <UniqueIdentifier>{72cd4b5d-adfe-46a2-9393-eaad023b5128}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Manager">
-      <UniqueIdentifier>{8729274f-6b7d-4191-99d8-cef43acaffc0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Utilities">
-      <UniqueIdentifier>{73a975b8-752b-4d41-8b5e-f3d1468a9b69}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Utilities">
-      <UniqueIdentifier>{803ec67d-5fa3-4b01-a7cf-bac17307282f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\EditorParam">
-      <UniqueIdentifier>{52923d6e-9ade-4e64-9be7-a5d12e99457e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Window">
-      <UniqueIdentifier>{9dd68a22-5f7d-4872-963d-12a03f22e599}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Window">
-      <UniqueIdentifier>{1a60cb37-bdca-44a4-9fca-7925c342765a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Stage">
-      <UniqueIdentifier>{0f7e5ed4-523e-4729-bd7b-dadfacfd232b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Stage">
-      <UniqueIdentifier>{18beeafe-1fff-49dc-8d80-3d4763aa1282}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Menu">
-      <UniqueIdentifier>{bcfbda7b-f2e4-4272-86fd-db90e9637e9d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Menu">
-      <UniqueIdentifier>{fc2d3da9-6052-4f9d-873e-136c85f78b62}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Stage\Exporter">
-      <UniqueIdentifier>{4e0e69c9-9d88-47c7-8001-aefc98d83540}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Stage\Exporter">
-      <UniqueIdentifier>{2e8cff10-ffc2-48db-8cdd-f1a4e1fc8cf2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Stage\Parser">
-      <UniqueIdentifier>{3a7691e8-a517-494b-b608-bc8275e01d21}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Stage\Parser">
-      <UniqueIdentifier>{7d400cb6-1aaf-408e-81ca-e72597954fc9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="リソース ファイル\MenuIcons">
-      <UniqueIdentifier>{d1eb5405-7107-4334-bc38-dafb7d8aa4e5}</UniqueIdentifier>
+    <Filter Include="ImGui\backends">
+      <UniqueIdentifier>{305f86d6-e04d-4573-801a-a747420feb9f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -75,196 +27,163 @@
     <ClCompile Include="GameApp.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Manager\CommandManager.cpp">
-      <Filter>ソース ファイル\Manager</Filter>
+    <ClCompile Include="ImGui\imgui.cpp">
+      <Filter>ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Manager\ImGuiWindowManager.cpp">
-      <Filter>ソース ファイル\Manager</Filter>
+    <ClCompile Include="ImGui\imgui_demo.cpp">
+      <Filter>ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Utilities\EditorUtilities.cpp">
-      <Filter>ソース ファイル\Utilities</Filter>
+    <ClCompile Include="ImGui\imgui_draw.cpp">
+      <Filter>ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Stage\Stage.cpp">
-      <Filter>ソース ファイル\Stage</Filter>
+    <ClCompile Include="ImGui\imgui_tables.cpp">
+      <Filter>ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Menu\MainMenu.cpp">
-      <Filter>ソース ファイル\Menu</Filter>
+    <ClCompile Include="ImGui\imgui_widgets.cpp">
+      <Filter>ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Window\MapChipWindow.cpp">
-      <Filter>ソース ファイル\Window</Filter>
+    <ClCompile Include="ImGui\backends\imgui_impl_dx11.cpp">
+      <Filter>ImGui\backends</Filter>
     </ClCompile>
-    <ClCompile Include="Stage\MapChip.cpp">
-      <Filter>ソース ファイル\Stage</Filter>
+    <ClCompile Include="ImGui\backends\imgui_impl_win32.cpp">
+      <Filter>ImGui\backends</Filter>
     </ClCompile>
-    <ClCompile Include="Window\EditWindow.cpp">
-      <Filter>ソース ファイル\Window</Filter>
+    <ClCompile Include="MofImGui.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Window\LayerWindow.cpp">
-      <Filter>ソース ファイル\Window</Filter>
+    <ClCompile Include="AnimationData.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Utilities\FileDialog.cpp">
-      <Filter>ソース ファイル\Utilities</Filter>
+    <ClCompile Include="MenuBar.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Menu\ToolMenu.cpp">
-      <Filter>ソース ファイル\Menu</Filter>
+    <ClCompile Include="FileDialog.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Utilities\ToolIcon.cpp">
-      <Filter>ソース ファイル\Utilities</Filter>
+    <ClCompile Include="CommandManager.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Stage\Parser\TextParser.cpp">
-      <Filter>ソース ファイル\Stage\Parser</Filter>
+    <ClCompile Include="EditorUtilities.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Stage\Exporter\TextExporter.cpp">
-      <Filter>ソース ファイル\Stage\Exporter</Filter>
+    <ClCompile Include="ParserSac.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Stage\Exporter\JsonExporter.cpp">
-      <Filter>ソース ファイル\Stage\Exporter</Filter>
+    <ClCompile Include="EditorFunc.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Stage\Parser\JsonParser.cpp">
-      <Filter>ソース ファイル\Stage\Parser</Filter>
+    <ClCompile Include="EditWindow.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Stage\Exporter\OriginalExporter.cpp">
-      <Filter>ソース ファイル\Stage\Exporter</Filter>
+    <ClCompile Include="LayerWindow.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Stage\Parser\OriginalParser.cpp">
-      <Filter>ソース ファイル\Stage\Parser</Filter>
+    <ClCompile Include="ChipWindow.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Command\EditChipCommand.cpp">
-      <Filter>ソース ファイル\Command</Filter>
-    </ClCompile>
-    <ClCompile Include="Command\AddTextureArrayCommand.cpp">
-      <Filter>ソース ファイル\Command</Filter>
-    </ClCompile>
-    <ClCompile Include="Command\AddTextureCommand.cpp">
-      <Filter>ソース ファイル\Command</Filter>
-    </ClCompile>
-    <ClCompile Include="Command\RemoveTextureCommand.cpp">
-      <Filter>ソース ファイル\Command</Filter>
-    </ClCompile>
-    <ClCompile Include="Window\LogWindow.cpp">
-      <Filter>ソース ファイル\Window</Filter>
-    </ClCompile>
-    <ClCompile Include="Command\LoadTextureCommand.cpp">
-      <Filter>ソース ファイル\Command</Filter>
-    </ClCompile>
-    <ClCompile Include="Command\ReleaseTextureCommand.cpp">
-      <Filter>ソース ファイル\Command</Filter>
-    </ClCompile>
-    <ClCompile Include="Command\ChangeMapChipCommand.cpp">
-      <Filter>ソース ファイル\Command</Filter>
-    </ClCompile>
-    <ClCompile Include="Manager\ClipBoardManager.cpp">
-      <Filter>ソース ファイル\Manager</Filter>
+    <ClCompile Include="MofGridRender.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameApp.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Manager\CommandManager.h">
-      <Filter>ヘッダー ファイル\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="Manager\ImGuiWindowManager.h">
-      <Filter>ヘッダー ファイル\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="Command\Command.h">
-      <Filter>ヘッダー ファイル\Command</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
+    <ClInclude Include="resource.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="EditorParam\EditorParameter.h">
-      <Filter>ヘッダー ファイル\EditorParam</Filter>
+    <ClInclude Include="ImGui\imconfig.h">
+      <Filter>ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="EditorParam\ParameterKey.h">
-      <Filter>ヘッダー ファイル\EditorParam</Filter>
+    <ClInclude Include="ImGui\imgui.h">
+      <Filter>ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Utilities\EditorUtilities.h">
-      <Filter>ヘッダー ファイル\Utilities</Filter>
+    <ClInclude Include="ImGui\imgui_internal.h">
+      <Filter>ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Stage\Stage.h">
-      <Filter>ヘッダー ファイル\Stage</Filter>
+    <ClInclude Include="ImGui\imstb_rectpack.h">
+      <Filter>ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Menu\MainMenu.h">
-      <Filter>ヘッダー ファイル\Menu</Filter>
+    <ClInclude Include="ImGui\imstb_textedit.h">
+      <Filter>ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Window\MapChipWindow.h">
-      <Filter>ヘッダー ファイル\Window</Filter>
+    <ClInclude Include="ImGui\imstb_truetype.h">
+      <Filter>ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Stage\MapChip.h">
-      <Filter>ヘッダー ファイル\Stage</Filter>
+    <ClInclude Include="ImGui\backends\imgui_impl_dx11.h">
+      <Filter>ImGui\backends</Filter>
     </ClInclude>
-    <ClInclude Include="Window\WindowDefine.h">
-      <Filter>ヘッダー ファイル\Window</Filter>
+    <ClInclude Include="ImGui\backends\imgui_impl_win32.h">
+      <Filter>ImGui\backends</Filter>
     </ClInclude>
-    <ClInclude Include="Window\EditWindow.h">
-      <Filter>ヘッダー ファイル\Window</Filter>
+    <ClInclude Include="MofImGui.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Stage\Exporter\Exporter.h">
-      <Filter>ヘッダー ファイル\Stage\Exporter</Filter>
+    <ClInclude Include="EditorDefine.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Window\LayerWindow.h">
-      <Filter>ヘッダー ファイル\Window</Filter>
+    <ClInclude Include="Blackboard.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Utilities\FileDialog.h">
-      <Filter>ヘッダー ファイル\Utilities</Filter>
+    <ClInclude Include="ServiceLocator.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Menu\ToolMenu.h">
-      <Filter>ヘッダー ファイル\Menu</Filter>
+    <ClInclude Include="Singleton.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Utilities\ToolIcon.h">
-      <Filter>ヘッダー ファイル\Utilities</Filter>
+    <ClInclude Include="SingletonBlackboard.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Stage\Parser\Parser.h">
-      <Filter>ヘッダー ファイル\Stage\Parser</Filter>
+    <ClInclude Include="ParameterMap.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Stage\Parser\TextParser.h">
-      <Filter>ヘッダー ファイル\Stage\Parser</Filter>
+    <ClInclude Include="AnimationData.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Stage\Parser\JsonParser.h">
-      <Filter>ヘッダー ファイル\Stage\Parser</Filter>
+    <ClInclude Include="MenuBar.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Stage\Parser\OriginalParser.h">
-      <Filter>ヘッダー ファイル\Stage\Parser</Filter>
+    <ClInclude Include="FileDialog.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Stage\Exporter\JsonExporter.h">
-      <Filter>ヘッダー ファイル\Stage\Exporter</Filter>
+    <ClInclude Include="Command.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Stage\Exporter\OriginalExporter.h">
-      <Filter>ヘッダー ファイル\Stage\Exporter</Filter>
+    <ClInclude Include="CommandManager.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Stage\Exporter\TextExporter.h">
-      <Filter>ヘッダー ファイル\Stage\Exporter</Filter>
+    <ClInclude Include="Parser.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Command\EditChipCommand.h">
-      <Filter>ヘッダー ファイル\Command</Filter>
+    <ClInclude Include="Exporter.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Command\AddTextureArrayCommand.h">
-      <Filter>ヘッダー ファイル\Command</Filter>
+    <ClInclude Include="EditorUtilities.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Command\AddTextureCommand.h">
-      <Filter>ヘッダー ファイル\Command</Filter>
+    <ClInclude Include="ParserSac.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Command\RemoveTextureCommand.h">
-      <Filter>ヘッダー ファイル\Command</Filter>
+    <ClInclude Include="FileBinaryLoader.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Window\LogWindow.h">
-      <Filter>ヘッダー ファイル\Window</Filter>
+    <ClInclude Include="FileLoader.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Command\LoadTextureCommand.h">
-      <Filter>ヘッダー ファイル\Command</Filter>
+    <ClInclude Include="EditorFunc.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Command\ReleaseTextureCommand.h">
-      <Filter>ヘッダー ファイル\Command</Filter>
+    <ClInclude Include="EditWindow.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Command\ChangeMapChipCommand.h">
-      <Filter>ヘッダー ファイル\Command</Filter>
+    <ClInclude Include="LayerWindow.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Manager\ClipBoardManager.h">
-      <Filter>ヘッダー ファイル\Manager</Filter>
+    <ClInclude Include="ChipWindow.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Utilities\InResourceTexture.h">
-      <Filter>ヘッダー ファイル\Utilities</Filter>
+    <ClInclude Include="MofGridRender.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -273,32 +192,8 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="icon.ico">
+    <Image Include="icon1.ico">
       <Filter>リソース ファイル</Filter>
-    </Image>
-    <Image Include="icons\back-arrow.png">
-      <Filter>リソース ファイル\MenuIcons</Filter>
-    </Image>
-    <Image Include="icons\diskette.png">
-      <Filter>リソース ファイル\MenuIcons</Filter>
-    </Image>
-    <Image Include="icons\edit.png">
-      <Filter>リソース ファイル\MenuIcons</Filter>
-    </Image>
-    <Image Include="icons\eraser-tool.png">
-      <Filter>リソース ファイル\MenuIcons</Filter>
-    </Image>
-    <Image Include="icons\folder.png">
-      <Filter>リソース ファイル\MenuIcons</Filter>
-    </Image>
-    <Image Include="icons\new-document.png">
-      <Filter>リソース ファイル\MenuIcons</Filter>
-    </Image>
-    <Image Include="icons\redo-arrow.png">
-      <Filter>リソース ファイル\MenuIcons</Filter>
-    </Image>
-    <Image Include="icons\selection.png">
-      <Filter>リソース ファイル\MenuIcons</Filter>
     </Image>
   </ItemGroup>
 </Project>
