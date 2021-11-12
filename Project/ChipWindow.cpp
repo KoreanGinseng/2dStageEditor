@@ -118,9 +118,12 @@ MofBool CChipWindow::Update()
                 texSize.x = texture->GetWidth();
                 texSize.y = texture->GetHeight();
             }
-            if (chipSize > 0)
+            if (chipSize > 0 && 
+                CRectangleUtilities::CollisionPoint(
+                    CRectangle( 0, 0, texSize.x, texSize.y), localMousePos
+                ))
             {
-                MofS32 tx = ((MofS32)(texSize.x) / chipSize);
+                MofS32 tx  = ((MofS32)(texSize.x) / chipSize);
                 m_SelectNo = ((MofS32)(localMousePos.x) / chipSize) % tx +
                              ((MofS32)(localMousePos.y) / chipSize) * tx;
             }
@@ -153,18 +156,19 @@ MofBool CChipWindow::Render()
     {
         const auto& renderTarget = g_pGraphics->GetRenderTarget();
         const auto& depthTarget  = g_pGraphics->GetDepthTarget();
-        const auto& textureNo = layerData[layerSelect].textureNo;
+        const auto& textureNo    = layerData[layerSelect].textureNo;
         if (textureNo >= 0)
         {
-            const auto& texture      = m_TextureArray[textureNo];
-            const auto& target       = m_TargetArray[textureNo];
-            const auto& textureName  = m_NameArray[textureNo];
+            const auto& texture     = m_TextureArray[textureNo];
+            const auto& target      = m_TargetArray[textureNo];
+            const auto& textureName = m_NameArray[textureNo];
             ImVec2 texSize(texture->GetWidth(), texture->GetHeight());
             ImGui::Text(textureName.c_str());
             g_pGraphics->SetRenderTarget(target->GetRenderTarget(), depthTarget);
             g_pGraphics->ClearTarget();
             texture->Render(0, 0);
             CMofGridRender::RenderGrid(layerData[layerSelect].chipSize, texSize.x, texSize.y);
+            // TODO :
             g_pGraphics->SetRenderTarget(renderTarget, depthTarget);
             
             ImGui::BeginChild("ChipTexture", ImVec2(0, 0), true,
