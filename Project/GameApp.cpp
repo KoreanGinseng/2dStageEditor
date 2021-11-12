@@ -60,6 +60,7 @@ MofBool CGameApp::Initialize(void) {
 	m_bSaveCheck       = FALSE;
 	m_FrameCount       = 0;
 	m_SaveCheckWait    = 60;
+	m_MapSize          = Vector2(k_SceneW, k_SceneH);
 
 	CMofImGui::Setup();
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
@@ -82,11 +83,13 @@ MofBool CGameApp::Initialize(void) {
 		.Get<CLayerWindow>()->Add("LayerWindow", m_LayerWindow);
 	CSingletonBlackboard<CChipWindow>::GetInstance()
 		.Get<CChipWindow>()->Add("ChipWindow", m_ChipWindow);
+	CSingletonBlackboard<Vector2>::GetInstance()
+		.Get<Vector2>()->Add("MapSize", m_MapSize);
 
 	//m_SaveData = m_MapData;
 	
 	m_ChipWindow.DummyCreate();
-	m_EditWindow.Create(k_SceneW, k_SceneH);
+	m_EditWindow.Create(m_MapSize.x, m_MapSize.y);
 	m_ChipWindow.Initialize();
 
 	CGraphicsUtilities::Get2DSpriteBind()->SetSamplerType(0, SAMPLER_POINT);

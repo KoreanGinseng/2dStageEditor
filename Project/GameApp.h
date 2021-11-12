@@ -37,6 +37,7 @@ private:
 	Editor::CEditWindow           m_EditWindow;
 	Editor::CLayerWindow          m_LayerWindow;
 	Editor::CChipWindow           m_ChipWindow;
+	Vector2                       m_MapSize;
 public:
 	/*************************************************************************//*!
 			@brief			コンストラクタ

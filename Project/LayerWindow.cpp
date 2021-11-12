@@ -113,6 +113,7 @@ MofBool CLayerWindow::Update()
         if (ImGui::InputInt("ChipSize", &chipSize))
         {
             layerData.chipSize = chipSize;
+            layerData.ResetData();
         }
 
         auto& chipWindow = CSingletonBlackboard<CChipWindow>::GetInstance()

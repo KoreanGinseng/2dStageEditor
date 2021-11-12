@@ -10,6 +10,8 @@ namespace Editor
     using TexturePtr   = std::shared_ptr<CTexture>;
     using TextureArray = std::vector<TexturePtr>;
 
+    using MapData      = std::vector<std::vector<MofU32>>;
+
     constexpr MofFloat k_SceneW = 1280.0f;
     constexpr MofFloat k_SceneH =  720.0f;
 
