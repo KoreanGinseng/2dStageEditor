@@ -101,8 +101,8 @@ MofBool CChipWindow::Update()
     const auto& padding     = ImGui::GetStyle().WindowPadding;
 
     const auto localMousePos = Vector2(
-        mousePos.x - m_WindowPos.x - m_Scroll.x - padding.x,
-        mousePos.y - m_WindowPos.y - m_Scroll.y - padding.y
+        mousePos.x - m_WindowPos.x + m_Scroll.x - padding.x,
+        mousePos.y - m_WindowPos.y + m_Scroll.y - padding.y
     );
 
     if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
@@ -120,7 +120,7 @@ MofBool CChipWindow::Update()
             }
             if (chipSize > 0 && 
                 CRectangleUtilities::CollisionPoint(
-                    CRectangle( 0, 0, texSize.x, texSize.y), localMousePos
+                    CRectangle(0, 0, texSize.x, texSize.y), localMousePos
                 ))
             {
                 MofS32 tx  = ((MofS32)(texSize.x) / chipSize);
@@ -132,6 +132,7 @@ MofBool CChipWindow::Update()
 
     ImGui::Begin("tesw");
     ImGui::Text("%.3f, %.3f", localMousePos.x, localMousePos.y);
+    ImGui::Text("%.3f, %.3f", m_Scroll.x, m_Scroll.y);
     ImGui::Text("%d", m_SelectNo);
     ImGui::End();
     return TRUE;
@@ -168,7 +169,9 @@ MofBool CChipWindow::Render()
             g_pGraphics->ClearTarget();
             texture->Render(0, 0);
             CMofGridRender::RenderGrid(layerData[layerSelect].chipSize, texSize.x, texSize.y);
-            // TODO :
+            CGraphicsUtilities::RenderRect(
+                CMofGridRender::GetRect(m_SelectNo, layerData[layerSelect].chipSize, texSize.x),
+                MOF_COLOR_RED);
             g_pGraphics->SetRenderTarget(renderTarget, depthTarget);
             
             ImGui::BeginChild("ChipTexture", ImVec2(0, 0), true,

@@ -45,6 +45,7 @@ MofBool CEditWindow::Create(MofU32 w, MofU32 h)
 // ********************************************************************************
 MofBool CEditWindow::Update()
 {
+    
     return TRUE;
 }
 
@@ -67,8 +68,10 @@ MofBool CEditWindow::Render()
     ImGuiWindowFlags flag = ImGuiWindowFlags_AlwaysHorizontalScrollbar |
                             ImGuiWindowFlags_AlwaysVerticalScrollbar;
     ImGui::BeginChild("EditRenderTexture", ImVec2(0, 0), true, flag);
-    m_Scroll.x = ImGui::GetScrollX();
-    m_Scroll.y = ImGui::GetScrollY();
+    m_Scroll.x    = ImGui::GetScrollX();
+    m_Scroll.y    = ImGui::GetScrollY();
+    m_WindowPos.x = ImGui::GetWindowPos().x;
+    m_WindowPos.y = ImGui::GetWindowPos().y;
     if (m_RenderTarget)
     {
         ImVec2 texSize(m_RenderTarget->GetWidth(), m_RenderTarget->GetHeight());
@@ -77,7 +80,23 @@ MofBool CEditWindow::Render()
 
         if (layerDataArray.size() > 0)
         {
-            CMofGridRender::RenderGrid(layerDataArray[layerSelect].chipSize, texSize.x, texSize.y);
+            MofS32 chipSize = layerDataArray[layerSelect].chipSize;
+            CMofGridRender::RenderGrid(chipSize, texSize.x, texSize.y);
+            if (chipSize > 0)
+            {
+                const auto& mousePos      = ImGui::GetMousePos();
+                const auto& padding       = ImGui::GetStyle().WindowPadding;
+                const auto  localMousePos = Vector2(
+                    mousePos.x - m_WindowPos.x + m_Scroll.x - padding.x,
+                    mousePos.y - m_WindowPos.y + m_Scroll.y - padding.y
+                );
+                MofS32 tx       = ((MofS32)(texSize.x) / chipSize);
+                MofS32 selectNo = ((MofS32)(localMousePos.x) / chipSize) % tx +
+                                  ((MofS32)(localMousePos.y) / chipSize) * tx;
+                CGraphicsUtilities::RenderRect(
+                    CMofGridRender::GetRect(selectNo, chipSize, texSize.x),
+                    MOF_COLOR_RED);
+            }
         }
         g_pGraphics->SetRenderTarget(renderTarget, depthTarget);
 

@@ -27,3 +27,27 @@ MofBool CMofGridRender::RenderGrid(MofS32 s, MofFloat w, MofFloat h)
     }
     return TRUE;
 }
+
+// ********************************************************************************
+/// <summary>
+/// 矩形の取得
+/// </summary>
+/// <param name="no">選択番号</param>
+/// <param name="chipSize">チップサイズ</param>
+/// <param name="w">横幅</param>
+/// <returns>選択矩形</returns>
+// ********************************************************************************
+CRectangle CMofGridRender::GetRect(MofS32 no, MofS32 chipSize, MofS32 w)
+{
+    if (chipSize <= 0)
+    {
+        return CRectangle();
+    }
+    MofS32 tx = w / chipSize;
+    return CRectangle(
+        (no % tx) * chipSize,
+        (no / tx) * chipSize,
+        (no % tx) * chipSize + chipSize,
+        (no / tx) * chipSize + chipSize
+    );
+}

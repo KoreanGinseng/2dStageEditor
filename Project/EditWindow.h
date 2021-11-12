@@ -17,6 +17,8 @@ namespace Editor
 
         Vector2 m_Scroll;
 
+        Vector2 m_WindowPos;
+
     public:
 
         // ********************************************************************************
