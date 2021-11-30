@@ -1,5 +1,6 @@
 #pragma once
 #include "EditorDefine.h"
+#include "MapData.h"
 
 namespace Editor
 {
@@ -18,22 +19,11 @@ namespace Editor
             std::string name     { "" };
             MofS32      chipSize {  0 };
             MofS32      textureNo{ -1 };
-            MapData     mapData  {    };
+            CMapData    mapData  {    };
 
             MofBool ResetData()
             {
-                if (chipSize <= 0)
-                {
-                    return TRUE;
-                }
-                const auto& mapSize = CSingletonBlackboard<Vector2>::GetInstance()
-                    .Get<Vector2>("MapSize");
-                mapData.resize((MofS32)mapSize.y / chipSize);
-                for (auto& itr : mapData)
-                {
-                    itr.resize((MofS32)mapSize.x / chipSize);
-                }
-                return TRUE;
+                return mapData.ResetData();
             }
         };
 
