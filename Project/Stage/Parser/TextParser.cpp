@@ -107,5 +107,37 @@ bool TextParser::Parse(const std::string& buffer, ParseData* out) {
     }
     item_layer.SetName("item");
     out->mapchip_array->push_back(std::move(item_layer));
+
+    if (buffer.length() <= index) {
+        return true;
+    }
+
+    TextureArray object_textures;
+    int object_cnt = get_int(buffer, index);
+    for (int i = 0; i < object_cnt; i++) {
+        CTexture texture;
+        std::string obj_texture_name = get_str(buffer, index);
+        if (!texture.Load(obj_texture_name.c_str())) {
+            return false;
+        }
+        object_textures.push_back(std::move(texture));
+    }
+    MapChip object_layer;
+    if (object_textures.size()) {
+        object_layer.SetTextureNo(out->texture_arrays->size());
+        out->texture_arrays->push_back(std::move(object_textures));
+    }
+    object_layer.SetTextureArray(true);
+    object_layer.SetChipSize(Vector2(mapchip_size, mapchip_size));
+    if (!object_layer.Create(array_size_x, array_size_y)) {
+        return false;
+    }
+    for (int y = 0; y < array_size_y; y++) {
+        for (int x = 0; x < array_size_x; x++) {
+            object_layer.SetMapChip(x, y, get_int(buffer, index));
+        }
+    }
+    object_layer.SetName("object");
+    out->mapchip_array->push_back(std::move(object_layer));
     return true;
 }

@@ -217,6 +217,34 @@ void LayerWindow::ShowBackGroundLayerTab(void) {
     ImGui::Separator();
 }
 
+void LayerWindow::ShowCollisionLayerTab(void) {
+    ImGui::Text("collision");
+    auto stage      = theParam.GetDataPointer<Stage>(ParamKey::Stage);
+    auto collisions = stage->GetCollisionArrayPointer();
+
+    if (ImGui::BeginChild("collision array")) {
+
+        for (int i = 0; i < collisions->size(); i++) {
+            auto& collision = (*collisions)[i];
+            if (ImGui::Selectable(collision._name.c_str(), (_select_collision_layer == i))) {
+                _select_collision_layer = i;
+            }
+        }
+        ImGui::EndChild();
+    }
+    if (ImGui::Button("add")) {
+        std::vector<std::string> names;
+        for (const auto& collision : *collisions)
+        {
+            names.push_back(collision._name);
+        }
+        collisions->push_back(
+            { true, EditorUtilities::SerchDuplicateName("collision", names), std::vector<CRectangle>() }
+        );
+    }
+
+}
+
 /// /////////////////////////////////////////////////////////////
 /// <summary>
 /// êFÉ^Éu
@@ -271,6 +299,7 @@ void LayerWindow::Show(void) {
         if (ImGui::BeginTabBar("layer tab")) {
             if (ImGui::BeginTabItem("mapchip"))    { ShowMapChipLayerTab();    ImGui::EndTabItem(); }
             if (ImGui::BeginTabItem("background")) { ShowBackGroundLayerTab(); ImGui::EndTabItem(); }
+            if (ImGui::BeginTabItem("collision"))  { ShowCollisionLayerTab();  ImGui::EndTabItem(); }
             if (ImGui::BeginTabItem("color"))      { ShowColorEditTab();       ImGui::EndTabItem(); }
             ImGui::EndTabBar();
         }

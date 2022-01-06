@@ -59,6 +59,7 @@ void default_create(void) {
     MapChip mapchip_layer;
     MapChip enemy_layer;
     MapChip item_layer;
+    MapChip object_layer;
     mapchip_layer.SetName("mapchip");
     mapchip_layer.SetTextureNo(-1);
     mapchip_layer.SetChipSize(Vector2(32, 32));
@@ -76,7 +77,14 @@ void default_create(void) {
     item_layer.SetChipSize(Vector2(32, 32));
     item_layer.Create(70, 25);
     stage.GetChipArrayPointer()->push_back(std::move(item_layer));
+    object_layer.SetName("object");
+    object_layer.SetTextureNo(2);
+    object_layer.SetTextureArray(true);
+    object_layer.SetChipSize(Vector2(32, 32));
+    object_layer.Create(70, 25);
+    stage.GetChipArrayPointer()->push_back(std::move(object_layer));
 
+    stage.GetTextureArraysPointer()->push_back(TextureArray());
     stage.GetTextureArraysPointer()->push_back(TextureArray());
     stage.GetTextureArraysPointer()->push_back(TextureArray());
 }

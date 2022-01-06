@@ -29,6 +29,7 @@ private:
     void ShowChipBackColor(void);
 
     void ShowBackGroundLayerTab(void);
+    void ShowCollisionLayerTab(void);
     void ShowColorEditTab(void);
 
 public:
